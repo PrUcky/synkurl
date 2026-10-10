@@ -162,6 +162,12 @@ p { margin: 0; }
 }
 .brand svg { width: 1.1rem; height: auto; }
 
+.site-head { flex-wrap: wrap; }
+.site-nav { display: flex; gap: 1.5rem; margin-left: auto; font-size: 0.95rem; }
+.site-nav a { color: var(--mist); text-decoration: none; padding-block: 0.4rem; }
+.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--star); }
+.site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-color: var(--diya); text-underline-offset: 0.4em; }
+
 .site-foot {
   display: flex;
   flex-wrap: wrap;
@@ -173,7 +179,7 @@ p { margin: 0; }
   color: var(--mist);
   font-size: 0.92rem;
 }
-.site-foot nav { display: flex; gap: 1.5rem; }
+.site-foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
 
 /* ---------- Home: hero ---------- */
 
@@ -304,6 +310,58 @@ p { margin: 0; }
     var(--night-2);
 }
 .closing h2 { max-width: 18em; }
+
+.section-more { margin-top: 2rem; }
+
+/* "Made for real family life" teaser on the home page */
+.situations {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.situations li { display: grid; gap: 0.5rem; align-content: start; }
+.situations p { color: var(--mist); }
+.situations img, .family-story img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: var(--night-2);
+  margin-bottom: 0.75rem;
+}
+
+/* ---------- For families and FAQ pages ---------- */
+
+.page-intro { display: grid; gap: 1rem; max-width: 42rem; padding-block: 2.5rem 1rem; }
+.page-intro h1 { font-size: clamp(2rem, 4.5vw, 3rem); }
+
+.story-list { display: grid; gap: clamp(2.5rem, 6vw, 4rem); padding-block: 2rem; }
+.family-story {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 1.5rem 3rem;
+  align-items: center;
+  scroll-margin-top: 2rem;
+}
+.family-story > div { display: grid; gap: 0.75rem; max-width: 36rem; }
+.family-story h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); }
+.family-story h3 { color: var(--diya); font-size: 0.9rem; margin-top: 0.5rem; }
+.family-story p { color: var(--mist); }
+.family-story img { margin: 0; }
+
+.faq-jump { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+.faq-group { display: grid; gap: 0; max-width: 46rem; padding-block: 2rem; scroll-margin-top: 1rem; }
+.faq-group h2 { margin-bottom: 1rem; }
+.faq-item { display: grid; gap: 0.5rem; padding-block: 1.25rem; border-top: 1px solid var(--line); scroll-margin-top: 1rem; }
+.faq-item p { color: var(--mist); }
+.faq-item:target { border-top-color: var(--diya); }
+.anchor { text-decoration: none; }
+.anchor:hover { text-decoration: underline; text-decoration-color: var(--diya); text-underline-offset: 0.25em; }
 
 /* ---------- Waitlist page ---------- */
 
@@ -466,6 +524,15 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 
 /* ---------- Small screens ---------- */
 
+@media (max-width: 640px) {
+  .site-head { row-gap: 0.25rem; }
+  .site-nav { order: 3; width: 100%; margin-left: 0; gap: 1.25rem; }
+}
+@media (max-width: 360px) {
+  .brand { font-size: 1rem; }
+  .btn-small { padding: 0.6rem 0.85rem; font-size: 0.75rem; }
+}
+
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 0.5rem; }
   .hero-art { order: -1; max-width: 18rem; justify-self: center; width: 100%; }
@@ -481,6 +548,9 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .steps li::before { position: absolute; left: 0; top: -0.4rem; margin: 0; }
 
   .faq { grid-template-columns: 1fr; }
+  .situations { grid-template-columns: 1fr; }
+  .family-story { grid-template-columns: 1fr; }
+  .family-story img { max-width: 26rem; }
 
   .join { grid-template-columns: 1fr; }
   .join-intro { position: static; }
