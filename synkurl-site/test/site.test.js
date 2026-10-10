@@ -4,7 +4,7 @@ import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import { CONSENT_VERSION } from "../src/waitlist.js";
 
-const INDEXED = ["/", "/for-families", "/faq", "/join", "/privacy"];
+const INDEXED = ["/", "/for-families", "/faq", "/join", "/investors", "/privacy"];
 const UTILITY = ["/check-email", "/confirm", "/remove", "/confirmed", "/removed", "/link-expired"];
 export const PAGES = [...INDEXED, ...UTILITY, "/404"];
 
@@ -22,9 +22,11 @@ describe("every page", () => {
       const header = between(page, '<header class="site-head', "</header>");
       expect(header, path).toContain('href="/for-families"');
       expect(header, path).toContain('href="/faq"');
+      expect(header, path).not.toContain('href="/investors"');
       const footer = between(page, '<footer class="site-foot', "</footer>");
       expect(footer, path).toContain('href="/privacy"');
       expect(footer, path).toContain('href="/faq"');
+      expect(footer, path).toContain('>Investors</a>');
       expect(footer, path).toContain('href="mailto:synkurl@synkurl.com"');
       footers.add(footer);
     }
@@ -73,6 +75,17 @@ describe("the waitlist page", () => {
     expect(page).toContain('name="consent"');
     expect(page).toContain("<noscript>");
     expect(page).toContain('name="lang" value="en"');
+  });
+});
+
+describe("the investors page", () => {
+  it("is a contact page, not an offer", async () => {
+    const page = (await html("/investors")).toLowerCase();
+    expect(page).toContain("get in touch");
+    expect(page).toContain("we'd love to talk");
+    for (const word of ["share", "round", "valuation", "returns", "invest now", "opportunit"]) {
+      expect(page, word).not.toContain(word);
+    }
   });
 });
 
