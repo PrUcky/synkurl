@@ -1,0 +1,32 @@
+// Cloudflare settings for the Synkurl site. Wrangler reads this file.
+{
+  "name": "synkurl-site",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-20",
+
+  // Files in ./public are served as the website. 404.html answers unknown pages.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+
+  // The waitlist database. Paste the database_id that `npx wrangler d1 create synkurl-waitlist` prints.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "synkurl-waitlist",
+      "database_id": "PASTE_DATABASE_ID_HERE"
+    }
+  ],
+
+  // Keep request logs so you can debug in the Cloudflare dashboard.
+  "observability": { "enabled": true }
+
+  // Ship W3 (domain): uncomment once synkurl.com is active on Cloudflare,
+  // and add a comma after the observability line above.
+  // "routes": [
+  //   { "pattern": "synkurl.com", "custom_domain": true },
+  //   { "pattern": "www.synkurl.com", "custom_domain": true }
+  // ]
+}

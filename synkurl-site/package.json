@@ -1,0 +1,12 @@
+{
+  "name": "synkurl-site",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:setup:local": "wrangler d1 execute synkurl-waitlist --local --file=schema.sql",
+    "db:rows:local": "wrangler d1 execute synkurl-waitlist --local --command \"SELECT * FROM waitlist\""
+  },
+  "devDependencies": {
+    "wrangler": "4.141.0"
+  }
+}
