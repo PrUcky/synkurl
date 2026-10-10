@@ -13,7 +13,7 @@
     "run_worker_first": ["/api/*", "/confirm", "/remove"]
   },
 
-  // The waitlist database. Paste the database_id that `npx wrangler d1 create synkurl-waitlist` prints.
+  // The waitlist database. Paste the database_id that `npx wrangler d1 create sdrive-waitlist` prints.
   "d1_databases": [
     {
       "binding": "DB",

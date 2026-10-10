@@ -40,7 +40,7 @@ Dashboard menu names below may differ slightly from what you see.
 
 **Done check:** the home page and `/join` open on your phone over mobile data.
 
-1. **Create the database.** In the Cloudflare dashboard, go to **Storage & databases → D1 → Create**, name it `synkurl-waitlist`, and copy its **Database ID**.
+1. **Create the database.** In the Cloudflare dashboard, go to **Storage & databases → D1 → Create**, name it `sdrive-waitlist`, and copy its **Database ID**.
 2. **Create the tables.** Open the database's **Console** tab. Paste and run each file in `migrations/`, in number order, one at a time. Then run `SELECT count(*) FROM waitlist;` and expect `0`.
    - *Concept:* a migration is one numbered change to the database. Running them in order builds the same tables everywhere.
 3. **Tell the code which database to use.** On GitHub, open `synkurl-site/wrangler.jsonc`, click the pencil icon, and replace `PASTE_DATABASE_ID_HERE` with the ID. Commit to `main`.

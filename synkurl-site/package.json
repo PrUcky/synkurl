@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "wrangler dev",
     "test": "vitest run",
-    "db:setup:local": "wrangler d1 migrations apply synkurl-waitlist --local",
-    "db:rows:local": "wrangler d1 execute synkurl-waitlist --local --command \"SELECT * FROM waitlist\""
+    "db:setup:local": "wrangler d1 migrations apply sdrive-waitlist --local",
+    "db:rows:local": "wrangler d1 execute sdrive-waitlist --local --command \"SELECT * FROM waitlist\""
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "0.22.0",
