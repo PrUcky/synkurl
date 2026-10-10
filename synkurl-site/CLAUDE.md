@@ -2,23 +2,34 @@
 
 ## Who you're working with
 A beginner learning web hosting and SRE basics while building this site. Teach while you build:
-- Before each step, explain the concept in 2–4 plain sentences, with an everyday Indian analogy where it helps. Explain jargon the first time it appears.
+- Use very simple words and short sentences. No jargon; when a technical word is needed, say what it means in a few words.
+- Before each step, explain the idea in 2–4 plain sentences, with an everyday Indian analogy where it helps.
+- Give one clear thing to do at a time.
 - Keep changes small. Before editing a file, say in one line what you'll change and why.
-- After a change, ask one short check question ("What would happen if…?") before moving on.
+- After a change, ask one short check question ("What would happen if…?") before moving on, unless the user asked you to build straight through.
 
 ## The project
-Static site in `public/`, served by a Cloudflare Worker (`src/index.js`). Waitlist sign-ups are saved in D1 (`schema.sql`), with a Turnstile bot check. Config is in `wrangler.jsonc`, with Wrangler pinned in `package.json` and `package-lock.json`.
+The repository is `synkurl`; the site is in `synkurl-site/`. The Cloudflare Worker is named `synkurl-site` (keep that name in `wrangler.jsonc`).
+
+- `public/`: static pages, styles, scripts and pictures. Plain HTML, CSS and JavaScript, no frameworks.
+- `src/`: the Worker. `index.js` routes requests; `waitlist.js` joins, confirms, removes and cleans up; `checks.js` holds shared form checks; `email.js` sends email through Resend's HTTP API with `fetch`.
+- `migrations/`: numbered D1 changes, run by hand in the D1 console before merging (deploys don't run them). Code must keep working if the newest migration hasn't been run yet.
+- `test/`: Vitest with Cloudflare's Workers pool. Run `npm test`. CI runs it on every pull request.
+- Config is in `wrangler.jsonc` (vars, cron, rate limit). Versions are pinned in `package.json` and `package-lock.json`.
 
 **How it deploys:** Cloudflare is connected to this GitHub repo. When a change is merged into `main`, Cloudflare builds and deploys it. You never deploy.
 
 ## Rules
-- **This repository is public.** Never commit secrets, API tokens, personal data or internal planning notes.
+- **This repository is public.** Never commit secrets, API tokens, personal data or internal planning notes. Secrets (`TURNSTILE_SECRET`, `EMAIL_API_KEY`, `NOTIFY_EMAIL`) live only in Cloudflare.
 - **Never run** `wrangler deploy`, `wrangler login`, `wrangler secret`, or any `--remote` database command. Never ask for a Cloudflare token.
-- **Local testing is fine**: `npm ci`, `npm run db:setup:local`, `npm run dev`, `npm run db:rows:local` (`.dev.vars` holds Cloudflare's public test key; copy it from `.dev.vars.example`).
+- **Never change the `database_id` line** in `wrangler.jsonc`; the user manages it on `main`.
+- **Local testing is fine**: `npm ci`, `npm run db:setup:local`, `npm run dev`, `npm run db:rows:local`, `npm test` (`.dev.vars` holds Cloudflare's public test key; copy it from `.dev.vars.example`).
+- **Dependencies:** add only what's needed, pin exact versions published at least 14 days ago, and commit the lockfile.
 - **Work on a branch** and open a pull request. The user reviews and merges.
-- **Product copy** describes what Synkurl does for families, in plain words. Don't add technical detail about how the product works.
-- **Logs** must never contain emails or other personal data.
-- **Ask before** changing the stack, adding dependencies, changing the design direction, the form fields or the privacy notice. If the form fields change, update `CONSENT_VERSION` in `src/index.js` and `public/privacy.html` together.
+- **Product copy** describes what Synkurl does for families, in plain, warm Indian English. Allowed promises: photos and videos back up automatically from your phone to a small device in your home; you can open them from anywhere on Wi-Fi or mobile data; a new phone gets your photos back; we're starting with Android. Never: prices, launch dates, storage sizes or specs, how it works (networking, encryption, pairing, remote access, servers), other features, other companies' products. If unknown, say "We'll explain this before early access opens."
+- **Logs** must never contain emails, tokens, IP addresses or other personal data.
+- **Third-party scripts:** only Cloudflare Turnstile (the bot check, on form pages) and Cloudflare Web Analytics (cookieless visit counts). No other analytics, pixels, cookies, fingerprinting or font services. Keep `public/_headers` and `SECURITY_HEADERS` in `src/http.js` the same; a test checks.
+- **Ask before** changing the stack, adding dependencies, changing the design direction, the form fields or the privacy notice. If the form fields or the privacy notice change, update `CONSENT_VERSION` in `src/waitlist.js` and the version shown in `public/privacy.html` together (a test checks).
 
 ## Design direction (keep it)
-"A light left on at home at night." Night blue `#101a3d`, one diya-amber accent `#ffb648`, starlight text `#eef1ff`, mist `#a9b3d9`. Unbounded (self-hosted) for headings, system font for body. The only ambient motion is the photo tiles drifting into the hero window, and it respects reduced motion. No third-party scripts except Turnstile on the waitlist page; no analytics or font services.
+"A light left on at home at night." Night blue `#101a3d`, one diya-amber accent `#ffb648`, starlight text `#eef1ff`, mist `#a9b3d9`. Unbounded (self-hosted) for headings, system font for body. Illustrations are inline-style SVG (night blue, one amber glow, thin starlight lines, the arch window). No photos, device renders, AI images or people.
