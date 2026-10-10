@@ -29,8 +29,6 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
   margin: 0;
@@ -125,7 +123,6 @@ p { margin: 0; }
   text-decoration: none;
   cursor: pointer;
   box-shadow: 0 0 0 0 rgba(255, 182, 72, 0);
-  transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
 .btn:hover { background: #ffc566; box-shadow: 0 0 0 6px rgba(255, 182, 72, 0.18); }
 .btn:disabled { opacity: 0.6; cursor: progress; }
@@ -204,31 +201,17 @@ p { margin: 0; }
 
 .hero-art svg { display: block; width: 100%; height: auto; }
 
-/* Photo tiles drifting home into the lit window: the page's one moving moment. */
+/* Photo tiles drifting home into the lit window. This is their still position;
+   the drifting itself is in the Motion section at the end. */
 .tile {
   fill: rgba(238, 241, 255, 0.1);
   stroke: var(--star);
   stroke-opacity: 0.75;
   stroke-width: 1.2;
+  opacity: 0.6;
   transform-box: fill-box;
   transform-origin: center;
   transform: translate(var(--x), var(--y)) rotate(var(--r));
-  animation: go-home 8s cubic-bezier(0.5, 0, 0.25, 1) var(--d) infinite;
-}
-
-@keyframes go-home {
-  0%   { transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(1); opacity: 0; }
-  12%  { opacity: 0.95; }
-  72%  { opacity: 0.85; }
-  100% { transform: translate(0, 0) rotate(0deg) scale(0.25); opacity: 0; }
-}
-
-.window-glow { animation: breathe 8s ease-in-out infinite; }
-@keyframes breathe { 50% { opacity: 0.5; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .tile { animation: none; opacity: 0.6; }
-  .window-glow { animation: none; }
 }
 
 /* ---------- Home: sections ---------- */
@@ -403,6 +386,64 @@ p { margin: 0; }
 }
 .label-note { margin-top: 1.5rem; font-size: 0.88rem; color: var(--mist); }
 .label-note::before { content: "✦ "; color: var(--diya); }
+
+/* The demo: with home.js, the four screens become one phone you can tap or swipe. */
+.demo-ready .demo-screens {
+  position: relative;
+  display: flex;
+  gap: 0;
+  max-width: 17rem;
+  margin-inline: auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  cursor: pointer;
+}
+.demo-ready .demo-screens::-webkit-scrollbar { display: none; }
+.demo-ready .phone-mock { flex: 0 0 100%; padding: 8px; scroll-snap-align: center; }
+.demo-ready .phone-mock figcaption { display: none; }
+.demo-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 1.25rem; }
+.demo-tab {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--mist);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.demo-tab:hover { color: var(--star); border-color: rgba(238, 241, 255, 0.35); }
+.demo-tab[aria-selected="true"] { border-color: var(--diya); background: rgba(255, 182, 72, 0.2); color: #ffd9a0; font-weight: 600; }
+
+/* ---------- A photo's journey (story) ---------- */
+
+.story-scenes { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
+.story-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 1.5rem 3rem;
+  align-items: center;
+}
+.story-scene:nth-child(even) .scene-art { order: 2; }
+.scene-art { display: block; width: 100%; height: auto; border-radius: 1.1rem; border: 1px solid var(--line); }
+.scene-text { display: grid; gap: 0.6rem; max-width: 26rem; }
+.scene-text h3 { font-size: clamp(1.2rem, 2.2vw, 1.55rem); }
+.scene-text p { color: var(--mist); }
+.scene-step { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: var(--diya) !important; }
+.scene-step span {
+  display: inline-grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  border: 1px solid var(--diya);
+  font-family: var(--display);
+  font-size: 0.8rem;
+}
+.flash { opacity: 0; }
 
 /* ---------- The Synkurl device (concept) ---------- */
 
@@ -657,6 +698,8 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .faq { grid-template-columns: 1fr; }
   .situations { grid-template-columns: 1fr; }
   .device-intro { grid-template-columns: 1fr; }
+  .story-scene { grid-template-columns: 1fr; }
+  .story-scene:nth-child(even) .scene-art { order: 0; }
   .device-stage { order: -1; }
   .scenes, .ideas { grid-template-columns: 1fr; }
   .demo-screens { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.75rem; }
@@ -666,3 +709,46 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .join { grid-template-columns: 1fr; }
   .join-intro { position: static; }
 }
+
+
+/* ========== Motion ==========
+   Everything that moves is inside this one block. When "reduce motion" is on,
+   none of it applies, and each picture shows its still, finished state.
+   Only transform and opacity are animated. Endless loops pause off screen. */
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+
+  /* Hero: photo tiles drift home into the window. */
+  .tile { animation: go-home 8s cubic-bezier(0.5, 0, 0.25, 1) var(--d) infinite; }
+  .window-glow { animation: breathe 8s ease-in-out infinite; }
+
+  /* The concept device's doorway glow breathes slowly. */
+  .device-glow { animation: breathe 6s ease-in-out infinite; }
+
+  [data-offscreen] .tile,
+  [data-offscreen] .window-glow,
+  [data-offscreen] .device-glow { animation-play-state: paused; }
+
+  /* A photo's journey: pieces move into place when the scene scrolls into view. */
+  .motion-ready .story-scene .anim {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: opacity 1s ease var(--delay, 0s), transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay, 0s);
+  }
+  .motion-ready .story-scene:not(.is-in) .from-pop { opacity: 0; transform: scale(0.6); }
+  .motion-ready .story-scene:not(.is-in) .from-fade { opacity: 0; }
+  .motion-ready .story-scene:not(.is-in) .from-far { opacity: 0; transform: translate(-190px, 40px) scale(0.5); }
+  .motion-ready .story-scene:not(.is-in) .from-above { opacity: 0; transform: translateY(-60px); }
+  .motion-ready .story-scene:not(.is-in) .from-dim { opacity: 0.1; }
+  .motion-ready .story-scene.is-in .flash { animation: flash 0.9s ease-out 0.2s 1 both; }
+}
+
+@keyframes go-home {
+  0%   { transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(1); opacity: 0; }
+  12%  { opacity: 0.95; }
+  72%  { opacity: 0.85; }
+  100% { transform: translate(0, 0) rotate(0deg) scale(0.25); opacity: 0; }
+}
+@keyframes breathe { 50% { opacity: 0.5; } }
+@keyframes flash { 0% { opacity: 0; } 15% { opacity: 0.7; } 100% { opacity: 0; } }
