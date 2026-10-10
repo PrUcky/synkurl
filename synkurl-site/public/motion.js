@@ -31,3 +31,25 @@ if (canWatch) {
   );
   document.querySelectorAll(".story-scene").forEach((el) => scenes.observe(el));
 }
+
+// 4. Hero: on a computer with a mouse (not phones), the art shifts slightly with the pointer.
+const hero = document.querySelector(".hero");
+const heroArt = document.querySelector(".hero-art svg");
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 861px)");
+if (hero && heroArt && finePointer.matches && !reduce.matches) {
+  let frame = 0;
+  let x = 0;
+  let y = 0;
+  hero.addEventListener("pointermove", (event) => {
+    x = event.clientX / window.innerWidth - 0.5;
+    y = event.clientY / window.innerHeight - 0.5;
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      heroArt.style.transform = `translate(${(x * 14).toFixed(1)}px, ${(y * 10).toFixed(1)}px)`;
+    });
+  });
+  hero.addEventListener("pointerleave", () => {
+    heroArt.style.transform = "";
+  });
+}

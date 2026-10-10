@@ -742,6 +742,43 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .motion-ready .story-scene:not(.is-in) .from-above { opacity: 0; transform: translateY(-60px); }
   .motion-ready .story-scene:not(.is-in) .from-dim { opacity: 0.1; }
   .motion-ready .story-scene.is-in .flash { animation: flash 0.9s ease-out 0.2s 1 both; }
+
+  /* Page transitions: a soft cross-fade between pages, in browsers that support it.
+     Other browsers simply load the next page as normal. */
+  @view-transition { navigation: auto; }
+  .site-head { view-transition-name: site-head; }
+  ::view-transition-old(root) { animation: page-out 0.18s ease both; }
+  ::view-transition-new(root) { animation: page-in 0.3s ease both; }
+
+  /* Small reactions */
+  .btn, .demo-tab, .chip span { transition: transform 0.15s ease; }
+  .btn:active, .demo-tab:active, .chip:active span { transform: scale(0.96); }
+  .chip input:checked + span { animation: chip-pop 0.3s ease; }
+
+  /* Hero: on desktop, the art follows the pointer a little (motion.js). */
+  .hero-art svg { transition: transform 0.6s ease-out; }
+
+  /* After joining: the arch rises and a soft glow spreads once. */
+  .is-celebrating .done-mark,
+  .celebrate .result-mark { animation: arch-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  .is-celebrating::before,
+  .celebrate::before { animation: glow-ring 1.2s ease-out 0.15s both; }
+}
+
+/* The glow ring itself is invisible unless the animation above runs. */
+.done, .celebrate { position: relative; }
+.is-celebrating::before,
+.celebrate::before {
+  content: "";
+  position: absolute;
+  top: -1.5rem;
+  left: -1.5rem;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 182, 72, 0.5), transparent);
+  opacity: 0;
+  pointer-events: none;
 }
 
 @keyframes go-home {
@@ -752,3 +789,8 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 }
 @keyframes breathe { 50% { opacity: 0.5; } }
 @keyframes flash { 0% { opacity: 0; } 15% { opacity: 0.7; } 100% { opacity: 0; } }
+@keyframes page-out { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes page-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes chip-pop { 0% { transform: scale(0.94); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes arch-rise { from { opacity: 0; transform: translateY(14px) scale(0.85); } }
+@keyframes glow-ring { 0% { opacity: 0.9; transform: scale(0.4); } 100% { opacity: 0; transform: scale(1.8); } }
