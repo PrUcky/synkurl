@@ -13,7 +13,7 @@ import { confirmEmail, emailReady, sendEmail } from "./email.js";
 import { json, messagePage, redirect } from "./http.js";
 
 // Change when the privacy notice changes. public/privacy.html shows the same value (a test checks).
-export const CONSENT_VERSION = "2026-10-10.3";
+export const CONSENT_VERSION = "2026-10-10.4";
 
 const PHONE_TYPES = new Set(["android", "iphone", "both", "other"]);
 const FAMILY_SIZES = new Set(["1-2", "3-4", "5-6", "7+", "not-sure"]);

@@ -522,6 +522,11 @@ p { margin: 0; }
 }
 .join-intro { display: grid; gap: 1.25rem; position: sticky; top: 2rem; }
 .join-intro .note { font-size: 0.95rem; color: var(--mist); max-width: 30em; }
+.investor-intro { position: static; }
+.investor-intro h2 { font-size: 1.1rem; margin-top: 0.75rem; }
+.investor-intro p:not(.lede):not(.eyebrow) { color: var(--mist); }
+.eyebrow { color: var(--diya); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; }
+textarea.input { resize: vertical; min-height: 8rem; line-height: 1.5; }
 
 .panel {
   padding: clamp(1.5rem, 4vw, 2.5rem);

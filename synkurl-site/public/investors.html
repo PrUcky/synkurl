@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Investors · Synkurl</title>
+  <meta name="description" content="Synkurl is building a home for a family's photos. Get in touch with the founder.">
+  <meta name="theme-color" content="#101a3d">
+  <link rel="canonical" href="https://synkurl.com/investors">
+  <meta property="og:site_name" content="Synkurl">
+  <meta property="og:title" content="Investors · Synkurl">
+  <meta property="og:description" content="Synkurl is building a home for a family's photos. Get in touch with the founder.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://synkurl.com/investors">
+  <meta property="og:image" content="https://synkurl.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Synkurl: your family's photos, kept at home. A glowing arch window at night.">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Investors · Synkurl">
+  <meta name="twitter:description" content="Synkurl is building a home for a family's photos. Get in touch with the founder.">
+  <meta name="twitter:image" content="https://synkurl.com/og-image.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/unbounded-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/investors.js"></script>
+  <script type="module" src="/motion.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-head wrap">
+    <a class="brand" href="/" aria-label="Synkurl home">
+      <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M2 23V10a8 8 0 0 1 16 0v13z" fill="#ffb648"/></svg>
+      Synkurl
+    </a>
+    <nav class="site-nav" aria-label="Main"><a href="/for-families">For families</a><a href="/faq">Questions</a></nav>
+    <a class="btn btn-small" href="/join">Join the waitlist</a>
+  </header>
+
+  <main id="main" class="join wrap">
+    <div class="join-intro investor-intro">
+      <p class="eyebrow">Investors</p>
+      <h1>We'd love to talk.</h1>
+      <p class="lede">Synkurl keeps a family's photos and videos at home, on a small device, and opens them on their phones wherever they are.</p>
+
+      <h2>The family problem</h2>
+      <p>Family photos live on phones. Phones fill up, so people delete memories to make space. Phones get lost, broken or replaced, and years of photos can go with them. And many families would simply rather keep their memories at home.</p>
+
+      <h2>Why now</h2>
+      <p>Almost every family moment is now a photo or a video on someone's phone. Families are asking simple questions: where are our photos, and will they still be there when this phone is gone? We want Synkurl to be the plain answer: at home.</p>
+
+      <h2>Where we are</h2>
+      <p>We're building our first version.</p>
+
+      <h2>Get in touch</h2>
+      <p>Use the form, or write to <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>. The founder reads every message and replies personally.</p>
+    </div>
+
+    <div class="panel">
+      <noscript>
+        <p class="notice">This form needs JavaScript for its bot check, which keeps spam out. You can also write to <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>.</p>
+      </noscript>
+
+      <form id="investor-form" class="form" method="post" action="/api/investors" data-endpoint="/api/investors">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input class="input" id="name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Work email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@yourfund.com" maxlength="254" required aria-describedby="email-hint">
+          <p id="email-hint" class="hint-box" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="organisation">Organisation or fund <span class="optional">(optional)</span></label>
+          <input class="input" id="organisation" name="organisation" type="text" autocomplete="organization" maxlength="120">
+        </div>
+
+        <fieldset class="field">
+          <legend>Which describes you?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="investor_type" value="angel" required><span>Angel</span></label>
+            <label class="chip"><input type="radio" name="investor_type" value="vc"><span>VC fund</span></label>
+            <label class="chip"><input type="radio" name="investor_type" value="accelerator"><span>Accelerator</span></label>
+            <label class="chip"><input type="radio" name="investor_type" value="other"><span>Other</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="link">LinkedIn or website <span class="optional">(optional)</span></label>
+          <input class="input" id="link" name="link" type="url" inputmode="url" placeholder="https://" pattern="https://.+" maxlength="300" title="A link starting with https://">
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <p class="hint" id="message-hint">20 to 1,000 characters.</p>
+          <textarea class="input" id="message" name="message" rows="6" minlength="20" maxlength="1000" required aria-describedby="message-hint"></textarea>
+        </div>
+
+        <label class="consent">
+          <input type="checkbox" name="wants_deck" value="yes">
+          <span>Please send me the deck.</span>
+        </label>
+
+        <label class="consent">
+          <input type="checkbox" name="consent" value="yes" required>
+          <span>I agree that Synkurl may keep these details to reply to me. <a class="text-link" href="/privacy#investors" target="_blank" rel="noopener">Privacy notice</a></span>
+        </label>
+
+        <!-- Test site key: always passes. Replace with your real site key before launch (README, ship W4). -->
+        <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" data-callback="synkurlTurnstileDone" data-error-callback="synkurlTurnstileError" data-expired-callback="synkurlTurnstileExpired"></div>
+
+        <button class="btn" type="submit" data-label="Send message" data-busy-label="Sending…">Send message</button>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </form>
+
+      <div id="done" class="done" hidden tabindex="-1">
+        <svg class="done-mark" viewBox="0 0 20 24" aria-hidden="true"><path d="M2 23V10a8 8 0 0 1 16 0v13z" fill="#ffb648"/></svg>
+        <h2>Thank you.</h2>
+        <p class="muted">The founder will reply personally.</p>
+        <a class="text-link" href="/">Back to the home page</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-foot wrap">
+    <span>© 2026 Synkurl</span>
+    <nav aria-label="Footer">
+      <a class="text-link" href="/for-families">For families</a>
+      <a class="text-link" href="/faq">Questions</a>
+      <a class="text-link" href="/privacy">Privacy</a>
+      <a class="text-link" href="/investors">Investors</a>
+      <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>
+    </nav>
+  </footer>
+</body>
+</html>

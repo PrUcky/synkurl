@@ -2,15 +2,19 @@
 //
 // Cloudflare serves the files in /public directly. This code runs for:
 //   POST /api/join            join the waitlist (src/waitlist.js)
+//   POST /api/investors       the investor contact form (src/investors.js)
 //   GET  /confirm, /remove    show the page with a button (no change yet)
 //   POST /confirm, /remove    the button was pressed: confirm or remove
-//   the daily Cron Trigger    delete unconfirmed sign-ups older than 7 days
+//   the daily Cron Trigger    delete unconfirmed sign-ups older than 7 days,
+//                             and investor messages older than 2 years
 
 import { json, withSecurityHeaders } from "./http.js";
+import { cleanUpInvestorContacts, handleInvestorContact } from "./investors.js";
 import { cleanUpPending, handleConfirm, handleJoin, handleRemove } from "./waitlist.js";
 
 const ROUTES = {
   "/api/join": { POST: handleJoin },
+  "/api/investors": { POST: handleInvestorContact },
   "/confirm": { POST: handleConfirm },
   "/remove": { POST: handleRemove },
 };
@@ -35,6 +39,6 @@ export default {
   },
 
   async scheduled(controller, env, ctx) {
-    ctx.waitUntil(cleanUpPending(env));
+    ctx.waitUntil(Promise.all([cleanUpPending(env), cleanUpInvestorContacts(env)]));
   },
 };
