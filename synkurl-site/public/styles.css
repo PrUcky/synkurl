@@ -335,6 +335,75 @@ p { margin: 0; }
   margin-bottom: 0.75rem;
 }
 
+/* ---------- App screens (early design mockups) ---------- */
+
+/* Sections far down the page are drawn only when they come near the screen. */
+.lazy-section { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
+.sprites { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.demo-screens {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2.5vw, 2rem);
+  margin: 0;
+}
+.phone-mock { margin: 0; display: grid; gap: 0.75rem; justify-items: center; }
+.phone-mock figcaption { font-size: 0.9rem; color: var(--mist); text-align: center; }
+.phone-screen {
+  container-type: inline-size;
+  width: 100%;
+  max-width: 15rem;
+  aspect-ratio: 9 / 18.5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 0.8rem;
+  overflow: hidden;
+  border-radius: 1.6rem;
+  border: 1.5px solid rgba(238, 241, 255, 0.4);
+  box-shadow: 0 0 0 5px #0b1230, 0 0 0 6px rgba(238, 241, 255, 0.18);
+  background: linear-gradient(180deg, #1a2858, #121d45);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+.phone-screen svg { display: block; }
+.phone-screen p { margin: 0; }
+.app-bar { font-family: var(--display); font-size: 0.8rem; font-size: 7cqi; font-weight: 560; }
+.app-status { width: 45%; margin: 0.5rem auto 0.25rem; }
+.app-big { font-family: var(--display); font-size: 0.9rem; font-size: 8cqi; font-weight: 560; line-height: 1.2; }
+.app-small { color: var(--mist); font-size: 0.7rem; font-size: 6cqi; }
+.app-label { color: var(--mist); font-size: 0.68rem; font-size: 5.6cqi; margin-top: 0.25rem; }
+.app-strip, .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.app-strip svg, .app-grid svg, .app-list svg { width: 100%; height: auto; aspect-ratio: 1; border-radius: 6px; }
+.app-pill {
+  align-self: flex-start;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 182, 72, 0.18);
+  color: #ffd9a0;
+  font-size: 0.66rem;
+  font-size: 5.4cqi;
+  font-weight: 600;
+}
+.app-list { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+.app-list li { display: grid; grid-template-columns: 28% 1fr; gap: 0.5rem; align-items: center; }
+.app-list span { display: grid; font-size: 0.7rem; font-size: 6cqi; }
+.app-list small { color: var(--mist); font-size: 0.62rem; font-size: 5cqi; }
+.app-button {
+  margin-top: auto !important;
+  padding: 0.55rem;
+  border-radius: 999px;
+  background: var(--diya);
+  color: #1b1405;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.68rem;
+  font-size: 5.8cqi;
+}
+.label-note { margin-top: 1.5rem; font-size: 0.88rem; color: var(--mist); }
+.label-note::before { content: "✦ "; color: var(--diya); }
+
 /* ---------- For families and FAQ pages ---------- */
 
 .page-intro { display: grid; gap: 1rem; max-width: 42rem; padding-block: 2.5rem 1rem; }
@@ -549,6 +618,7 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 
   .faq { grid-template-columns: 1fr; }
   .situations { grid-template-columns: 1fr; }
+  .demo-screens { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.75rem; }
   .family-story { grid-template-columns: 1fr; }
   .family-story img { max-width: 26rem; }
 
