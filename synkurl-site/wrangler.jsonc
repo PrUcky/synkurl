@@ -17,8 +17,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "synkurl-waitlist",
-      "database_id": "PASTE_DATABASE_ID_HERE"
+      "database_name": "sdrive-waitlist",
+      "database_id": "20c69f8a-2c62-4490-9385-0c8fbdd26fe9"
     }
   ],
 
