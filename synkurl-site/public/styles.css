@@ -350,21 +350,25 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 .input:focus { outline: none; border-color: var(--diya); box-shadow: 0 0 0 3px rgba(255, 182, 72, 0.2); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-.chip {
-  position: relative;
+/* The radio button sits invisibly on top of the chip. The <span> after it is what you see.
+   "input:checked + span" works in every browser, including older Android ones,
+   so the chosen chip always looks chosen (no need for :has()). */
+.chip { position: relative; display: inline-flex; cursor: pointer; }
+.chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.chip span {
   display: inline-flex;
   align-items: center;
-  padding: 0.6rem 1.05rem;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.05rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   color: var(--mist);
-  cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
-.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.chip:hover { border-color: rgba(238, 241, 255, 0.35); color: var(--star); }
-.chip:has(input:checked) { border-color: var(--diya); background: rgba(255, 182, 72, 0.2); color: #ffd9a0; font-weight: 600; }
-.chip:has(input:focus-visible) { outline: 3px solid var(--star); outline-offset: 3px; }
+.chip:hover span { border-color: rgba(238, 241, 255, 0.35); color: var(--star); }
+.chip input:checked + span { border-color: var(--diya); background: rgba(255, 182, 72, 0.2); color: #ffd9a0; font-weight: 600; }
+.chip input:checked + span::before { content: "✓"; }
+.chip input:focus-visible + span { outline: 3px solid var(--star); outline-offset: 3px; }
 
 .consent {
   display: grid;
@@ -378,12 +382,79 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 
 .form .btn { justify-self: start; }
 
-.status { min-height: 1.5em; font-size: 0.95rem; }
+.status { min-height: 1.5em; font-size: 0.95rem; display: grid; gap: 0.75rem; justify-items: start; }
 .status[data-state="error"] { color: var(--error); }
+
+.hint-box {
+  font-size: 0.92rem;
+  color: #ffd9a0;
+}
+.hint-box[hidden] { display: none; }
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.notice {
+  padding: 0.9rem 1.1rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255, 182, 72, 0.45);
+  background: rgba(255, 182, 72, 0.08);
+  color: var(--star);
+}
+.notice[hidden] { display: none; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--star);
+  box-shadow: inset 0 0 0 1px rgba(238, 241, 255, 0.35);
+}
+.btn-ghost:hover { background: rgba(238, 241, 255, 0.08); box-shadow: inset 0 0 0 1px var(--star); }
+.btn[hidden] { display: none; }
+
+/* ---------- Sharing ---------- */
+
+.share {
+  display: grid;
+  gap: 0.75rem;
+  margin-block: 1rem;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--line);
+  background: var(--night-2);
+}
+.share-title { font-size: 1.1rem; margin: 0; }
+.share-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.share-status { min-height: 1.2em; font-size: 0.92rem; color: var(--mist); }
+
+/* ---------- Result pages (check your inbox, confirmed, link expired…) ---------- */
+
+.result .result-mark { width: 2.5rem; height: auto; }
+.result form { margin: 0.5rem 0; }
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 10;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  background: var(--star);
+  color: var(--night);
+  font-weight: 600;
+}
+.skip-link:focus { top: 1rem; }
 
 .done { display: grid; gap: 1rem; }
 .done[hidden] { display: none; }
-.done svg { width: 3rem; height: auto; }
+.done .done-mark { width: 3rem; height: auto; }
 
 /* ---------- Simple text pages (privacy, 404) ---------- */
 
