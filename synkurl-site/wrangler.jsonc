@@ -5,10 +5,12 @@
   "compatibility_date": "2026-09-20",
 
   // Files in ./public are served as the website. 404.html answers unknown pages.
+  // The paths in run_worker_first go to src/index.js first (the form and email links).
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/confirm", "/remove"]
   },
 
   // The waitlist database. Paste the database_id that `npx wrangler d1 create synkurl-waitlist` prints.
@@ -21,10 +23,26 @@
   ],
 
   // Keep request logs so you can debug in the Cloudflare dashboard.
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+
+  // Settings the code reads. These are not secret. Secrets (TURNSTILE_SECRET,
+  // EMAIL_API_KEY, NOTIFY_EMAIL) are set in the Cloudflare dashboard instead.
+  "vars": {
+    "SITE_URL": "https://synkurl.com",
+    "EMAIL_FROM": "Synkurl <synkurl@synkurl.com>"
+  },
+
+  // Once a day (03:17 India time), delete sign-ups that were never confirmed within 7 days.
+  "triggers": { "crons": ["47 21 * * *"] },
+
+  // Rate limit for the forms: about 5 tries per minute from one IP address.
+  // namespace_id is just a number we pick; it must be unique in the Cloudflare account.
+  "ratelimits": [
+    { "name": "FORM_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
+  ]
 
   // Ship W3 (domain): uncomment once synkurl.com is active on Cloudflare,
-  // and add a comma after the observability line above.
+  // and add a comma after the "ratelimits" block above.
   // "routes": [
   //   { "pattern": "synkurl.com", "custom_domain": true },
   //   { "pattern": "www.synkurl.com", "custom_domain": true }

@@ -1,1 +1,6 @@
+# Local-only settings for `npm run dev`. Copy this file to .dev.vars (which git ignores).
+# This is Cloudflare's public Turnstile test secret: it lets every request through.
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+# Links in emails point here while testing locally.
+SITE_URL=http://localhost:8787
+# Leave EMAIL_API_KEY unset locally: sign-ups are then saved without sending email.

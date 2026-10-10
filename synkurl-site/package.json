@@ -3,10 +3,13 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "db:setup:local": "wrangler d1 execute synkurl-waitlist --local --file=schema.sql",
+    "test": "vitest run",
+    "db:setup:local": "wrangler d1 migrations apply synkurl-waitlist --local",
     "db:rows:local": "wrangler d1 execute synkurl-waitlist --local --command \"SELECT * FROM waitlist\""
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.22.0",
+    "vitest": "4.1.11",
     "wrangler": "4.141.0"
   }
 }
