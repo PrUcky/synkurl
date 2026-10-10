@@ -20,15 +20,20 @@ export function isFormPost(request) {
 
 // Reads the body as an object, from JSON (our scripts) or a plain form post.
 export async function readInput(request) {
-  const length = Number(request.headers.get("content-length") || 0);
-  if (length > MAX_BODY_BYTES) throw new InputError("That request is too large.", 413);
+  const tooLarge = new InputError("That request is too large.", 413);
+  if (Number(request.headers.get("content-length") || 0) > MAX_BODY_BYTES) throw tooLarge;
+  // Check the real size too: the content-length header can be left out.
+  const bytes = await request.arrayBuffer();
+  if (bytes.byteLength > MAX_BODY_BYTES) throw tooLarge;
+  const text = new TextDecoder().decode(bytes);
   try {
     if (!isFormPost(request)) {
-      const data = await request.json();
+      const data = JSON.parse(text);
       if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("not an object");
       return data;
     }
-    const form = await request.formData();
+    const type = request.headers.get("content-type") || "application/x-www-form-urlencoded";
+    const form = await new Response(text, { headers: { "content-type": type } }).formData();
     const data = Object.fromEntries(form);
     if (!data.token) data.token = form.get("cf-turnstile-response");
     return data;
