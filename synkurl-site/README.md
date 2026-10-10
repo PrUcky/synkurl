@@ -9,16 +9,21 @@ The GitHub repository is called `synkurl`. The site lives in its `synkurl-site/`
 1. A visitor opens the site. Cloudflare sends back the files in `public/`.
 2. The waitlist form sends answers to `/api/join`. The Worker (`src/`) checks them, checks the bot check (Turnstile) and the rate limit, and saves one row per email in the D1 database.
 3. **Email confirmation ("double opt-in").** The Worker emails a link to confirm. The person taps **Confirm** and the row becomes `confirmed`. Until email is set up (ship W5), sign-ups are saved as `single_opt_in` and no email is sent. The site works either way.
-4. Once a day, a Cron Trigger (a timer in Cloudflare) deletes sign-ups that were never confirmed within 7 days.
-5. **Deploys are automatic.** When a change lands on `main`, Cloudflare builds and deploys it. Nobody deploys by hand. Tests run on GitHub for every pull request (the "Tests" check).
+4. **Investors** use the form on `/investors`. Messages go to `/api/investors` and are saved in their own table (`investor_contacts`), never mixed with the waitlist. The founder gets an email for each one (to the `NOTIFY_EMAIL` secret), and the investor gets a short thank-you. The deck is never on the site.
+5. Once a day, a Cron Trigger (a timer in Cloudflare) deletes sign-ups never confirmed within 7 days, and investor messages older than 2 years.
+6. **Deploys are automatic.** When a change lands on `main`, Cloudflare builds and deploys it. Nobody deploys by hand. Tests run on GitHub for every pull request (the "Tests" check).
 
 | File | What it is |
 |---|---|
 | `public/` | The website: pages, styles, scripts, pictures, the self-hosted font |
 | `public/_headers` | Security rules sent with every page |
+| `public/styles.css` | All styles. Everything that moves is in the "Motion" block at the end |
+| `public/motion.js`, `public/home.js` | Optional motion: story scenes, pausing loops, the app demo |
+| `public/art/` | Illustrations (family stories, the concept device, design ideas) |
 | `src/index.js` | The backend (Worker): sends each request to the right code |
 | `src/waitlist.js` | Joining, confirming, removing, daily clean-up |
 | `src/checks.js` | Checks shared by the forms: email, bot check, rate limit |
+| `src/investors.js` | The investor contact form |
 | `src/email.js` | Sending email through Resend, and the email wording |
 | `src/disposable-domains.js` | The short list of throwaway email domains we refuse |
 | `migrations/` | Database changes, numbered. Run them in order, once each |
@@ -77,7 +82,7 @@ Dashboard menu names below may differ slightly from what you see.
 The test key lets anyone and any bot through.
 
 1. In Cloudflare, open **Turnstile → Add widget** and add the hostname `synkurl.com`. Copy the site key and the secret key.
-2. On GitHub, edit `public/join.html` and replace `1x00000000000000000000AA` with the real site key. Commit to `main`.
+2. On GitHub, edit `public/join.html` **and** `public/investors.html`, and replace `1x00000000000000000000AA` with the real site key in each. Commit to `main`.
 3. Replace the `TURNSTILE_SECRET` value in the Worker's settings with the real secret key.
 
 ## Ship W5: confirmation emails (Resend)
@@ -106,6 +111,16 @@ If something goes wrong, the Worker's logs show `{"event":"email_failed","status
 
 > Before W3 (domain) is done, links in emails point to synkurl.com, which won't open yet. Do W5 after W3.
 
+## Ship W5b: investor messages reach you
+
+**Done check:** a test message on `/investors` arrives in your inbox, and you can reply straight to the sender.
+
+1. Run `migrations/0003_investor_contacts.sql` in the D1 console (once).
+2. In the Worker's **Settings → Variables and secrets**, add a **Secret** named `NOTIFY_EMAIL` with the inbox that should get investor messages (for example synkurl@synkurl.com). It's a secret so the address never appears in the public code.
+3. Send yourself a test message from `/investors`. You'll get the notification, and the sender gets "Thanks for getting in touch with Synkurl. The founder will reply personally."
+
+Without `EMAIL_API_KEY` or `NOTIFY_EMAIL`, messages are still saved. See them in the D1 console (below).
+
 ## Ship W6: visit counts without cookies (Cloudflare Web Analytics)
 
 1. In the Cloudflare dashboard, open **Analytics & Logs → Web Analytics → Add a site**.
@@ -119,13 +134,14 @@ The site's security rules already allow Cloudflare's counting script (`static.cl
 Both are set in `wrangler.jsonc`. Nothing to do in the dashboard.
 
 - **Rate limit:** about 5 form tries per minute from one IP address (`ratelimits`). The IP is used only for counting, never saved.
-- **Daily clean-up:** `triggers.crons` runs at 03:17 India time and deletes sign-ups still `pending` after 7 days. You can see it under the Worker's **Settings → Triggers**.
+- **Daily clean-up:** `triggers.crons` runs at 03:17 India time. It deletes sign-ups still `pending` after 7 days, and investor messages older than 2 years. You can see it under the Worker's **Settings → Triggers**.
 
 ## Before sharing the link
 
 - [ ] W3 done, and mail to synkurl@synkurl.com arrives.
 - [ ] W4 done (real bot check).
 - [ ] W5 done (confirmation emails), or you're happy to collect sign-ups without confirmation for now.
+- [ ] W5b done (`NOTIFY_EMAIL` set), so investor messages reach you.
 - [ ] Privacy notice reviewed. It's a starting point, not legal advice.
 
 ---
@@ -168,13 +184,34 @@ WHERE status != 'pending' GROUP BY lower(trim(city)) ORDER BY people DESC LIMIT 
 SELECT family_size, count(*) AS people FROM waitlist
 WHERE status != 'pending' GROUP BY family_size ORDER BY people DESC;
 
+-- Which design idea people would put in their home (optional question)
+SELECT coalesce(device_pick, '(no answer)') AS design, count(*) AS people FROM waitlist
+WHERE status != 'pending' GROUP BY design ORDER BY people DESC;
+
 -- Deletion request
 DELETE FROM waitlist WHERE email = 'person@example.com';
+
+-- Investor messages, newest first
+SELECT created_at, name, email, organisation, investor_type, wants_deck, notified, message
+FROM investor_contacts ORDER BY id DESC LIMIT 20;
+
+-- Who asked for the deck
+SELECT created_at, name, email, organisation FROM investor_contacts WHERE wants_deck = 1 ORDER BY id DESC;
+
+-- Deleting an investor's messages on request
+DELETE FROM investor_contacts WHERE email = 'person@example.com';
 ```
 
 When the privacy notice changes, also change `CONSENT_VERSION` in `src/waitlist.js`. The privacy page shows the same version, and a test checks they match.
 
 ---
+
+## Motion, in plain words
+
+- Everything that moves is in one block at the end of `styles.css`, inside `@media (prefers-reduced-motion: no-preference)`. People who switch on "reduce motion" on their phone see the still version, which tells the same story. A test checks this.
+- Only `transform` (moving, turning, growing) and `opacity` (fading) are animated. They're cheap for phones to draw.
+- Endless loops (the hero tiles, the device's glow) pause when they're off screen.
+- No animation libraries. Page transitions use the browser's View Transitions feature where it exists; other browsers load pages normally.
 
 ## Working on it locally
 
@@ -201,6 +238,8 @@ Tests run inside Cloudflare's real Workers runtime, with a throwaway local datab
 | … *the daily clean-up* | Only `pending` rows older than 7 days are deleted. |
 | … *migration 0002 not run yet* | The site still saves sign-ups the old way and doesn't crash. |
 | … *JavaScript off* | A plain form post gets a readable page, not raw data. |
+| `test/investors.test.js` | Every investor form rule is checked; the bot check and rate limit apply; one email can send about 3 messages a day; the founder and the investor get the right emails (the message is shown safely as text); without email set up the message is still saved with the same thank-you; messages older than 2 years are cleaned up. |
+| `test/motion.test.js` | "Reduce motion": every animation and transition sits inside the reduce-motion guard, so each page has a still version; motion only changes position/size (transform) and see-through-ness (opacity). |
 | `test/headers.test.js` | Every page and every Worker answer has the security headers. HSTS only on synkurl.com. |
-| `test/site.test.js` | Every page has the same header and footer, its own title and description, preview tags; the sitemap and canonical links are right; the privacy page shows the current `CONSENT_VERSION`. |
+| `test/site.test.js` | Every page has the same header and footer (Investors only in the footer), its own title and description, preview tags; the sitemap and canonical links are right; the privacy page shows the current `CONSENT_VERSION`. |
 | `test/email-hint.test.js` | The "Did you mean gmail.com?" hint catches common typos and stays quiet for real addresses. |

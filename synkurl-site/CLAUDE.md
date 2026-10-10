@@ -12,7 +12,7 @@ A beginner learning web hosting and SRE basics while building this site. Teach w
 The repository is `synkurl`; the site is in `synkurl-site/`. The Cloudflare Worker is named `synkurl-site` (keep that name in `wrangler.jsonc`).
 
 - `public/`: static pages, styles, scripts and pictures. Plain HTML, CSS and JavaScript, no frameworks.
-- `src/`: the Worker. `index.js` routes requests; `waitlist.js` joins, confirms, removes and cleans up; `checks.js` holds shared form checks; `email.js` sends email through Resend's HTTP API with `fetch`.
+- `src/`: the Worker. `index.js` routes requests; `waitlist.js` joins, confirms, removes and cleans up; `investors.js` handles the investor contact form (its own table, `investor_contacts`); `checks.js` holds shared form checks; `email.js` sends email through Resend's HTTP API with `fetch`.
 - `migrations/`: numbered D1 changes, run by hand in the D1 console before merging (deploys don't run them). Code must keep working if the newest migration hasn't been run yet.
 - `test/`: Vitest with Cloudflare's Workers pool. Run `npm test`. CI runs it on every pull request.
 - Config is in `wrangler.jsonc` (vars, cron, rate limit). Versions are pinned in `package.json` and `package-lock.json`.
@@ -29,7 +29,12 @@ The repository is `synkurl`; the site is in `synkurl-site/`. The Cloudflare Work
 - **Product copy** describes what Synkurl does for families, in plain, warm Indian English. Allowed promises: photos and videos back up automatically from your phone to a small device in your home; you can open them from anywhere on Wi-Fi or mobile data; a new phone gets your photos back; we're starting with Android. Never: prices, launch dates, storage sizes or specs, how it works (networking, encryption, pairing, remote access, servers), other features, other companies' products. If unknown, say "We'll explain this before early access opens."
 - **Logs** must never contain emails, tokens, IP addresses or other personal data.
 - **Third-party scripts:** only Cloudflare Turnstile (the bot check, on form pages) and Cloudflare Web Analytics (cookieless visit counts). No other analytics, pixels, cookies, fingerprinting or font services. Keep `public/_headers` and `SECURITY_HEADERS` in `src/http.js` the same; a test checks.
+- **Investors page** is a contact page, not an offer: say "Get in touch" and "We'd love to talk"; never mention shares, a round, valuation, returns, "invest now" or "opportunity". The deck is never hosted on the site. No personal details of the founder or team unless the user supplies them.
 - **Ask before** changing the stack, adding dependencies, changing the design direction, the form fields or the privacy notice. If the form fields or the privacy notice change, update `CONSENT_VERSION` in `src/waitlist.js` and the version shown in `public/privacy.html` together (a test checks).
 
 ## Design direction (keep it)
 "A light left on at home at night." Night blue `#101a3d`, one diya-amber accent `#ffb648`, starlight text `#eef1ff`, mist `#a9b3d9`. Unbounded (self-hosted) for headings, system font for body. Illustrations are inline-style SVG (night blue, one amber glow, thin starlight lines, the arch window). No photos, device renders, AI images or people.
+
+**The device:** called "the Synkurl device" (no product name yet). The chosen concept is "the Little Arch": a small night-blue arch with a glowing amber doorway, about as tall as a steel tumbler. Every drawing of it says "Concept design. The final Synkurl device will look different." Never show internal parts, ports, specs, or other brands. The early design ideas (Arch, Album, Pebble) appear only in the clearly labelled "Early design ideas" section.
+
+**Motion:** no animation libraries; CSS, plain JavaScript and IntersectionObserver only. All motion goes inside the `@media (prefers-reduced-motion: no-preference)` block at the end of `styles.css`, so every page keeps a still version (a test checks). Animate only `transform` and `opacity`; pause endless loops off screen (`data-loop`). The site must look complete with no JavaScript and no motion. Keep the home page under about 350 KB on first load.
