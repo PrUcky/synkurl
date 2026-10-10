@@ -404,6 +404,44 @@ p { margin: 0; }
 .label-note { margin-top: 1.5rem; font-size: 0.88rem; color: var(--mist); }
 .label-note::before { content: "✦ "; color: var(--diya); }
 
+/* ---------- The Synkurl device (concept) ---------- */
+
+.device-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 3rem;
+  align-items: center;
+}
+.device-text { display: grid; gap: 1.1rem; }
+.concept-tag { color: var(--mist); font-weight: 400; }
+.concept-label { font-size: 0.88rem; color: var(--mist); }
+.concept-label::before { content: "✦ "; color: var(--diya); }
+.device-stage { display: grid; place-items: center; }
+.device-art { width: min(100%, 22rem); height: auto; overflow: visible; }
+
+.scenes-title { margin: 3rem 0 1.25rem; }
+.scenes, .ideas {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.scenes li, .ideas li { display: grid; gap: 0.6rem; align-content: start; }
+.scenes img, .ideas img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: var(--night-2);
+}
+.scenes p, .ideas p { color: var(--mist); }
+
+.optional { color: var(--mist); font-weight: 400; }
+
 /* ---------- For families and FAQ pages ---------- */
 
 .page-intro { display: grid; gap: 1rem; max-width: 42rem; padding-block: 2.5rem 1rem; }
@@ -618,6 +656,9 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 
   .faq { grid-template-columns: 1fr; }
   .situations { grid-template-columns: 1fr; }
+  .device-intro { grid-template-columns: 1fr; }
+  .device-stage { order: -1; }
+  .scenes, .ideas { grid-template-columns: 1fr; }
   .demo-screens { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.75rem; }
   .family-story { grid-template-columns: 1fr; }
   .family-story img { max-width: 26rem; }
