@@ -1,4 +1,5 @@
--- The waitlist table. One row per email address.
+-- Migration 0001: the original waitlist table (one row per email).
+-- Safe to run more than once: it does nothing if the table already exists.
 CREATE TABLE IF NOT EXISTS waitlist (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
   email           TEXT NOT NULL UNIQUE,

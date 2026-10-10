@@ -4,53 +4,114 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Privacy notice · Synkurl</title>
-  <meta name="description" content="How the Synkurl waitlist uses your details.">
+  <meta name="description" content="How Synkurl uses the details you give us on synkurl.com.">
   <meta name="theme-color" content="#101a3d">
+  <link rel="canonical" href="https://synkurl.com/privacy">
+  <meta property="og:site_name" content="Synkurl">
+  <meta property="og:title" content="Privacy notice · Synkurl">
+  <meta property="og:description" content="How Synkurl uses the details you give us on synkurl.com.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://synkurl.com/privacy">
+  <meta property="og:image" content="https://synkurl.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Synkurl: your family's photos, kept at home. A glowing arch window at night.">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Privacy notice · Synkurl">
+  <meta name="twitter:description" content="How Synkurl uses the details you give us on synkurl.com.">
+  <meta name="twitter:image" content="https://synkurl.com/og-image.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/unbounded-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/motion.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-head wrap">
     <a class="brand" href="/" aria-label="Synkurl home">
       <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M2 23V10a8 8 0 0 1 16 0v13z" fill="#ffb648"/></svg>
       Synkurl
     </a>
+    <nav class="site-nav" aria-label="Main"><a href="/for-families">For families</a><a href="/faq">Questions</a></nav>
     <a class="btn btn-small" href="/join">Join the waitlist</a>
   </header>
 
-  <main class="wrap">
+  <main id="main" class="wrap">
     <article class="prose">
       <h1>Privacy notice</h1>
-      <p>This notice covers the Synkurl waitlist on synkurl.com. Updated 10 October 2026.</p>
+      <p>This notice covers synkurl.com: the waitlist, the investor contact form, and how we count visits. Updated 10 October 2026. Version <span id="consent-version">2026-10-10.4</span>.</p>
+      <p class="notice">In short: we keep only what we need to tell you about early access. We never sell it. You can have it deleted any time.</p>
 
-      <h2>What we collect</h2>
+      <h2 id="who">Who we are</h2>
+      <p>Synkurl is a new product for families. In this notice, "we" means Synkurl. You can reach us at <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>.</p>
+
+      <h2 id="waitlist">What we collect when you join the waitlist</h2>
       <ul>
         <li>Your email address.</li>
         <li>Your phone type, your city and how many people are in your family.</li>
-        <li>The date you joined and which version of this notice you agreed to.</li>
+        <li>Which design idea you'd put in your home, if you choose to answer.</li>
+        <li>That you told us you're 18 or older.</li>
+        <li>The language of the page you used, when you joined and confirmed, when we last emailed you, and which version of this notice you agreed to.</li>
       </ul>
-      <p>We don't ask for your name or phone number, and the site has no advertising or tracking scripts. To stop spam sign-ups, the waitlist page uses Cloudflare Turnstile, which checks your browser before the form is sent.</p>
+      <p>We don't ask for your name or phone number.</p>
 
-      <h2>Why we collect it</h2>
-      <p>Only to tell you about early access to Synkurl, and to plan which phones and cities to support first. We don't sell your details or share them for advertising.</p>
+      <h2 id="why">Why we collect it</h2>
+      <p>Only to tell you about early access to Synkurl, and to plan which phones and places to support first. We don't sell your details or use them for advertising.</p>
 
-      <h2>Where it's kept</h2>
-      <p>In a database run by our hosting provider, Cloudflare. Only the Synkurl team can read it.</p>
+      <h2 id="confirming">Confirming your email</h2>
+      <p>When you join, we send one email to check the address is really yours. It has two links: one to confirm, and one ("Not me: remove my email") that deletes the sign-up straight away. The links work for 48 hours. If a sign-up isn't confirmed within 7 days, we delete it automatically.</p>
+      <p>If our email system isn't working when you join, we keep your sign-up without asking you to confirm, and use it only as this notice describes.</p>
 
-      <h2>How long we keep it</h2>
-      <p>Until early access is over, or until you ask us to delete it, whichever comes first.</p>
+      <h2 id="age">You must be 18 or older</h2>
+      <p>The waitlist is for adults. If you're under 18, please don't join. If we learn that someone under 18 has joined, we delete their details.</p>
 
-      <h2>Your choices</h2>
-      <p>You can withdraw your consent, see what we hold about you, correct it or have it deleted at any time. Email <a class="text-link" href="mailto:hello@synkurl.com">hello@synkurl.com</a> from the address you signed up with, and we'll do it and reply to confirm.</p>
+      <h2 id="investors">If you contact us as an investor</h2>
+      <p>The form on our investors page collects your name, work email, organisation or fund (if you give it), what kind of investor you are, a LinkedIn or website link (if you give it), your message, whether you'd like our deck, and which version of this notice you agreed to.</p>
+      <p>We use it only to reply to you personally. It's kept separately from the waitlist. We send you one short thank-you email, and send your message on to our founder.</p>
+
+      <h2 id="bot-check">The bot check</h2>
+      <p>To stop spam, our forms use Cloudflare Turnstile, which checks your browser before a form is sent. Your connection's IP address is used to limit how many times a form can be sent in a minute. We don't store it.</p>
+
+      <h2 id="visits">Counting visits, without cookies</h2>
+      <p>We count visits with Cloudflare Web Analytics. It doesn't use cookies and doesn't follow you around the web. It tells us things like which pages were opened and roughly from which country, not who you are. The site has no advertising, no tracking pixels and no cookies.</p>
+
+      <h2 id="providers">Who helps us (service providers)</h2>
+      <ul>
+        <li><strong>Cloudflare</strong> hosts the website, stores the waitlist and investor messages, and runs the bot check and visit counts.</li>
+        <li><strong>Resend</strong> sends our emails, like the confirmation email.</li>
+        <li><strong>Google Workspace</strong> holds our inbox, so it holds any email you send to synkurl@synkurl.com.</li>
+      </ul>
+      <p>They handle your details only to provide these services to us. Their computers may be outside India.</p>
+
+      <h2 id="how-long">How long we keep it</h2>
+      <ul>
+        <li>Sign-ups that aren't confirmed: up to 7 days.</li>
+        <li>The waitlist: until early access is over, or until you ask us to delete it, whichever comes first.</li>
+        <li>Investor messages: up to 2 years, or until you ask us to delete them.</li>
+      </ul>
+
+      <h2 id="choices">Your choices</h2>
+      <p>You can withdraw your consent, see what we hold about you, correct it, or have it deleted at any time. Use the "Not me: remove my email" link in our email, or write to <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a> from the address you used. We'll do it and reply to confirm.</p>
+
+      <h2 id="changes">Changes to this notice</h2>
+      <p>If we change this notice, we'll change the date and version at the top.</p>
+
+      <h2 id="contact">Contact</h2>
+      <p><a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a></p>
     </article>
   </main>
 
   <footer class="site-foot wrap">
     <span>© 2026 Synkurl</span>
     <nav aria-label="Footer">
+      <a class="text-link" href="/for-families">For families</a>
+      <a class="text-link" href="/faq">Questions</a>
       <a class="text-link" href="/privacy">Privacy</a>
-      <a class="text-link" href="mailto:hello@synkurl.com">hello@synkurl.com</a>
+      <a class="text-link" href="/investors">Investors</a>
+      <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>
     </nav>
   </footer>
 </body>

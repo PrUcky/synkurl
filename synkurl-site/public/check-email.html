@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check your inbox · Synkurl</title>
+  <meta name="description" content="Open the email from Synkurl and confirm it's you.">
+  <meta name="theme-color" content="#101a3d">
+  <meta name="robots" content="noindex">
+  <meta property="og:site_name" content="Synkurl">
+  <meta property="og:title" content="Check your inbox · Synkurl">
+  <meta property="og:description" content="Open the email from Synkurl and confirm it's you.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://synkurl.com/check-email">
+  <meta property="og:image" content="https://synkurl.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Synkurl: your family's photos, kept at home. A glowing arch window at night.">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Check your inbox · Synkurl">
+  <meta name="twitter:description" content="Open the email from Synkurl and confirm it's you.">
+  <meta name="twitter:image" content="https://synkurl.com/og-image.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/unbounded-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/check-email.js"></script>
+  <script type="module" src="/motion.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-head wrap">
+    <a class="brand" href="/" aria-label="Synkurl home">
+      <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M2 23V10a8 8 0 0 1 16 0v13z" fill="#ffb648"/></svg>
+      Synkurl
+    </a>
+    <nav class="site-nav" aria-label="Main"><a href="/for-families">For families</a><a href="/faq">Questions</a></nav>
+    <a class="btn btn-small" href="/join">Join the waitlist</a>
+  </header>
+
+  <main id="main" class="wrap">
+    <div class="prose result">
+      <svg class="result-mark" viewBox="0 0 20 24" aria-hidden="true"><path d="M2 23V10a8 8 0 0 1 16 0v13z" fill="#ffb648"/></svg>
+      <h1>Check your inbox</h1>
+      <p class="lede">We've sent you an email. Open it and tap <strong>Yes, confirm my email</strong>, so we know it's really you.</p>
+      <p id="sent-recent" class="notice" hidden>We sent you this email a few minutes ago, so we haven't sent another one yet. You can ask again after 10 minutes.</p>
+      <ul>
+        <li>It can take a few minutes to arrive.</li>
+        <li>Look in Promotions, Updates or Spam too.</li>
+        <li>The link works for 48 hours.</li>
+      </ul>
+      <p>Still nothing? <a class="text-link" href="/join">Join again</a> after 10 minutes and we'll send a fresh email, or write to <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>.</p>
+      <div class="share">
+        <h2 class="share-title">Tell your family</h2>
+        <p class="muted">Know someone whose phone is full of family photos? Send them Synkurl.</p>
+        <div class="share-actions">
+          <a class="btn btn-share" href="https://wa.me/?text=I%27ve%20joined%20the%20waitlist%20for%20Synkurl.%20It%20backs%20up%20the%20family%27s%20photos%20to%20a%20small%20device%20at%20home%2C%20and%20you%20can%20open%20them%20from%20anywhere.%20https%3A%2F%2Fsynkurl.com" target="_blank" rel="noopener">Tell your family on WhatsApp</a>
+          <button class="btn btn-ghost" type="button" data-share hidden>Copy link</button>
+        </div>
+        <p class="share-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-foot wrap">
+    <span>© 2026 Synkurl</span>
+    <nav aria-label="Footer">
+      <a class="text-link" href="/for-families">For families</a>
+      <a class="text-link" href="/faq">Questions</a>
+      <a class="text-link" href="/privacy">Privacy</a>
+      <a class="text-link" href="/investors">Investors</a>
+      <a class="text-link" href="mailto:synkurl@synkurl.com">synkurl@synkurl.com</a>
+    </nav>
+  </footer>
+</body>
+</html>
