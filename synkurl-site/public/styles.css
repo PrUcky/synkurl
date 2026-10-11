@@ -32,6 +32,7 @@
   --max: 78rem;
   --gutter: clamp(1rem, 4.5vw, 3rem);
   --radius: 0.9rem;
+  --head-h: 4.25rem;      /* height of the sticky header */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -578,16 +579,20 @@ p { margin: 0; }
 .chapter.is-pinned { padding-block: 0; }
 .chapter.is-pinned .chapter-pin {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: var(--head-h);          /* sits just below the sticky header */
+  height: calc(100vh - var(--head-h));
   display: flex;
   flex-direction: column;
   justify-content: center;
+  justify-content: safe center;   /* never push the heading above the top when space is short */
+  padding-block: 1rem;
   overflow: hidden;
 }
+.chapter.is-pinned .chapter-head { margin-bottom: clamp(1rem, 3vh, 2.5rem); }
 .chapter.is-pinned .chapter-viewport { overflow: visible; scroll-snap-type: none; }
 .chapter.is-pinned .chapter-track { will-change: transform; }
-.chapter.is-pinned .form-card { width: min(44vw, 40rem); }
+/* Cards fit the height left under the header and the chapter heading. */
+.chapter.is-pinned .form-card { width: min(44vw, 40rem, calc((100vh - var(--head-h) - 23rem) * 1.5)); }
 
 /* ---------- Home: finishes ---------- */
 

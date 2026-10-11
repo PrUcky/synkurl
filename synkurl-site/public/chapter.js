@@ -59,7 +59,9 @@ function setUpChapter(chapter) {
     // Row overflow = how far it has to travel; the section grows by that much.
     travel = Math.max(0, track.scrollWidth - viewport.clientWidth);
     chapter.style.height = `${pin.offsetHeight + travel}px`;
-    start = chapter.getBoundingClientRect().top + window.scrollY;
+    // The row starts moving once the pinned part reaches its sticky position (below the header).
+    const pinTop = parseFloat(getComputedStyle(pin).top) || 0;
+    start = chapter.getBoundingClientRect().top + window.scrollY - pinTop;
     update();
   }
 
