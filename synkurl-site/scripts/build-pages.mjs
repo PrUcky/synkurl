@@ -199,9 +199,9 @@ function head({ path: pagePath, title, description, image, preload = "", scripts
   <meta name="description" content="${esc(description)}">
   <meta name="theme-color" content="#f2eee8">
   ${lines.join("\n  ")}
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">${early}
   <link rel="preload" href="/fonts/unbounded-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>${preload}
-  <link rel="stylesheet" href="/styles.css">${early}${scriptTags}
+  <link rel="stylesheet" href="/styles.css">${scriptTags}
 </head>`;
 }
 
@@ -588,7 +588,7 @@ ${indent(APP_DEMO.trim().replace('<section class="section wrap lazy-section" id=
           </div>
           <div class="chapter-side">
             <p class="muted">Each design is a concept for a different corner of the house. Open one to see it in every finish.</p>
-            <div class="chapter-controls">
+            <div class="chapter-controls" hidden>
               <button class="round-btn" type="button" data-chapter-step="-1" aria-label="Previous design">‹</button>
               <span class="chapter-progress" aria-hidden="true"><span data-chapter-bar></span></span>
               <button class="round-btn" type="button" data-chapter-step="1" aria-label="Next design">›</button>
@@ -689,6 +689,7 @@ function checkManifest(manifest) {
   for (const banned of ["prompt", "sha256", "source_generated", "proposed_dimensions", "qa_notes", "/workspace", "_mm"]) {
     if (json.includes(banned)) problems.push(`public manifest contains "${banned}"`);
   }
+  const listed = new Set();
   for (const [mid, m] of Object.entries(manifest.models)) {
     if (Object.keys(m.finishes).length !== 4) problems.push(`${mid}: should list four finishes`);
     for (const [fid, f] of Object.entries(m.finishes)) {
@@ -696,9 +697,23 @@ function checkManifest(manifest) {
       for (const img of f.gallery) {
         if (img.finish !== fid) problems.push(`${mid}/${fid}: holds an image of ${img.finish}`);
         const files = [img.src, img.full, ...img.avif.split(", ").map((s) => s.split(" ")[0]), ...img.webp.split(", ").map((s) => s.split(" ")[0])];
-        for (const f2 of files) if (!fs.existsSync(path.join(PUB, f2))) problems.push(`missing file ${f2}`);
+        for (const f2 of files) {
+          listed.add(f2);
+          if (!fs.existsSync(path.join(PUB, f2))) problems.push(`missing file ${f2}`);
+        }
         if (!img.alt || img.alt.length < 20) problems.push(`${img.id}: alt text too short`);
       }
+    }
+  }
+  // Every published photo is one the manifest lists: nothing old or stray goes out.
+  const MEDIA = path.join(PUB, "media");
+  for (const dir of fs.existsSync(MEDIA) ? fs.readdirSync(MEDIA) : []) {
+    if (!fs.statSync(path.join(MEDIA, dir)).isDirectory()) {
+      problems.push(`unexpected file /media/${dir}`);
+      continue;
+    }
+    for (const name of fs.readdirSync(path.join(MEDIA, dir))) {
+      if (!listed.has(`/media/${dir}/${name}`)) problems.push(`/media/${dir}/${name} is published but not in the manifest`);
     }
   }
   return problems;

@@ -15,7 +15,7 @@
 // jump to each finish further down, whose photos open full size, and thumbnails
 // open the full-size image.
 
-import { clampOffset, colourFromSearch, fitSize, indexAfterSwitch, stepIndex, zoomAround, zoomLimit } from "/gallery-state.js";
+import { clampOffset, colourFromSearch, fileWidth, fitSize, indexAfterSwitch, stepIndex, zoomAround, zoomLimit } from "/gallery-state.js";
 
 const dataEl = document.getElementById("model-data");
 const viewer = document.querySelector("[data-viewer]");
@@ -84,6 +84,7 @@ function setUpGallery(data, viewer) {
     openLightbox(stageLink);
   });
   stage.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return; // Alt+Arrow is Back/Forward
     if (event.key === "ArrowRight") { event.preventDefault(); step(1); }
     if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); }
   });
@@ -211,37 +212,63 @@ function setUpGallery(data, viewer) {
   // ---------- Full-size viewer, with zoom ----------
   //
   // The photo opens as large as the screen allows, never larger than its real
-  // pixels. Zoom (pinch, double-tap, click, the Zoom button, or + and -) goes
-  // only as far as the photo stays sharp (zoomLimit), and while zoomed the photo
-  // shown is the lossless copy with every pixel of the original. A photo too
-  // small to zoom sharply on this screen simply has no zoom.
+  // pixels. Zoom (pinch, double-tap, click, the Zoom button, + and -, or a
+  // trackpad pinch) only goes as far as the photo ON SCREEN stays sharp: one
+  // photo pixel per screen point, two on dense screens (zoomLimit). Until the
+  // lossless copy (every pixel of the original) has arrived, that limit comes from
+  // the smaller copy being shown; once it arrives, the zoom carries on to where
+  // the customer asked. A photo too small to zoom sharply has no zoom at all.
   let returnFocus = null;
+  const lbInner = lightbox.querySelector(".lightbox-inner");
   const lbStage = lightbox.querySelector("[data-lightbox-stage]");
   const lbCaption = lightbox.querySelector("[data-lightbox-caption]");
   const lbSteps = [...lightbox.querySelectorAll("[data-lightbox-step]")];
   const lbZoom = lightbox.querySelector("[data-lightbox-zoom]");
-  const lb = { img: null, el: null, fit: { w: 1, h: 1 }, scale: 1, x: 0, y: 0, max: 1, full: false, fullRequested: false };
-  const fastNetwork = () => {
+  const lbClose = lightbox.querySelector("[data-lightbox-close]");
+  const blank = () => ({ img: null, el: null, ticket: 0, fit: { w: 1, h: 1 }, scale: 1, x: 0, y: 0, max: 1, fullMax: 1, full: false, pending: null, wanted: null });
+  let lb = blank();
+  const dpr = () => window.devicePixelRatio || 1;
+
+  // When to fetch the lossless copy before any zoom: right away on a fast link,
+  // after a short look where the browser can't tell, and only on zoom on slow
+  // links or with Data Saver.
+  const preloadDelay = () => {
     const c = navigator.connection;
-    return !(c && (c.saveData || /2g/.test(c.effectiveType || "")));
+    if (!c) return 700;
+    return !c.saveData && c.effectiveType === "4g" ? 0 : null;
   };
 
-  lightbox.querySelector("[data-lightbox-close]").addEventListener("click", () => closeLightbox());
+  lbClose.addEventListener("click", () => closeLightbox());
   lbSteps.forEach((b) => b.addEventListener("click", () => step(Number(b.dataset.lightboxStep))));
-  lbZoom.addEventListener("click", () => (lb.scale > 1 ? zoomTo(1) : zoomTo(lb.max)));
+  lbZoom.addEventListener("click", () => (lb.scale > 1.001 || lb.wanted ? zoomTo(1) : zoomTo(lb.fullMax)));
   lightbox.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return; // browser zoom, Back/Forward
     const pan = (dx, dy) => { event.preventDefault(); setZoom(lb.scale, { x: lb.x + dx, y: lb.y + dy }); };
     const zoomed = lb.scale > 1.001;
     if (event.key === "ArrowRight") zoomed ? pan(-80, 0) : (event.preventDefault(), step(1));
     else if (event.key === "ArrowLeft") zoomed ? pan(80, 0) : (event.preventDefault(), step(-1));
     else if (event.key === "ArrowUp" && zoomed) pan(0, 80);
     else if (event.key === "ArrowDown" && zoomed) pan(0, -80);
-    else if (event.key === "+" || event.key === "=") { event.preventDefault(); zoomTo(lb.max); }
+    else if (event.key === "+" || event.key === "=") { event.preventDefault(); zoomTo(lb.fullMax); }
     else if (event.key === "-" || event.key === "0") { event.preventDefault(); zoomTo(1); }
   });
+  // A click on the dark space around the photo closes the viewer.
   lightbox.addEventListener("click", (event) => {
-    if (event.target === lightbox) closeLightbox(); // click on the dark backdrop
+    if (event.target === lightbox || event.target === lbInner) closeLightbox();
   });
+  // A trackpad pinch (a wheel event with ctrlKey) zooms the photo, within the same
+  // sharp limit, instead of zooming the whole page into blur. Plain scrolling is
+  // left alone.
+  lightbox.addEventListener("wheel", (event) => {
+    if (!event.ctrlKey) return;
+    event.preventDefault();
+    if (!lb.el || !canZoom()) return;
+    const r = lbStage.getBoundingClientRect();
+    const point = { x: event.clientX - r.left - r.width / 2, y: event.clientY - r.top - r.height / 2 };
+    const scale = Math.min(Math.max(lb.scale * Math.exp(-event.deltaY * 0.01), 1), lb.fullMax);
+    lb.el.classList.remove("is-animating");
+    setZoom(scale, zoomAround(point, { x: lb.x, y: lb.y }, lb.scale, scale));
+  }, { passive: false });
   lightbox.addEventListener("cancel", (event) => {
     event.preventDefault(); // Escape: close with the same short fade
     closeLightbox();
@@ -249,19 +276,27 @@ function setUpGallery(data, viewer) {
   lightbox.addEventListener("close", () => {
     lightbox.classList.remove("is-closing");
     lightboxRequest++; // ignore photos still loading
+    cancel(lb.pending);
+    lbStage.querySelectorAll("img").forEach(cancel); // only ones still loading
     lbStage.textContent = ""; // next time it opens with the current photo only
-    lb.el = null;
+    lb = blank();
+    applyZoom();
     document.documentElement.style.overflow = "";
     if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
   });
   new ResizeObserver(() => lightbox.open && refit()).observe(lbStage);
+  // Moving the window to a screen with another pixel density changes the limit too.
+  (function watchDensity() {
+    const mq = window.matchMedia(`(resolution: ${dpr()}dppx)`);
+    mq.addEventListener("change", () => { if (lightbox.open) refit(); watchDensity(); }, { once: true });
+  })();
 
   function openLightbox(from) {
     returnFocus = from;
     document.documentElement.style.overflow = "hidden";
     lightbox.showModal();
     renderLightbox(); // after showModal, so the space for the photo can be measured
-    lightbox.querySelector("[data-lightbox-close]").focus();
+    lbClose.focus();
   }
 
   function closeLightbox() {
@@ -271,36 +306,47 @@ function setUpGallery(data, viewer) {
     setTimeout(() => lightbox.close(), 200);
   }
 
+  // Stop downloading a photo nobody will see (a <picture> also loads from its sources).
+  function cancel(el) {
+    if (!el || el.complete) return;
+    el.parentElement?.querySelectorAll("source").forEach((source) => source.removeAttribute("srcset"));
+    el.removeAttribute("srcset");
+    el.removeAttribute("src");
+  }
+
   const space = () => ({ w: lbStage.clientWidth, h: lbStage.clientHeight });
 
   // The caption changes with the photo, so it always describes what is on screen.
   function renderLightbox() {
     const g = gallery();
     const img = g[state.index];
-    const caption = `${data.name} · ${data.finishes[state.finish].name} · ${data.roles[img.role]} · ${state.index + 1} of ${g.length}`;
+    const caption = `${data.name} · ${data.finishes[state.finish].name} · ${data.roles[img.role]} · ${state.index + 1} of ${g.length}`;
     lbSteps.forEach((b) => (b.hidden = g.length < 2));
     const ticket = ++lightboxRequest;
-    lbStage.querySelectorAll(".is-loading").forEach((stale) => stale.remove());
+    lbStage.querySelectorAll(".is-loading").forEach((stale) => { stale.querySelectorAll("img").forEach(cancel); stale.remove(); });
     const fit = fitSize({ w: img.width, h: img.height }, space());
     const pic = pictureEl(img, `${Math.ceil(fit.w)}px`, "is-incoming", true);
     pic.className = "is-loading";
     const el = pic.querySelector("img");
+    el.draggable = false;
     sizeTo(el, fit);
     lbStage.append(pic);
     if (!lb.el) lbCaption.textContent = caption; // nothing else on screen yet
     loadImage(el).then(() => {
       if (ticket !== lightboxRequest) return pic.remove();
+      // The space may have changed while it loaded.
+      const now = fitSize({ w: img.width, h: img.height }, space());
+      sizeTo(el, now);
       pic.className = "";
       lbCaption.textContent = caption;
+      cancel(lb.pending);
       [...lbStage.children].forEach((child) => child !== pic && child.remove());
-      Object.assign(lb, { img, el, fit, scale: 1, x: 0, y: 0, full: false, fullRequested: false });
-      lb.max = zoomLimit(img.width, fit.w, window.devicePixelRatio);
+      lb = { ...blank(), img, el, ticket, fit: now };
+      limits();
       applyZoom();
       requestAnimationFrame(() => el.classList.remove("is-incoming"));
-      // The lossless copy, ready before the first zoom; also when the screen already
-      // shows the photo at its full detail (dense laptop screens).
-      const atLimit = img.width < fit.w * Math.min(window.devicePixelRatio || 1, 2);
-      if ((canZoom() || atLimit) && fastNetwork()) loadFull(ticket);
+      const delay = preloadDelay();
+      if (delay !== null) setTimeout(() => lb.ticket === ticket && loadFull(), delay);
     });
   }
 
@@ -309,30 +355,59 @@ function setUpGallery(data, viewer) {
     el.style.height = `${fit.h}px`;
   }
 
-  const canZoom = () => lb.max >= 1.15;
+  // max: how far the photo on screen can zoom and stay sharp right now.
+  // fullMax: how far it can once the lossless copy is there.
+  function limits() {
+    if (!lb.img) return;
+    const shown = lb.full ? lb.img.width : fileWidth(lb.el.currentSrc || lb.el.src, lb.img.width) || lb.fit.w;
+    lb.max = zoomLimit(shown, lb.fit.w, dpr());
+    lb.fullMax = zoomLimit(lb.img.width, lb.fit.w, dpr());
+  }
 
-  // Swap in the lossless copy (same size on screen, so nothing moves).
-  function loadFull(ticket) {
-    if (lb.fullRequested || !lb.img) return;
-    lb.fullRequested = true;
+  const canZoom = () => lb.fullMax >= 1.15;
+
+  // Fetch the lossless copy and put it in place of the copy on screen: same photo,
+  // same size, same zoom, so it's swapped in one frame with nothing moving or fading.
+  function loadFull() {
+    if (lb.full || lb.pending || !lb.img) return;
+    const { img, ticket } = lb;
     const el = document.createElement("img");
-    el.src = lb.img.full;
-    el.alt = lb.img.alt;
-    el.width = lb.img.width;
-    el.height = lb.img.height;
-    el.className = "is-incoming";
+    el.alt = img.alt;
+    el.width = img.width;
+    el.height = img.height;
     el.decoding = "async";
     el.draggable = false;
-    sizeTo(el, lb.fit);
-    lbStage.append(el);
+    el.src = img.full;
+    lb.pending = el;
+    zoomControls();
     loadImage(el).then(() => {
-      if (ticket !== lightboxRequest || !el.naturalWidth) return el.remove();
+      if (lb.ticket !== ticket || lb.img !== img || !lb.el?.isConnected || !el.naturalWidth) {
+        if (lb.pending === el) {
+          lb.pending = null;
+          lb.wanted = null;
+        }
+        zoomControls();
+        return;
+      }
       const old = lb.el.closest("picture") || lb.el;
+      sizeTo(el, lb.fit);
+      if (lb.el.classList.contains("is-animating")) el.classList.add("is-animating");
+      el.style.transform = lb.el.style.transform;
+      old.before(el); // underneath the old copy, already decoded
       lb.el = el;
+      lb.pending = null;
       lb.full = true;
-      applyZoom();
-      el.classList.remove("is-incoming");
-      old.remove();
+      limits();
+      requestAnimationFrame(() => old.remove());
+      // Carry on to the zoom the customer asked for while it loaded.
+      const wanted = lb.wanted;
+      lb.wanted = null;
+      if (wanted) {
+        void el.offsetWidth; // start the animation from where the photo is now
+        setZoom(wanted.scale, wanted.offset, !reduce.matches);
+      } else {
+        zoomControls();
+      }
     });
   }
 
@@ -341,18 +416,27 @@ function setUpGallery(data, viewer) {
     const fit = fitSize({ w: lb.img.width, h: lb.img.height }, space());
     const k = fit.w / lb.fit.w;
     lb.fit = fit;
-    lb.max = zoomLimit(lb.img.width, fit.w, window.devicePixelRatio);
-    lbStage.querySelectorAll("img").forEach((el) => sizeTo(el, fit));
-    setZoom(Math.min(lb.scale, lb.max), { x: lb.x * k, y: lb.y * k });
+    limits();
+    sizeTo(lb.el, fit);
+    if (lb.pending) sizeTo(lb.pending, fit);
+    setZoom(Math.min(lb.scale, lb.fullMax), { x: lb.x * k, y: lb.y * k });
   }
 
+  // Applies a zoom, never past the sharp limit of the photo on screen. Asking for
+  // more than that fetches the lossless copy and remembers the request.
   function setZoom(scale, offset, animate = false) {
     if (!lb.el) return;
-    lb.scale = Math.min(Math.max(scale, 1), Math.max(lb.max, 1));
-    const o = clampOffset(offset, lb.scale, lb.fit, space());
+    const asked = Math.min(Math.max(scale, 1), Math.max(lb.fullMax, 1));
+    if (asked > lb.max + 0.001 && !lb.full) {
+      lb.wanted = { scale: asked, offset };
+      loadFull();
+    } else {
+      lb.wanted = null;
+    }
+    lb.scale = Math.min(asked, Math.max(lb.max, 1));
+    const o = clampOffset(asked === lb.scale ? offset : zoomAround({ x: 0, y: 0 }, offset, asked, lb.scale), lb.scale, lb.fit, space());
     lb.x = o.x;
     lb.y = o.y;
-    if (lb.scale > 1 && !lb.full) loadFull(lightboxRequest);
     applyZoom(animate);
   }
 
@@ -365,46 +449,59 @@ function setUpGallery(data, viewer) {
 
   function applyZoom(animate = false) {
     const el = lb.el;
-    if (!el) return;
-    el.classList.toggle("is-animating", animate);
-    el.style.transform = lb.scale > 1 ? `translate(${lb.x.toFixed(1)}px, ${lb.y.toFixed(1)}px) scale(${lb.scale.toFixed(4)})` : "";
+    if (el) {
+      el.classList.toggle("is-animating", animate);
+      el.style.transform = lb.scale > 1 ? `translate(${lb.x.toFixed(1)}px, ${lb.y.toFixed(1)}px) scale(${lb.scale.toFixed(4)})` : "";
+    }
+    zoomControls();
+  }
+
+  function zoomControls() {
+    const zoomed = lb.scale > 1.001;
+    const waiting = Boolean(lb.wanted && lb.pending);
     lbStage.classList.toggle("can-zoom", canZoom());
-    lbStage.classList.toggle("is-zoomed", lb.scale > 1);
+    lbStage.classList.toggle("is-zoomed", zoomed);
+    if (!canZoom() && document.activeElement === lbZoom) lbClose.focus(); // don't lose keyboard focus
     lbZoom.hidden = !canZoom();
-    lbZoom.setAttribute("aria-pressed", String(lb.scale > 1));
-    lbZoom.textContent = lb.scale > 1 ? "Zoom out" : "Zoom in";
+    lbZoom.setAttribute("aria-pressed", String(zoomed || waiting));
+    lbZoom.setAttribute("aria-busy", String(waiting));
+    lbZoom.textContent = waiting ? "Loading detail…" : zoomed ? "Zoom out" : "Zoom in";
   }
 
   // Touch and mouse on the full-size photo: pinch to zoom, drag to look around,
-  // double-tap or click to zoom in and out, swipe for the next photo.
+  // double-tap or click to zoom in and out, swipe for the next photo, and a tap
+  // or click beside the photo closes the viewer.
   {
     const points = new Map();
     let gesture = null;
+    let multi = false; // this touch sequence had two fingers: it is not a tap or a swipe
     let lastTap = { t: 0, x: 0, y: 0 };
+    let lastMouseToggle = 0;
     const centre = (e) => {
       const r = lbStage.getBoundingClientRect();
       return { x: e.clientX - r.left - r.width / 2, y: e.clientY - r.top - r.height / 2 };
     };
-    const startGesture = () => {
+    const startGesture = (onPhoto) => {
       const [a, b] = [...points.values()];
       gesture = b
         ? { kind: "pinch", d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, scale: lb.scale, offset: { x: lb.x, y: lb.y } }
-        : { kind: "drag", start: { ...a }, offset: { x: lb.x, y: lb.y }, moved: 0 };
+        : { kind: "drag", start: { ...a }, offset: { x: lb.x, y: lb.y }, moved: 0, onPhoto };
     };
     lbStage.addEventListener("pointerdown", (e) => {
       if (!lb.el || (e.pointerType === "mouse" && e.button !== 0)) return;
       lbStage.setPointerCapture(e.pointerId);
       points.set(e.pointerId, centre(e));
+      if (points.size >= 2) multi = true;
       if (points.size > 2) return;
       lb.el.classList.remove("is-animating");
-      startGesture();
+      startGesture(e.target.tagName === "IMG");
     });
     lbStage.addEventListener("pointermove", (e) => {
       if (!points.has(e.pointerId) || !gesture) return;
       points.set(e.pointerId, centre(e));
       const [a, b] = [...points.values()];
       if (gesture.kind === "pinch" && b) {
-        const scale = Math.min(Math.max(gesture.scale * (Math.hypot(a.x - b.x, a.y - b.y) / gesture.d), 1), Math.max(lb.max, 1));
+        const scale = Math.min(Math.max(gesture.scale * (Math.hypot(a.x - b.x, a.y - b.y) / gesture.d), 1), Math.max(lb.fullMax, 1));
         const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
         const o = zoomAround(gesture.mid, gesture.offset, gesture.scale, scale);
         setZoom(scale, { x: o.x + mid.x - gesture.mid.x, y: o.y + mid.y - gesture.mid.y });
@@ -412,7 +509,7 @@ function setUpGallery(data, viewer) {
         const dx = a.x - gesture.start.x;
         const dy = a.y - gesture.start.y;
         gesture.moved = Math.max(gesture.moved, Math.hypot(dx, dy));
-        if (lb.scale > 1) {
+        if (lb.scale > 1.001) {
           lbStage.classList.add("is-dragging");
           setZoom(lb.scale, { x: gesture.offset.x + dx, y: gesture.offset.y + dy });
         }
@@ -423,25 +520,36 @@ function setUpGallery(data, viewer) {
       const p = points.get(e.pointerId);
       points.delete(e.pointerId);
       lbStage.classList.remove("is-dragging");
-      if (gesture?.kind === "drag" && e.type === "pointerup") {
+      if (gesture?.kind === "drag" && e.type === "pointerup" && !multi) {
         const dx = p.x - gesture.start.x;
         const dy = p.y - gesture.start.y;
-        if (lb.scale <= 1.001 && e.pointerType !== "mouse" && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+        const zoomed = lb.scale > 1.001;
+        if (!zoomed && e.pointerType !== "mouse" && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) {
           step(dx < 0 ? 1 : -1); // swipe to the next photo (only when not zoomed)
-        } else if (gesture.moved < 8) {
+        } else if (gesture.moved < 8 && !gesture.onPhoto && !zoomed) {
+          closeLightbox(); // a tap or click beside the photo
+        } else if (gesture.moved < 8 && gesture.onPhoto) {
           const now = performance.now();
-          const doubleTap = now - lastTap.t < 320 && Math.hypot(p.x - lastTap.x, p.y - lastTap.y) < 30;
-          if (e.pointerType === "mouse" || doubleTap) {
-            lb.scale > 1.001 ? zoomTo(1) : zoomTo(lb.max, p);
+          if (e.pointerType === "mouse") {
+            // One click zooms in or out; the second click of a double-click is ignored.
+            if (now - lastMouseToggle > 350) {
+              zoomed || lb.wanted ? zoomTo(1) : zoomTo(lb.fullMax, p);
+              lastMouseToggle = now;
+            }
+          } else if (now - lastTap.t < 320 && Math.hypot(p.x - lastTap.x, p.y - lastTap.y) < 30) {
+            zoomed || lb.wanted ? zoomTo(1) : zoomTo(lb.fullMax, p); // double-tap
             lastTap = { t: 0, x: 0, y: 0 };
           } else {
             lastTap = { t: now, x: p.x, y: p.y };
           }
         }
       }
-      if (lb.scale < 1.03 && lb.scale !== 1 && points.size === 0) setZoom(1, { x: 0, y: 0 }, !reduce.matches);
+      if (points.size === 0) {
+        if (lb.scale < 1.03 && lb.scale !== 1 && !lb.wanted) setZoom(1, { x: 0, y: 0 }, !reduce.matches);
+        multi = false;
+      }
       gesture = null;
-      if (points.size) startGesture(); // one finger left after a pinch: carry on dragging
+      if (points.size) startGesture(false); // one finger left after a pinch: carry on dragging
     };
     lbStage.addEventListener("pointerup", end);
     lbStage.addEventListener("pointercancel", end);
@@ -463,21 +571,28 @@ function setUpGallery(data, viewer) {
   }
   pinchOpens(stage, () => openLightbox(stageLink));
 
-  // The room photo and the close-up open full size too (in their real finish).
+  // Open a photo of this design full size, in its real finish.
+  function openPhoto(finish, role, from) {
+    if (state.finish !== finish) choose(finish, { push: true });
+    const i = gallery().findIndex((img) => img.role === role);
+    if (i >= 0 && i !== state.index) show(i);
+    openLightbox(from);
+  }
+
+  // The room photo and the close-up open full size on click or pinch.
   document.querySelectorAll("[data-open-photo]").forEach((link) => {
     const [finish, role] = link.dataset.openPhoto.split(":");
-    const open = () => {
-      if (state.finish !== finish) choose(finish, { push: true });
-      const i = gallery().findIndex((img) => img.role === role);
-      if (i >= 0 && i !== state.index) show(i);
-      openLightbox(link);
-    };
     link.addEventListener("click", (event) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey) return; // new tab: the full photo itself
       event.preventDefault();
-      open();
+      openPhoto(finish, role, link);
     });
-    pinchOpens(link, open);
+    pinchOpens(link, () => openPhoto(finish, role, link));
+  });
+
+  // The four-finish row: a pinch opens that finish's photo full size.
+  document.querySelectorAll(".all-finishes [data-pick-finish]").forEach((link) => {
+    pinchOpens(link, () => openPhoto(link.dataset.pickFinish, "studio", link));
   });
 
   // ---------- Building and loading images ----------

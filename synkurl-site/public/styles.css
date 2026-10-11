@@ -537,6 +537,7 @@ p { margin: 0; }
 }
 .chapter-side { display: grid; gap: 1.1rem; justify-items: start; }
 .chapter-controls { display: flex; align-items: center; gap: 0.9rem; }
+.chapter-controls[hidden] { display: none; } /* shown by chapter.js; without it the row simply scrolls */
 .chapter-progress {
   position: relative;
   width: 8rem;
@@ -557,9 +558,9 @@ p { margin: 0; }
   scroll-snap-type: x mandatory;
   scroll-padding-inline: var(--gutter);
   overscroll-behavior-x: contain;
-  scrollbar-width: none;
+  scrollbar-width: thin; /* so a mouse can scroll the row, even without JavaScript */
+  scrollbar-color: rgba(242, 238, 232, 0.3) transparent;
 }
-.chapter-viewport::-webkit-scrollbar { display: none; }
 .chapter-track {
   list-style: none;
   margin: 0;
@@ -631,7 +632,7 @@ p { margin: 0; }
 .finish-plate .plate-layer { position: absolute; inset: 0; display: block; }
 .finish-plate .plate-layer.is-incoming { opacity: 0; }
 .finish-cell-name { font-family: var(--display); font-size: 1rem; letter-spacing: -0.02em; }
-.finish-cell-note { color: var(--fg-2); font-size: 0.84rem; min-height: 1.45em; } /* reserved, so a note never moves the grid */
+.finish-cell-note { color: var(--fg-2); font-size: 0.84rem; line-height: 1.45; min-height: 1.45em; white-space: nowrap; } /* one reserved line, so a note never moves the grid */
 .finish-grid a:hover .finish-cell-name { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
 
 /* ---------- Home: rooms and details ---------- */
@@ -851,6 +852,7 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .layout-full .editorial-frame { aspect-ratio: 16 / 9; }  /* both close-ups used here stay whole at 16:9 */
 .layout-full .editorial-text { grid-column: 1 / 7; }
 
+.all-finishes .finish-plate { touch-action: pan-x pan-y; }
 .all-finishes .finish-row {
   list-style: none;
   margin: 0;
@@ -886,6 +888,7 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 
 /* Full-size viewer */
 .lightbox {
+  touch-action: none; /* a pinch anywhere in the viewer never zooms the page into blur */
   width: 100vw;
   max-width: none;
   height: 100dvh;
@@ -938,7 +941,8 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .lightbox-prev { left: clamp(0.5rem, 2vw, 1.5rem); }
 .lightbox-next { right: clamp(0.5rem, 2vw, 1.5rem); }
 .lightbox-btn[hidden] { display: none; }
-.lightbox-tool { position: static; min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font: inherit; font-size: 0.9rem; }
+.lightbox-tool { position: static; min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font: inherit; font-size: 0.9rem; white-space: nowrap; }
+.lightbox-tool[data-lightbox-zoom] { min-width: 7.5rem; } /* the label changes; the bar doesn't move */
 .lightbox-tool[hidden] { display: none; }
 .lightbox :focus-visible { outline-color: #f2eee8; }
 
@@ -1207,6 +1211,13 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .thumb { width: 4.4rem; }
 }
 
+@media (max-width: 560px) {
+  .lightbox-tools { grid-column: 1 / -1; grid-row: 1; justify-content: flex-end; }
+  .lightbox-caption { grid-column: 1 / -1; grid-row: 2; }
+  .lightbox-inner { grid-template-rows: auto auto minmax(0, 1fr); }
+  .lightbox-stage { grid-row: 3; }
+}
+
 @media (max-width: 380px) {
   .brand { font-size: 0.98rem; }
   .btn-small { padding: 0.5rem 0.8rem; font-size: 0.72rem; }
@@ -1262,17 +1273,17 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .model-link:focus-visible .plate-img,
   .finish-grid a:hover .plate-img,
   .finish-grid a:focus-visible .plate-img,
-  .hero-plate:hover .plate-img { transform: scale(1.025) translateY(-4px); }
+  .hero-plate:hover .plate-img { transform: scale(1.035); }
   .thumb, .swatch .swatch-dot { transition: transform 0.18s ease; }
   .thumb:hover { transform: translateY(-2px); }
   .swatch:hover .swatch-dot { transform: scale(1.06); }
 
   /* Full-size viewer opens with a short fade and settle. */
-  .lightbox[open] { animation: fade-in 0.22s ease both; }
-  .lightbox[open] .lightbox-stage { animation: settle-in 0.32s var(--ease) both; }
+  .lightbox[open] { animation: fade-in 0.22s ease backwards; }
+  .lightbox[open] .lightbox-stage { animation: settle-in 0.32s var(--ease) backwards; }
   .lightbox-stage img { transition: opacity 0.2s ease; }
   .lightbox-stage img.is-animating { transition: opacity 0.2s ease, transform 0.28s var(--ease); }
-  .lightbox.is-closing { opacity: 0; transition: opacity 0.2s ease; }
+  .lightbox.is-closing { animation: fade-out 0.2s ease forwards; }
   .lightbox.is-closing::backdrop { opacity: 0; transition: opacity 0.2s ease; }
 
   /* Page transitions: a soft cross-fade between pages, in browsers that support it.
@@ -1294,6 +1305,7 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 
 @keyframes rise-in { from { opacity: 0; transform: translateY(16px); } }
 @keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
 @keyframes settle-in { from { opacity: 0; transform: scale(0.97); } }
 @keyframes page-out { to { opacity: 0; transform: translateY(-6px); } }
 @keyframes page-in { from { opacity: 0; transform: translateY(8px); } }

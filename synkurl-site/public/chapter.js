@@ -17,6 +17,7 @@ function setUpChapter(chapter) {
   const cards = [...track.querySelectorAll("[data-card]")];
   const bar = chapter.querySelector("[data-chapter-bar]");
   const [prevBtn, nextBtn] = chapter.querySelectorAll("[data-chapter-step]");
+  prevBtn.parentElement.hidden = false; // the buttons only work with this script
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const large = window.matchMedia("(min-width: 1000px) and (min-height: 660px)");
 

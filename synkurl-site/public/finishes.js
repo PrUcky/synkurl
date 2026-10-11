@@ -89,7 +89,7 @@ function setUpFinishes(section, data) {
     for (const j of jobs) {
       j.cell.querySelector("[data-finish-link]").href = `${j.m.url}?colour=${finish}`;
       j.cell.querySelector("[data-finish-note]").textContent =
-        j.shot.role === "studio" ? "" : "Close-up shown: no studio photo in this finish yet.";
+        j.shot.role === "studio" ? "" : "Close-up shown"; // no studio photo in this finish yet
       const old = [...j.plate.children].filter((el) => el !== j.fresh);
       const done = () => old.forEach((el) => el.remove());
       if (reduce.matches) {

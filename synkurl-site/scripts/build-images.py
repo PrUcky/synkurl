@@ -15,9 +15,11 @@ public/media/<model>/:
                                  shows compression blur
 
 Only pixels are copied. Hidden data in the originals (such as the image
-generator's content credentials) is not, because no metadata is passed on.
-Bigger originals (for example 3072 x 2048) need no code change: the sizes
-below grow with them, and the zoom goes deeper.
+generator's content credentials) is not, because no metadata is passed on. An
+original with a colour profile is first converted to standard sRGB colours.
+Bigger originals (for example 3072 x 2048) need no code change: the page sizes
+stop at 1920 px wide, and the -full.webp copy (and so the zoom) grows with them.
+Files from earlier runs that are no longer made are deleted.
 
 It also writes data/images.json with each image's real finish, role, pixel
 size and file names. scripts/build-pages.mjs reads that file.
@@ -29,11 +31,12 @@ data/models.json).
 Needs Python 3 with Pillow 11+ (for AVIF). Run from synkurl-site/:
     python3 scripts/build-images.py
 """
+import io
 import json
 import os
 import sys
 
-from PIL import Image
+from PIL import Image, ImageCms
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MASTERS = os.path.join(ROOT, "design-masters", "models")
@@ -46,12 +49,29 @@ JPEG_QUALITY = 80
 FALLBACK_WIDTH = 960
 
 
+PAGE_MAX = 1920  # the widest copy pages ever use; zoom uses the -full.webp copy
+
+
 def widths_for(width, height):
-    steps = [320, 480, 768, 1024, 1536, 2048] if height > width else [320, 640, 960, 1280, 1920, 2560]
-    return [s for s in steps if s < width] + [width]
+    steps = [320, 480, 768, 1024, 1536] if height > width else [320, 640, 960, 1280, 1920]
+    return [s for s in steps if s < min(width, PAGE_MAX)] + [min(width, PAGE_MAX)]
+
+
+def open_rgb(path):
+    """The original's pixels in sRGB, with no metadata attached."""
+    im = Image.open(path)
+    icc = im.info.get("icc_profile")
+    if icc:
+        src = ImageCms.ImageCmsProfile(io.BytesIO(icc))
+        im = ImageCms.profileToProfile(im.convert("RGB"), src, ImageCms.createProfile("sRGB"), outputMode="RGB")
+    im = im.convert("RGB")
+    im.info.clear()
+    return im
 
 
 def main():
+    if not os.path.isdir(MASTERS):
+        sys.exit(f"No originals in {MASTERS}: copy them there from the design pack first.")
     models = json.load(open(os.path.join(DATA, "models.json")))
     finishes = [f["id"] for f in models["finishes"]]
     images = {}
@@ -73,17 +93,17 @@ def main():
                     planned.append((role, f, f"{role}-{f}.png"))
 
         entries = []
+        made = set()
         for role, finish, filename in planned:
             path = os.path.join(src_dir, filename)
             if not os.path.exists(path):
                 missing.append(f"{mid}/{filename}")
                 continue
-            im = Image.open(path).convert("RGB")
+            im = open_rgb(path)
             w, h = im.size
             base = f"{role}-{finish}"
             files = {"avif": [], "webp": []}
             for target in widths_for(w, h):
-                target = min(target, w)
                 size = (target, round(h * target / w))
                 small = im if target == w else im.resize(size, Image.LANCZOS)
                 for fmt, ext, opts in (
@@ -92,17 +112,20 @@ def main():
                 ):
                     name = f"{base}-{target}.{ext}"
                     small.save(os.path.join(out_dir, name), fmt, **opts)
+                    made.add(name)
                     files[ext].append({"w": target, "file": f"/media/{mid}/{name}"})
             # Every pixel, unchanged, for zooming in. Checked after saving.
             full_name = f"{base}-full.webp"
             full_path = os.path.join(out_dir, full_name)
             im.save(full_path, "WEBP", lossless=True, quality=100, method=4)
+            made.add(full_name)
             if Image.open(full_path).convert("RGB").tobytes() != im.tobytes():
                 sys.exit(f"{full_name} is not identical to {mid}/{filename}")
             fb_w = min(FALLBACK_WIDTH, w) if w >= h else min(768, w)
             fb = im.resize((fb_w, round(h * fb_w / w)), Image.LANCZOS)
             fb_name = f"{base}-{fb_w}.jpg"
             fb.save(os.path.join(out_dir, fb_name), "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
+            made.add(fb_name)
             entries.append({
                 "role": role,
                 "finish": finish,
@@ -115,6 +138,12 @@ def main():
             })
             print(f"{mid}/{filename} -> {base} ({w}x{h})")
         images[mid] = entries
+        # Delete files from earlier runs that this run no longer makes
+        # (a replaced or removed photo must not stay published).
+        for name in sorted(os.listdir(out_dir)):
+            if name not in made and os.path.isfile(os.path.join(out_dir, name)):
+                os.remove(os.path.join(out_dir, name))
+                print(f"removed old {mid}/{name}")
 
     with open(os.path.join(DATA, "images.json"), "w") as f:
         json.dump({"_about": "Generated by scripts/build-images.py. Do not edit by hand.", "images": images, "missingMasters": missing}, f, indent=2)

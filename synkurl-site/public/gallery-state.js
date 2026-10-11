@@ -52,3 +52,12 @@ export function zoomAround(point, offset, fromScale, toScale) {
   const k = toScale / fromScale;
   return { x: point.x - (point.x - offset.x) * k, y: point.y - (point.y - offset.y) * k };
 }
+
+// The real pixel width of a photo file, read from its name: "studio-rose-gold-960.avif"
+// is 960 wide; a "-full.webp" file has every pixel of the original (fullWidth).
+// Returns 0 when it can't tell.
+export function fileWidth(url, fullWidth) {
+  if (/-full\.webp$/.test(url || "")) return fullWidth;
+  const m = /-(\d+)\.(avif|webp|jpe?g)$/.exec(url || "");
+  return m ? Number(m[1]) : 0;
+}

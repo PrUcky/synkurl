@@ -1,7 +1,7 @@
 // The six concept-design pages, their photos and the gallery's rules.
 import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
-import { clampOffset, colourFromSearch, fitSize, indexAfterSwitch, stepIndex, zoomAround, zoomLimit } from "../public/gallery-state.js";
+import { clampOffset, colourFromSearch, fileWidth, fitSize, indexAfterSwitch, stepIndex, zoomAround, zoomLimit } from "../public/gallery-state.js";
 import { MODEL_IDS, visibleText } from "./pages.js";
 
 const FINISHES = ["blush-pink", "matte-black", "dusk-violet", "rose-gold"];
@@ -251,6 +251,16 @@ describe("zoom rules (gallery-state.js)", () => {
     expect(clampOffset({ x: 999, y: 999 }, 2, size, space)).toEqual({ x: 200, y: 50 });
     expect(clampOffset({ x: -999, y: -999 }, 2, size, space)).toEqual({ x: -200, y: -50 });
     expect(clampOffset({ x: 30, y: 30 }, 1, size, space)).toEqual({ x: 0, y: 0 });
+  });
+
+  it("knows the real width of the copy on screen, so zoom never outruns it", () => {
+    expect(fileWidth("https://synkurl.com/media/arch/studio-rose-gold-960.avif", 1536)).toBe(960);
+    expect(fileWidth("/media/spine/lifestyle-blush-pink-768.webp", 1024)).toBe(768);
+    expect(fileWidth("/media/arch/studio-rose-gold-960.jpg", 1536)).toBe(960);
+    expect(fileWidth("/media/arch/studio-rose-gold-full.webp", 1536)).toBe(1536);
+    expect(fileWidth("", 1536)).toBe(0);
+    // A 960-wide copy shown 390 points wide on a 3x phone: only 1.23x until the lossless copy arrives.
+    expect(zoomLimit(fileWidth("/m/a-960.avif", 1536), 390, 3)).toBeCloseTo(1.23);
   });
 
   it("keeps the point under the fingers in place while zooming", () => {
