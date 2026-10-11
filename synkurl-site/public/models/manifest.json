@@ -1,0 +1,609 @@
+{
+  "about": "Synkurl concept designs. Generated design concepts, not photographs of finished products. Each image is listed under the finish it actually shows.",
+  "finishes": [
+    {
+      "id": "blush-pink",
+      "name": "Blush Pink",
+      "swatch": "#D8B4BF"
+    },
+    {
+      "id": "matte-black",
+      "name": "Matte Black",
+      "swatch": "#242527"
+    },
+    {
+      "id": "dusk-violet",
+      "name": "Dusk Violet / Purple",
+      "swatch": "#765987"
+    },
+    {
+      "id": "rose-gold",
+      "name": "Rose Gold",
+      "swatch": "#C79F92"
+    }
+  ],
+  "models": {
+    "arch": {
+      "name": "Arch",
+      "url": "/models/arch/",
+      "defaultFinish": "dusk-violet",
+      "finishes": {
+        "blush-pink": {
+          "name": "Blush Pink",
+          "gallery": [
+            {
+              "id": "arch-studio-blush-pink",
+              "role": "studio",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Arch concept in Blush Pink: a dusty pink, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a thin white outline of the Synkurl mark in a circle, three small status lights and a dark slatted base.",
+              "src": "/media/arch/studio-blush-pink-960.jpg",
+              "full": "/media/arch/studio-blush-pink-full.webp",
+              "avif": "/media/arch/studio-blush-pink-320.avif 320w, /media/arch/studio-blush-pink-640.avif 640w, /media/arch/studio-blush-pink-960.avif 960w, /media/arch/studio-blush-pink-1280.avif 1280w, /media/arch/studio-blush-pink-1536.avif 1536w",
+              "webp": "/media/arch/studio-blush-pink-320.webp 320w, /media/arch/studio-blush-pink-640.webp 640w, /media/arch/studio-blush-pink-960.webp 960w, /media/arch/studio-blush-pink-1280.webp 1280w, /media/arch/studio-blush-pink-1536.webp 1536w"
+            }
+          ]
+        },
+        "matte-black": {
+          "name": "Matte Black",
+          "gallery": [
+            {
+              "id": "arch-studio-matte-black",
+              "role": "studio",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Arch concept in Matte Black: a low-sheen black, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a thin champagne outline of the Synkurl mark in a circle, three small status lights and a slatted base.",
+              "src": "/media/arch/studio-matte-black-960.jpg",
+              "full": "/media/arch/studio-matte-black-full.webp",
+              "avif": "/media/arch/studio-matte-black-320.avif 320w, /media/arch/studio-matte-black-640.avif 640w, /media/arch/studio-matte-black-960.avif 960w, /media/arch/studio-matte-black-1280.avif 1280w, /media/arch/studio-matte-black-1536.avif 1536w",
+              "webp": "/media/arch/studio-matte-black-320.webp 320w, /media/arch/studio-matte-black-640.webp 640w, /media/arch/studio-matte-black-960.webp 960w, /media/arch/studio-matte-black-1280.webp 1280w, /media/arch/studio-matte-black-1536.webp 1536w"
+            }
+          ]
+        },
+        "dusk-violet": {
+          "name": "Dusk Violet / Purple",
+          "gallery": [
+            {
+              "id": "arch-studio-dusk-violet",
+              "role": "studio",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Arch concept in Dusk Violet: a muted violet, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a thin champagne outline of the Synkurl mark in a circle, three small status lights and a dark slatted base.",
+              "src": "/media/arch/studio-dusk-violet-960.jpg",
+              "full": "/media/arch/studio-dusk-violet-full.webp",
+              "avif": "/media/arch/studio-dusk-violet-320.avif 320w, /media/arch/studio-dusk-violet-640.avif 640w, /media/arch/studio-dusk-violet-960.avif 960w, /media/arch/studio-dusk-violet-1280.avif 1280w, /media/arch/studio-dusk-violet-1536.avif 1536w",
+              "webp": "/media/arch/studio-dusk-violet-320.webp 320w, /media/arch/studio-dusk-violet-640.webp 640w, /media/arch/studio-dusk-violet-960.webp 960w, /media/arch/studio-dusk-violet-1280.webp 1280w, /media/arch/studio-dusk-violet-1536.webp 1536w"
+            },
+            {
+              "id": "arch-lifestyle-dusk-violet",
+              "role": "lifestyle",
+              "finish": "dusk-violet",
+              "width": 1672,
+              "height": 941,
+              "alt": "The Arch concept in Dusk Violet on a round dark-wood side table beside a beige fabric armchair, next to a closed magazine lying flat. Its vent slots, outlined Synkurl mark and three status lights are visible; a wooden floor, rug and sunlit window sit behind.",
+              "src": "/media/arch/lifestyle-dusk-violet-960.jpg",
+              "full": "/media/arch/lifestyle-dusk-violet-full.webp",
+              "avif": "/media/arch/lifestyle-dusk-violet-320.avif 320w, /media/arch/lifestyle-dusk-violet-640.avif 640w, /media/arch/lifestyle-dusk-violet-960.avif 960w, /media/arch/lifestyle-dusk-violet-1280.avif 1280w, /media/arch/lifestyle-dusk-violet-1672.avif 1672w",
+              "webp": "/media/arch/lifestyle-dusk-violet-320.webp 320w, /media/arch/lifestyle-dusk-violet-640.webp 640w, /media/arch/lifestyle-dusk-violet-960.webp 960w, /media/arch/lifestyle-dusk-violet-1280.webp 1280w, /media/arch/lifestyle-dusk-violet-1672.webp 1672w"
+            },
+            {
+              "id": "arch-detail-dusk-violet",
+              "role": "detail",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "Close-up of the Arch concept in Dusk Violet, showing the rounded top with a row of vent slots, the fine textured surface, a seam curving across the side, and part of the thin champagne outline of the Synkurl mark in a circle.",
+              "src": "/media/arch/detail-dusk-violet-960.jpg",
+              "full": "/media/arch/detail-dusk-violet-full.webp",
+              "avif": "/media/arch/detail-dusk-violet-320.avif 320w, /media/arch/detail-dusk-violet-640.avif 640w, /media/arch/detail-dusk-violet-960.avif 960w, /media/arch/detail-dusk-violet-1280.avif 1280w, /media/arch/detail-dusk-violet-1536.avif 1536w",
+              "webp": "/media/arch/detail-dusk-violet-320.webp 320w, /media/arch/detail-dusk-violet-640.webp 640w, /media/arch/detail-dusk-violet-960.webp 960w, /media/arch/detail-dusk-violet-1280.webp 1280w, /media/arch/detail-dusk-violet-1536.webp 1536w"
+            }
+          ]
+        },
+        "rose-gold": {
+          "name": "Rose Gold",
+          "gallery": [
+            {
+              "id": "arch-studio-rose-gold",
+              "role": "studio",
+              "finish": "rose-gold",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Arch concept in Rose Gold: a warm, softly reflective rose gold, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a subtle tone-on-tone Synkurl mark in a circle, three status lights and a dark slatted base.",
+              "src": "/media/arch/studio-rose-gold-960.jpg",
+              "full": "/media/arch/studio-rose-gold-full.webp",
+              "avif": "/media/arch/studio-rose-gold-320.avif 320w, /media/arch/studio-rose-gold-640.avif 640w, /media/arch/studio-rose-gold-960.avif 960w, /media/arch/studio-rose-gold-1280.avif 1280w, /media/arch/studio-rose-gold-1536.avif 1536w",
+              "webp": "/media/arch/studio-rose-gold-320.webp 320w, /media/arch/studio-rose-gold-640.webp 640w, /media/arch/studio-rose-gold-960.webp 960w, /media/arch/studio-rose-gold-1280.webp 1280w, /media/arch/studio-rose-gold-1536.webp 1536w"
+            }
+          ]
+        }
+      }
+    },
+    "dome": {
+      "name": "Dome",
+      "url": "/models/dome/",
+      "defaultFinish": "blush-pink",
+      "finishes": {
+        "blush-pink": {
+          "name": "Blush Pink",
+          "gallery": [
+            {
+              "id": "dome-studio-blush-pink",
+              "role": "studio",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Dome concept in Blush Pink: a low, dusty-pink dome on a slim round base against a pale studio backdrop. Fine vents ring the outlined Synkurl mark on top; three small status lights sit above a row of vent slots.",
+              "src": "/media/dome/studio-blush-pink-960.jpg",
+              "full": "/media/dome/studio-blush-pink-full.webp",
+              "avif": "/media/dome/studio-blush-pink-320.avif 320w, /media/dome/studio-blush-pink-640.avif 640w, /media/dome/studio-blush-pink-960.avif 960w, /media/dome/studio-blush-pink-1280.avif 1280w, /media/dome/studio-blush-pink-1536.avif 1536w",
+              "webp": "/media/dome/studio-blush-pink-320.webp 320w, /media/dome/studio-blush-pink-640.webp 640w, /media/dome/studio-blush-pink-960.webp 960w, /media/dome/studio-blush-pink-1280.webp 1280w, /media/dome/studio-blush-pink-1536.webp 1536w"
+            }
+          ]
+        },
+        "matte-black": {
+          "name": "Matte Black",
+          "gallery": [
+            {
+              "id": "dome-studio-matte-black",
+              "role": "studio",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Dome concept in Matte Black: a low, rounded black dome on a slim round base against a pale studio backdrop. Fine vents ring the outlined Synkurl mark, lit warm amber, on top; three small status lights sit above a row of vent slots.",
+              "src": "/media/dome/studio-matte-black-960.jpg",
+              "full": "/media/dome/studio-matte-black-full.webp",
+              "avif": "/media/dome/studio-matte-black-320.avif 320w, /media/dome/studio-matte-black-640.avif 640w, /media/dome/studio-matte-black-960.avif 960w, /media/dome/studio-matte-black-1280.avif 1280w, /media/dome/studio-matte-black-1536.avif 1536w",
+              "webp": "/media/dome/studio-matte-black-320.webp 320w, /media/dome/studio-matte-black-640.webp 640w, /media/dome/studio-matte-black-960.webp 960w, /media/dome/studio-matte-black-1280.webp 1280w, /media/dome/studio-matte-black-1536.webp 1536w"
+            }
+          ]
+        },
+        "dusk-violet": {
+          "name": "Dusk Violet / Purple",
+          "gallery": [
+            {
+              "id": "dome-studio-dusk-violet",
+              "role": "studio",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Dome concept in Dusk Violet: a low, muted purple dome on a slim round base against a pale studio backdrop. Fine vents ring the outlined Synkurl mark on top; three small status lights sit above a row of vent slots.",
+              "src": "/media/dome/studio-dusk-violet-960.jpg",
+              "full": "/media/dome/studio-dusk-violet-full.webp",
+              "avif": "/media/dome/studio-dusk-violet-320.avif 320w, /media/dome/studio-dusk-violet-640.avif 640w, /media/dome/studio-dusk-violet-960.avif 960w, /media/dome/studio-dusk-violet-1280.avif 1280w, /media/dome/studio-dusk-violet-1536.avif 1536w",
+              "webp": "/media/dome/studio-dusk-violet-320.webp 320w, /media/dome/studio-dusk-violet-640.webp 640w, /media/dome/studio-dusk-violet-960.webp 960w, /media/dome/studio-dusk-violet-1280.webp 1280w, /media/dome/studio-dusk-violet-1536.webp 1536w"
+            }
+          ]
+        },
+        "rose-gold": {
+          "name": "Rose Gold",
+          "gallery": [
+            {
+              "id": "dome-lifestyle-rose-gold",
+              "role": "lifestyle",
+              "finish": "rose-gold",
+              "width": 1672,
+              "height": 941,
+              "alt": "The Dome concept in Rose Gold on an oval, pitted stone coffee table in a sunlit living room, in front of a green woven sofa, with a woven rug and wooden floor below. Its outlined Synkurl mark glows softly; three small status lights show on the base.",
+              "src": "/media/dome/lifestyle-rose-gold-960.jpg",
+              "full": "/media/dome/lifestyle-rose-gold-full.webp",
+              "avif": "/media/dome/lifestyle-rose-gold-320.avif 320w, /media/dome/lifestyle-rose-gold-640.avif 640w, /media/dome/lifestyle-rose-gold-960.avif 960w, /media/dome/lifestyle-rose-gold-1280.avif 1280w, /media/dome/lifestyle-rose-gold-1672.avif 1672w",
+              "webp": "/media/dome/lifestyle-rose-gold-320.webp 320w, /media/dome/lifestyle-rose-gold-640.webp 640w, /media/dome/lifestyle-rose-gold-960.webp 960w, /media/dome/lifestyle-rose-gold-1280.webp 1280w, /media/dome/lifestyle-rose-gold-1672.webp 1672w"
+            },
+            {
+              "id": "dome-detail-rose-gold",
+              "role": "detail",
+              "finish": "rose-gold",
+              "width": 1536,
+              "height": 1024,
+              "alt": "Close-up of the Dome concept in Rose Gold, showing the outlined Synkurl mark inside a ring of fine vents on top, the seam where the dome meets its base, and three small status lights above a row of vent slots.",
+              "src": "/media/dome/detail-rose-gold-960.jpg",
+              "full": "/media/dome/detail-rose-gold-full.webp",
+              "avif": "/media/dome/detail-rose-gold-320.avif 320w, /media/dome/detail-rose-gold-640.avif 640w, /media/dome/detail-rose-gold-960.avif 960w, /media/dome/detail-rose-gold-1280.avif 1280w, /media/dome/detail-rose-gold-1536.avif 1536w",
+              "webp": "/media/dome/detail-rose-gold-320.webp 320w, /media/dome/detail-rose-gold-640.webp 640w, /media/dome/detail-rose-gold-960.webp 960w, /media/dome/detail-rose-gold-1280.webp 1280w, /media/dome/detail-rose-gold-1536.webp 1536w"
+            }
+          ]
+        }
+      }
+    },
+    "spine": {
+      "name": "Spine",
+      "url": "/models/spine/",
+      "defaultFinish": "blush-pink",
+      "finishes": {
+        "blush-pink": {
+          "name": "Blush Pink",
+          "gallery": [
+            {
+              "id": "spine-studio-blush-pink",
+              "role": "studio",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Spine concept in Blush Pink, a slim upright tower with a perforated top grille and a top cap with a gently scooped front edge, seen at a three-quarter angle on grey. A glowing outlined Synkurl mark sits above three small status lights and a slotted base vent.",
+              "src": "/media/spine/studio-blush-pink-960.jpg",
+              "full": "/media/spine/studio-blush-pink-full.webp",
+              "avif": "/media/spine/studio-blush-pink-320.avif 320w, /media/spine/studio-blush-pink-640.avif 640w, /media/spine/studio-blush-pink-960.avif 960w, /media/spine/studio-blush-pink-1280.avif 1280w, /media/spine/studio-blush-pink-1536.avif 1536w",
+              "webp": "/media/spine/studio-blush-pink-320.webp 320w, /media/spine/studio-blush-pink-640.webp 640w, /media/spine/studio-blush-pink-960.webp 960w, /media/spine/studio-blush-pink-1280.webp 1280w, /media/spine/studio-blush-pink-1536.webp 1536w"
+            },
+            {
+              "id": "spine-lifestyle-blush-pink",
+              "role": "lifestyle",
+              "finish": "blush-pink",
+              "width": 1024,
+              "height": 1536,
+              "alt": "The Spine concept in Blush Pink stands upright on a dark wooden bookshelf in warm sunlight, between plain cloth-bound books and a framed abstract print. Its glowing outlined Synkurl mark, three small status lights and slotted base vent face the viewer.",
+              "src": "/media/spine/lifestyle-blush-pink-768.jpg",
+              "full": "/media/spine/lifestyle-blush-pink-full.webp",
+              "avif": "/media/spine/lifestyle-blush-pink-320.avif 320w, /media/spine/lifestyle-blush-pink-480.avif 480w, /media/spine/lifestyle-blush-pink-768.avif 768w, /media/spine/lifestyle-blush-pink-1024.avif 1024w",
+              "webp": "/media/spine/lifestyle-blush-pink-320.webp 320w, /media/spine/lifestyle-blush-pink-480.webp 480w, /media/spine/lifestyle-blush-pink-768.webp 768w, /media/spine/lifestyle-blush-pink-1024.webp 1024w"
+            },
+            {
+              "id": "spine-detail-blush-pink",
+              "role": "detail",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "Close-up of the Spine concept in Blush Pink, looking down at its top: an evenly perforated grille framed by a rounded rim, and a separate top cap whose front edge curves gently inward. Part of the glowing outlined Synkurl mark shows on the front below.",
+              "src": "/media/spine/detail-blush-pink-960.jpg",
+              "full": "/media/spine/detail-blush-pink-full.webp",
+              "avif": "/media/spine/detail-blush-pink-320.avif 320w, /media/spine/detail-blush-pink-640.avif 640w, /media/spine/detail-blush-pink-960.avif 960w, /media/spine/detail-blush-pink-1280.avif 1280w, /media/spine/detail-blush-pink-1536.avif 1536w",
+              "webp": "/media/spine/detail-blush-pink-320.webp 320w, /media/spine/detail-blush-pink-640.webp 640w, /media/spine/detail-blush-pink-960.webp 960w, /media/spine/detail-blush-pink-1280.webp 1280w, /media/spine/detail-blush-pink-1536.webp 1536w"
+            }
+          ]
+        },
+        "matte-black": {
+          "name": "Matte Black",
+          "gallery": [
+            {
+              "id": "spine-studio-matte-black",
+              "role": "studio",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Spine concept in Matte Black, a slim upright tower with a perforated top grille and a top cap with a gently scooped front edge, seen at a three-quarter angle on grey. A glowing outlined Synkurl mark sits above three small status lights and a slotted base vent.",
+              "src": "/media/spine/studio-matte-black-960.jpg",
+              "full": "/media/spine/studio-matte-black-full.webp",
+              "avif": "/media/spine/studio-matte-black-320.avif 320w, /media/spine/studio-matte-black-640.avif 640w, /media/spine/studio-matte-black-960.avif 960w, /media/spine/studio-matte-black-1280.avif 1280w, /media/spine/studio-matte-black-1536.avif 1536w",
+              "webp": "/media/spine/studio-matte-black-320.webp 320w, /media/spine/studio-matte-black-640.webp 640w, /media/spine/studio-matte-black-960.webp 960w, /media/spine/studio-matte-black-1280.webp 1280w, /media/spine/studio-matte-black-1536.webp 1536w"
+            }
+          ]
+        },
+        "dusk-violet": {
+          "name": "Dusk Violet / Purple",
+          "gallery": [
+            {
+              "id": "spine-studio-dusk-violet",
+              "role": "studio",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Spine concept in Dusk Violet, a slim upright tower with a perforated top grille and a top cap with a gently scooped front edge, seen at a three-quarter angle on grey. A glowing outlined Synkurl mark sits above three small status lights and a slotted base vent.",
+              "src": "/media/spine/studio-dusk-violet-960.jpg",
+              "full": "/media/spine/studio-dusk-violet-full.webp",
+              "avif": "/media/spine/studio-dusk-violet-320.avif 320w, /media/spine/studio-dusk-violet-640.avif 640w, /media/spine/studio-dusk-violet-960.avif 960w, /media/spine/studio-dusk-violet-1280.avif 1280w, /media/spine/studio-dusk-violet-1536.avif 1536w",
+              "webp": "/media/spine/studio-dusk-violet-320.webp 320w, /media/spine/studio-dusk-violet-640.webp 640w, /media/spine/studio-dusk-violet-960.webp 960w, /media/spine/studio-dusk-violet-1280.webp 1280w, /media/spine/studio-dusk-violet-1536.webp 1536w"
+            }
+          ]
+        },
+        "rose-gold": {
+          "name": "Rose Gold",
+          "gallery": [
+            {
+              "id": "spine-studio-rose-gold",
+              "role": "studio",
+              "finish": "rose-gold",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Spine concept in Rose Gold, a slim upright tower with a soft metallic sheen, a perforated top grille and a gently scooped top cap, seen at a three-quarter angle on grey. A glowing outlined Synkurl mark sits above three small status lights and a slotted base vent.",
+              "src": "/media/spine/studio-rose-gold-960.jpg",
+              "full": "/media/spine/studio-rose-gold-full.webp",
+              "avif": "/media/spine/studio-rose-gold-320.avif 320w, /media/spine/studio-rose-gold-640.avif 640w, /media/spine/studio-rose-gold-960.avif 960w, /media/spine/studio-rose-gold-1280.avif 1280w, /media/spine/studio-rose-gold-1536.avif 1536w",
+              "webp": "/media/spine/studio-rose-gold-320.webp 320w, /media/spine/studio-rose-gold-640.webp 640w, /media/spine/studio-rose-gold-960.webp 960w, /media/spine/studio-rose-gold-1280.webp 1280w, /media/spine/studio-rose-gold-1536.webp 1536w"
+            }
+          ]
+        }
+      }
+    },
+    "stack": {
+      "name": "Stack",
+      "url": "/models/stack/",
+      "defaultFinish": "matte-black",
+      "finishes": {
+        "blush-pink": {
+          "name": "Blush Pink",
+          "gallery": [
+            {
+              "id": "stack-studio-blush-pink",
+              "role": "studio",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Stack concept in Blush Pink, a soft dusty-pink satin finish: three rounded rectangular tiers with dark perforated vent bands between them and a vented base. The outlined Synkurl mark sits on top; three small status lights glow on the front.",
+              "src": "/media/stack/studio-blush-pink-960.jpg",
+              "full": "/media/stack/studio-blush-pink-full.webp",
+              "avif": "/media/stack/studio-blush-pink-320.avif 320w, /media/stack/studio-blush-pink-640.avif 640w, /media/stack/studio-blush-pink-960.avif 960w, /media/stack/studio-blush-pink-1280.avif 1280w, /media/stack/studio-blush-pink-1536.avif 1536w",
+              "webp": "/media/stack/studio-blush-pink-320.webp 320w, /media/stack/studio-blush-pink-640.webp 640w, /media/stack/studio-blush-pink-960.webp 960w, /media/stack/studio-blush-pink-1280.webp 1280w, /media/stack/studio-blush-pink-1536.webp 1536w"
+            }
+          ]
+        },
+        "matte-black": {
+          "name": "Matte Black",
+          "gallery": [
+            {
+              "id": "stack-studio-matte-black",
+              "role": "studio",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Stack concept in Matte Black, a low-sheen black finish: three rounded rectangular tiers with perforated vent bands between them and a vented base. The outlined Synkurl mark sits on top; three small status lights glow on the front.",
+              "src": "/media/stack/studio-matte-black-960.jpg",
+              "full": "/media/stack/studio-matte-black-full.webp",
+              "avif": "/media/stack/studio-matte-black-320.avif 320w, /media/stack/studio-matte-black-640.avif 640w, /media/stack/studio-matte-black-960.avif 960w, /media/stack/studio-matte-black-1280.avif 1280w, /media/stack/studio-matte-black-1536.avif 1536w",
+              "webp": "/media/stack/studio-matte-black-320.webp 320w, /media/stack/studio-matte-black-640.webp 640w, /media/stack/studio-matte-black-960.webp 960w, /media/stack/studio-matte-black-1280.webp 1280w, /media/stack/studio-matte-black-1536.webp 1536w"
+            },
+            {
+              "id": "stack-lifestyle-matte-black",
+              "role": "lifestyle",
+              "finish": "matte-black",
+              "width": 1672,
+              "height": 941,
+              "alt": "The Stack concept in Matte Black on a painted off-white shelf against a textured plaster wall, the Synkurl mark on top and three status lights glowing. A plain white router stands behind it to the right; folded white paper lies in the foreground.",
+              "src": "/media/stack/lifestyle-matte-black-960.jpg",
+              "full": "/media/stack/lifestyle-matte-black-full.webp",
+              "avif": "/media/stack/lifestyle-matte-black-320.avif 320w, /media/stack/lifestyle-matte-black-640.avif 640w, /media/stack/lifestyle-matte-black-960.avif 960w, /media/stack/lifestyle-matte-black-1280.avif 1280w, /media/stack/lifestyle-matte-black-1672.avif 1672w",
+              "webp": "/media/stack/lifestyle-matte-black-320.webp 320w, /media/stack/lifestyle-matte-black-640.webp 640w, /media/stack/lifestyle-matte-black-960.webp 960w, /media/stack/lifestyle-matte-black-1280.webp 1280w, /media/stack/lifestyle-matte-black-1672.webp 1672w"
+            },
+            {
+              "id": "stack-detail-matte-black",
+              "role": "detail",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "Close-up of the Stack concept in Matte Black: the rounded front-right corner of its three stacked tiers, with fine perforated vent bands between them. Three status lights glow white, blue and amber; the Synkurl mark is partly visible at the top.",
+              "src": "/media/stack/detail-matte-black-960.jpg",
+              "full": "/media/stack/detail-matte-black-full.webp",
+              "avif": "/media/stack/detail-matte-black-320.avif 320w, /media/stack/detail-matte-black-640.avif 640w, /media/stack/detail-matte-black-960.avif 960w, /media/stack/detail-matte-black-1280.avif 1280w, /media/stack/detail-matte-black-1536.avif 1536w",
+              "webp": "/media/stack/detail-matte-black-320.webp 320w, /media/stack/detail-matte-black-640.webp 640w, /media/stack/detail-matte-black-960.webp 960w, /media/stack/detail-matte-black-1280.webp 1280w, /media/stack/detail-matte-black-1536.webp 1536w"
+            }
+          ]
+        },
+        "dusk-violet": {
+          "name": "Dusk Violet / Purple",
+          "gallery": [
+            {
+              "id": "stack-studio-dusk-violet",
+              "role": "studio",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Stack concept in Dusk Violet, a muted deep purple finish: three rounded rectangular tiers with dark perforated vent bands between them and a vented base. The outlined Synkurl mark sits on top; three small status lights glow on the front.",
+              "src": "/media/stack/studio-dusk-violet-960.jpg",
+              "full": "/media/stack/studio-dusk-violet-full.webp",
+              "avif": "/media/stack/studio-dusk-violet-320.avif 320w, /media/stack/studio-dusk-violet-640.avif 640w, /media/stack/studio-dusk-violet-960.avif 960w, /media/stack/studio-dusk-violet-1280.avif 1280w, /media/stack/studio-dusk-violet-1536.avif 1536w",
+              "webp": "/media/stack/studio-dusk-violet-320.webp 320w, /media/stack/studio-dusk-violet-640.webp 640w, /media/stack/studio-dusk-violet-960.webp 960w, /media/stack/studio-dusk-violet-1280.webp 1280w, /media/stack/studio-dusk-violet-1536.webp 1536w"
+            }
+          ]
+        },
+        "rose-gold": {
+          "name": "Rose Gold",
+          "gallery": [
+            {
+              "id": "stack-studio-rose-gold",
+              "role": "studio",
+              "finish": "rose-gold",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Stack concept in Rose Gold, a warm pink-champagne metallic finish with soft highlights along its edges: three rounded rectangular tiers with dark perforated vent bands between them. The outlined Synkurl mark sits on top; three small status lights glow on the front.",
+              "src": "/media/stack/studio-rose-gold-960.jpg",
+              "full": "/media/stack/studio-rose-gold-full.webp",
+              "avif": "/media/stack/studio-rose-gold-320.avif 320w, /media/stack/studio-rose-gold-640.avif 640w, /media/stack/studio-rose-gold-960.avif 960w, /media/stack/studio-rose-gold-1280.avif 1280w, /media/stack/studio-rose-gold-1536.avif 1536w",
+              "webp": "/media/stack/studio-rose-gold-320.webp 320w, /media/stack/studio-rose-gold-640.webp 640w, /media/stack/studio-rose-gold-960.webp 960w, /media/stack/studio-rose-gold-1280.webp 1280w, /media/stack/studio-rose-gold-1536.webp 1536w"
+            }
+          ]
+        }
+      }
+    },
+    "box": {
+      "name": "Box",
+      "url": "/models/box/",
+      "defaultFinish": "matte-black",
+      "finishes": {
+        "blush-pink": {
+          "name": "Blush Pink",
+          "gallery": [
+            {
+              "id": "box-studio-blush-pink",
+              "role": "studio",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box concept in Blush Pink: a low, square device with a softly rounded lid bearing the outlined Synkurl mark. Rows of black vent slots run above and below the pink front band, which shows three glowing status lights.",
+              "src": "/media/box/studio-blush-pink-960.jpg",
+              "full": "/media/box/studio-blush-pink-full.webp",
+              "avif": "/media/box/studio-blush-pink-320.avif 320w, /media/box/studio-blush-pink-640.avif 640w, /media/box/studio-blush-pink-960.avif 960w, /media/box/studio-blush-pink-1280.avif 1280w, /media/box/studio-blush-pink-1536.avif 1536w",
+              "webp": "/media/box/studio-blush-pink-320.webp 320w, /media/box/studio-blush-pink-640.webp 640w, /media/box/studio-blush-pink-960.webp 960w, /media/box/studio-blush-pink-1280.webp 1280w, /media/box/studio-blush-pink-1536.webp 1536w"
+            }
+          ]
+        },
+        "matte-black": {
+          "name": "Matte Black",
+          "gallery": [
+            {
+              "id": "box-studio-matte-black",
+              "role": "studio",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box concept in Matte Black: a low, square device with a softly rounded lid bearing the outlined Synkurl mark in a pale line. Vent slots run above and below the black front band, which shows three glowing status lights.",
+              "src": "/media/box/studio-matte-black-960.jpg",
+              "full": "/media/box/studio-matte-black-full.webp",
+              "avif": "/media/box/studio-matte-black-320.avif 320w, /media/box/studio-matte-black-640.avif 640w, /media/box/studio-matte-black-960.avif 960w, /media/box/studio-matte-black-1280.avif 1280w, /media/box/studio-matte-black-1536.avif 1536w",
+              "webp": "/media/box/studio-matte-black-320.webp 320w, /media/box/studio-matte-black-640.webp 640w, /media/box/studio-matte-black-960.webp 960w, /media/box/studio-matte-black-1280.webp 1280w, /media/box/studio-matte-black-1536.webp 1536w"
+            },
+            {
+              "id": "box-lifestyle-matte-black",
+              "role": "lifestyle",
+              "finish": "matte-black",
+              "width": 1672,
+              "height": 941,
+              "alt": "The Box concept in Matte Black sits on a polished wooden sideboard beneath a wall-mounted dark screen, its three status lights glowing. Late sunlight warms the textured white wall, and a dark stone tray holding a remote rests to the right.",
+              "src": "/media/box/lifestyle-matte-black-960.jpg",
+              "full": "/media/box/lifestyle-matte-black-full.webp",
+              "avif": "/media/box/lifestyle-matte-black-320.avif 320w, /media/box/lifestyle-matte-black-640.avif 640w, /media/box/lifestyle-matte-black-960.avif 960w, /media/box/lifestyle-matte-black-1280.avif 1280w, /media/box/lifestyle-matte-black-1672.avif 1672w",
+              "webp": "/media/box/lifestyle-matte-black-320.webp 320w, /media/box/lifestyle-matte-black-640.webp 640w, /media/box/lifestyle-matte-black-960.webp 960w, /media/box/lifestyle-matte-black-1280.webp 1280w, /media/box/lifestyle-matte-black-1672.webp 1672w"
+            },
+            {
+              "id": "box-detail-matte-black",
+              "role": "detail",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "Close-up of the Box concept in Matte Black: three status lights glow white, pale blue-green and amber, between rows of vent slots. Part of the outlined Synkurl mark shows on the rounded lid above.",
+              "src": "/media/box/detail-matte-black-960.jpg",
+              "full": "/media/box/detail-matte-black-full.webp",
+              "avif": "/media/box/detail-matte-black-320.avif 320w, /media/box/detail-matte-black-640.avif 640w, /media/box/detail-matte-black-960.avif 960w, /media/box/detail-matte-black-1280.avif 1280w, /media/box/detail-matte-black-1536.avif 1536w",
+              "webp": "/media/box/detail-matte-black-320.webp 320w, /media/box/detail-matte-black-640.webp 640w, /media/box/detail-matte-black-960.webp 960w, /media/box/detail-matte-black-1280.webp 1280w, /media/box/detail-matte-black-1536.webp 1536w"
+            }
+          ]
+        },
+        "dusk-violet": {
+          "name": "Dusk Violet / Purple",
+          "gallery": [
+            {
+              "id": "box-studio-dusk-violet",
+              "role": "studio",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box concept in Dusk Violet: a low, square device with a softly rounded, muted purple lid bearing the outlined Synkurl mark. Black vent slots run above and below the violet front band, which shows three glowing status lights.",
+              "src": "/media/box/studio-dusk-violet-960.jpg",
+              "full": "/media/box/studio-dusk-violet-full.webp",
+              "avif": "/media/box/studio-dusk-violet-320.avif 320w, /media/box/studio-dusk-violet-640.avif 640w, /media/box/studio-dusk-violet-960.avif 960w, /media/box/studio-dusk-violet-1280.avif 1280w, /media/box/studio-dusk-violet-1536.avif 1536w",
+              "webp": "/media/box/studio-dusk-violet-320.webp 320w, /media/box/studio-dusk-violet-640.webp 640w, /media/box/studio-dusk-violet-960.webp 960w, /media/box/studio-dusk-violet-1280.webp 1280w, /media/box/studio-dusk-violet-1536.webp 1536w"
+            }
+          ]
+        },
+        "rose-gold": {
+          "name": "Rose Gold",
+          "gallery": [
+            {
+              "id": "box-studio-rose-gold",
+              "role": "studio",
+              "finish": "rose-gold",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box concept in Rose Gold: a low, square device with a rounded lid in a warm pink-champagne sheen, bearing the outlined Synkurl mark. Black vent slots run above and below the front band, which shows three glowing status lights.",
+              "src": "/media/box/studio-rose-gold-960.jpg",
+              "full": "/media/box/studio-rose-gold-full.webp",
+              "avif": "/media/box/studio-rose-gold-320.avif 320w, /media/box/studio-rose-gold-640.avif 640w, /media/box/studio-rose-gold-960.avif 960w, /media/box/studio-rose-gold-1280.avif 1280w, /media/box/studio-rose-gold-1536.avif 1536w",
+              "webp": "/media/box/studio-rose-gold-320.webp 320w, /media/box/studio-rose-gold-640.webp 640w, /media/box/studio-rose-gold-960.webp 960w, /media/box/studio-rose-gold-1280.webp 1280w, /media/box/studio-rose-gold-1536.webp 1536w"
+            }
+          ]
+        }
+      }
+    },
+    "box-plus": {
+      "name": "Box Plus",
+      "url": "/models/box-plus/",
+      "defaultFinish": "dusk-violet",
+      "finishes": {
+        "blush-pink": {
+          "name": "Blush Pink",
+          "gallery": [
+            {
+              "id": "box-plus-studio-blush-pink",
+              "role": "studio",
+              "finish": "blush-pink",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box Plus concept in Blush Pink: a low square box in a dusty pink with rounded corners and a gently domed lid showing the outlined Synkurl mark. Small vent slots ring the lid seam; three lights glow on the front above a ribbed black base.",
+              "src": "/media/box-plus/studio-blush-pink-960.jpg",
+              "full": "/media/box-plus/studio-blush-pink-full.webp",
+              "avif": "/media/box-plus/studio-blush-pink-320.avif 320w, /media/box-plus/studio-blush-pink-640.avif 640w, /media/box-plus/studio-blush-pink-960.avif 960w, /media/box-plus/studio-blush-pink-1280.avif 1280w, /media/box-plus/studio-blush-pink-1536.avif 1536w",
+              "webp": "/media/box-plus/studio-blush-pink-320.webp 320w, /media/box-plus/studio-blush-pink-640.webp 640w, /media/box-plus/studio-blush-pink-960.webp 960w, /media/box-plus/studio-blush-pink-1280.webp 1280w, /media/box-plus/studio-blush-pink-1536.webp 1536w"
+            }
+          ]
+        },
+        "matte-black": {
+          "name": "Matte Black",
+          "gallery": [
+            {
+              "id": "box-plus-studio-matte-black",
+              "role": "studio",
+              "finish": "matte-black",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box Plus concept in Matte Black: a low square box with rounded corners and a gently domed lid showing the Synkurl mark in a pale outline. Small vent slots ring the lid seam; three lights glow on the front above a ribbed base.",
+              "src": "/media/box-plus/studio-matte-black-960.jpg",
+              "full": "/media/box-plus/studio-matte-black-full.webp",
+              "avif": "/media/box-plus/studio-matte-black-320.avif 320w, /media/box-plus/studio-matte-black-640.avif 640w, /media/box-plus/studio-matte-black-960.avif 960w, /media/box-plus/studio-matte-black-1280.avif 1280w, /media/box-plus/studio-matte-black-1536.avif 1536w",
+              "webp": "/media/box-plus/studio-matte-black-320.webp 320w, /media/box-plus/studio-matte-black-640.webp 640w, /media/box-plus/studio-matte-black-960.webp 960w, /media/box-plus/studio-matte-black-1280.webp 1280w, /media/box-plus/studio-matte-black-1536.webp 1536w"
+            }
+          ]
+        },
+        "dusk-violet": {
+          "name": "Dusk Violet / Purple",
+          "gallery": [
+            {
+              "id": "box-plus-studio-dusk-violet",
+              "role": "studio",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box Plus concept in Dusk Violet: a low square box in a muted purple with rounded corners and a gently domed lid showing the outlined Synkurl mark. Small vent slots ring the lid seam; three lights glow on the front above a ribbed black base.",
+              "src": "/media/box-plus/studio-dusk-violet-960.jpg",
+              "full": "/media/box-plus/studio-dusk-violet-full.webp",
+              "avif": "/media/box-plus/studio-dusk-violet-320.avif 320w, /media/box-plus/studio-dusk-violet-640.avif 640w, /media/box-plus/studio-dusk-violet-960.avif 960w, /media/box-plus/studio-dusk-violet-1280.avif 1280w, /media/box-plus/studio-dusk-violet-1536.avif 1536w",
+              "webp": "/media/box-plus/studio-dusk-violet-320.webp 320w, /media/box-plus/studio-dusk-violet-640.webp 640w, /media/box-plus/studio-dusk-violet-960.webp 960w, /media/box-plus/studio-dusk-violet-1280.webp 1280w, /media/box-plus/studio-dusk-violet-1536.webp 1536w"
+            },
+            {
+              "id": "box-plus-lifestyle-dusk-violet",
+              "role": "lifestyle",
+              "finish": "dusk-violet",
+              "width": 1672,
+              "height": 941,
+              "alt": "The Box Plus concept in Dusk Violet sits on a wooden floating shelf above a stainless-steel refrigerator in a sunlit kitchen, three front lights glowing. Pale cabinets, a leafy window, a chopping board and a pot of wooden spoons and a whisk complete the scene.",
+              "src": "/media/box-plus/lifestyle-dusk-violet-960.jpg",
+              "full": "/media/box-plus/lifestyle-dusk-violet-full.webp",
+              "avif": "/media/box-plus/lifestyle-dusk-violet-320.avif 320w, /media/box-plus/lifestyle-dusk-violet-640.avif 640w, /media/box-plus/lifestyle-dusk-violet-960.avif 960w, /media/box-plus/lifestyle-dusk-violet-1280.avif 1280w, /media/box-plus/lifestyle-dusk-violet-1672.avif 1672w",
+              "webp": "/media/box-plus/lifestyle-dusk-violet-320.webp 320w, /media/box-plus/lifestyle-dusk-violet-640.webp 640w, /media/box-plus/lifestyle-dusk-violet-960.webp 960w, /media/box-plus/lifestyle-dusk-violet-1280.webp 1280w, /media/box-plus/lifestyle-dusk-violet-1672.webp 1672w"
+            },
+            {
+              "id": "box-plus-detail-dusk-violet",
+              "role": "detail",
+              "finish": "dusk-violet",
+              "width": 1536,
+              "height": 1024,
+              "alt": "Close-up of the Box Plus concept in Dusk Violet, showing a rounded front corner in muted purple. Small vent slots ring the lid seam, three lights glow, and a ribbed black base runs beneath.",
+              "src": "/media/box-plus/detail-dusk-violet-960.jpg",
+              "full": "/media/box-plus/detail-dusk-violet-full.webp",
+              "avif": "/media/box-plus/detail-dusk-violet-320.avif 320w, /media/box-plus/detail-dusk-violet-640.avif 640w, /media/box-plus/detail-dusk-violet-960.avif 960w, /media/box-plus/detail-dusk-violet-1280.avif 1280w, /media/box-plus/detail-dusk-violet-1536.avif 1536w",
+              "webp": "/media/box-plus/detail-dusk-violet-320.webp 320w, /media/box-plus/detail-dusk-violet-640.webp 640w, /media/box-plus/detail-dusk-violet-960.webp 960w, /media/box-plus/detail-dusk-violet-1280.webp 1280w, /media/box-plus/detail-dusk-violet-1536.webp 1536w"
+            }
+          ]
+        },
+        "rose-gold": {
+          "name": "Rose Gold",
+          "gallery": [
+            {
+              "id": "box-plus-studio-rose-gold",
+              "role": "studio",
+              "finish": "rose-gold",
+              "width": 1536,
+              "height": 1024,
+              "alt": "The Box Plus concept in Rose Gold: a low square box with a warm, softly reflective metallic-look finish, rounded corners and a gently domed lid showing the outlined Synkurl mark. Small vent slots ring the lid seam; three front lights glow above a ribbed black base.",
+              "src": "/media/box-plus/studio-rose-gold-960.jpg",
+              "full": "/media/box-plus/studio-rose-gold-full.webp",
+              "avif": "/media/box-plus/studio-rose-gold-320.avif 320w, /media/box-plus/studio-rose-gold-640.avif 640w, /media/box-plus/studio-rose-gold-960.avif 960w, /media/box-plus/studio-rose-gold-1280.avif 1280w, /media/box-plus/studio-rose-gold-1536.avif 1536w",
+              "webp": "/media/box-plus/studio-rose-gold-320.webp 320w, /media/box-plus/studio-rose-gold-640.webp 640w, /media/box-plus/studio-rose-gold-960.webp 960w, /media/box-plus/studio-rose-gold-1280.webp 1280w, /media/box-plus/studio-rose-gold-1536.webp 1536w"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -5,7 +5,10 @@
     "dev": "wrangler dev",
     "test": "vitest run",
     "db:setup:local": "wrangler d1 migrations apply sdrive-waitlist --local",
-    "db:rows:local": "wrangler d1 execute sdrive-waitlist --local --command \"SELECT * FROM waitlist\""
+    "db:rows:local": "wrangler d1 execute sdrive-waitlist --local --command \"SELECT * FROM waitlist\"",
+    "check:site": "node scripts/build-pages.mjs --check",
+    "build:pages": "node scripts/build-pages.mjs",
+    "build:images": "python3 scripts/build-images.py"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "0.22.0",

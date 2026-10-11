@@ -1,3 +1,9 @@
 node_modules/
 .wrangler/
 .dev.vars
+
+# Original product PNGs (kept out of git; see README "Product images")
+design-masters/
+# Local progress notes
+.notes/
+__pycache__/
