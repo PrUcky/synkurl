@@ -18,8 +18,14 @@ The GitHub repository is called `synkurl`. The site lives in its `synkurl-site/`
 | `public/` | The website: pages, styles, scripts, pictures, the self-hosted font |
 | `public/_headers` | Security rules sent with every page |
 | `public/styles.css` | All styles. Everything that moves is in the "Motion" block at the end |
-| `public/motion.js`, `public/home.js` | Optional motion: story scenes, pausing loops, the app demo |
-| `public/art/` | Illustrations (family stories, the concept device, design ideas) |
+| `public/models/` | The six concept-design pages (`/models/arch/` …), the Models page and `manifest.json` (the public list of product photos). Built by `scripts/build-pages.mjs` |
+| `public/media/` | Web-sized product photos (AVIF, WebP, one JPEG). Built by `scripts/build-images.py` |
+| `public/gallery.js`, `gallery-state.js` | The photo viewer on model pages: finishes, thumbnails, full-size view |
+| `public/chapter.js`, `finishes.js`, `home.js` | Homepage: the six-form chapter, the finish explorer, the app demo |
+| `public/motion.js` | Gentle motion shared by all pages (switches off with "reduce motion") |
+| `public/art/` | Illustrations for the family stories |
+| `data/models.json` | The six designs: names, wording, finishes, photo descriptions. **Edit this, then rebuild** |
+| `scripts/` | Builders for the photos and pages (see "Product photos and model pages") |
 | `src/index.js` | The backend (Worker): sends each request to the right code |
 | `src/waitlist.js` | Joining, confirming, removing, daily clean-up |
 | `src/checks.js` | Checks shared by the forms: email, bot check, rate limit |
@@ -206,12 +212,49 @@ When the privacy notice changes, also change `CONSENT_VERSION` in `src/waitlist.
 
 ---
 
+## Product photos and model pages
+
+The six designs (Arch, Dome, Spine, Stack, Box, Box Plus) are **concept designs**. Their photos are generated design concepts, not photographs of finished products, and every page says so.
+
+**Where things live**
+- The original PNGs from the design pack are kept **out of git**, in `design-masters/models/<model>/` (git ignores that folder). Keep the design-pack ZIPs somewhere safe; they are the masters.
+- `data/models.json` holds the wording, the four finishes, which finish each room and close-up photo really shows, and a description (alt text) for every photo.
+- `public/media/` holds the small web copies. `public/models/manifest.json` lists every photo by model, then finish, then gallery.
+
+**To add or replace photos** (for example the missing ones listed below):
+1. Put the PNG in `design-masters/models/<model>/` with the same name pattern (`studio-rose-gold.png`, `lifestyle.png`, `detail.png`).
+2. Add or update its description in `data/models.json`.
+3. Run `npm run build:images` (needs Python 3 with Pillow 11 or newer), then `npm run build:pages`.
+4. Run `npm run check:site` and `npm test`, look at the pages, and commit.
+
+**To change wording on the model pages or the homepage:** edit `data/models.json` (or `scripts/build-pages.mjs` for the page layout), run `npm run build:pages`, then commit. Don't edit `public/index.html` or `public/models/` by hand: the builder overwrites them, and `npm run check:site` (also run on every pull request) fails if they're out of date. The builder also copies the shared header and footer into every other page.
+
+**Rules the photos follow**
+- A finish's gallery only ever shows photos of that finish. A photo is never recoloured, relabelled or reused as a different finish.
+- Room and close-up photos that show another finish are shown in their own sections, labelled with the finish they really show.
+- Choosing a finish changes the address to `/models/arch/?colour=rose-gold`, so the choice can be shared, reloaded, and undone with Back.
+
+**Missing photos (not supplied yet)**
+- Dome in Rose Gold, studio view: the file was cut off in the uploaded ZIP. Dome's Rose Gold gallery shows its real Rose Gold room and close-up photos until it arrives.
+- Room ("lifestyle") and close-up ("detail") photos exist in one finish per design. These 36 are missing: for each design, the room and close-up photos in the three other finishes.
+
+| Design | Has room + close-up in | Missing room + close-up in |
+|---|---|---|
+| Arch | Dusk Violet | Blush Pink, Matte Black, Rose Gold |
+| Dome | Rose Gold | Blush Pink, Matte Black, Dusk Violet |
+| Spine | Blush Pink | Matte Black, Dusk Violet, Rose Gold |
+| Stack | Matte Black | Blush Pink, Dusk Violet, Rose Gold |
+| Box | Matte Black | Blush Pink, Dusk Violet, Rose Gold |
+| Box Plus | Dusk Violet | Blush Pink, Matte Black, Rose Gold |
+
 ## Motion, in plain words
 
 - Everything that moves is in one block at the end of `styles.css`, inside `@media (prefers-reduced-motion: no-preference)`. People who switch on "reduce motion" on their phone see the still version, which tells the same story. A test checks this.
 - Only `transform` (moving, turning, growing) and `opacity` (fading) are animated. They're cheap for phones to draw.
 - Endless loops (the hero tiles, the device's glow) pause when they're off screen.
 - No animation libraries. Page transitions use the browser's View Transitions feature where it exists; other browsers load pages normally.
+- The six-form chapter on the homepage: on large screens it stays in place while normal scrolling moves the row sideways (the page never takes over the mouse wheel). On phones, with "reduce motion", or without JavaScript, it's a row you swipe.
+- Nothing is hidden waiting for motion: the "settle in" starting states only apply after `motion.js` has started.
 
 ## Working on it locally
 
@@ -219,8 +262,9 @@ When the privacy notice changes, also change `CONSENT_VERSION` in `src/waitlist.
 npm ci                     # install the exact tool versions
 cp .dev.vars.example .dev.vars
 npm run db:setup:local     # build the tables in a local test database
-npm run dev                # open http://localhost:8787
+npm run dev                # open http://localhost:8787 (the preview)
 npm test                   # run the automatic tests
+npm run check:site         # check the built pages and photo list are up to date
 ```
 
 ## The tests, in plain words
@@ -240,6 +284,7 @@ Tests run inside Cloudflare's real Workers runtime, with a throwaway local datab
 | … *JavaScript off* | A plain form post gets a readable page, not raw data. |
 | `test/investors.test.js` | Every investor form rule is checked; the bot check and rate limit apply; one email can send about 3 messages a day; the founder and the investor get the right emails (the message is shown safely as text); without email set up the message is still saved with the same thank-you; messages older than 2 years are cleaned up. |
 | `test/motion.test.js` | "Reduce motion": every animation and transition sits inside the reduce-motion guard, so each page has a still version; motion only changes position/size (transform) and see-through-ness (opacity). |
+| `test/models.test.js` | Every model page loads straight from its address; each has the four named finishes, thumbnails, the full-size viewer, rooms, close-up, the other designs and the waitlist; it still works without JavaScript; every finish's gallery holds only photos of that finish; every photo file listed is published and the PNG masters aren't; no prices, sizes, dates or buying words; the concept-design note is on every page; and the gallery's rules (colour in the address, keeping the same view when switching) behave. |
 | `test/headers.test.js` | Every page and every Worker answer has the security headers. HSTS only on synkurl.com. |
 | `test/site.test.js` | Every page has the same header and footer (Investors only in the footer), its own title and description, preview tags; the sitemap and canonical links are right; the privacy page shows the current `CONSENT_VERSION`. |
 | `test/email-hint.test.js` | The "Did you mean gmail.com?" hint catches common typos and stays quiet for real addresses. |
