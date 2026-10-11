@@ -6,3 +6,4 @@ node_modules/
 design-masters/
 # Local progress notes
 .notes/
+__pycache__/
