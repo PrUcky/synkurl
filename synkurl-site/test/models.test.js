@@ -66,9 +66,10 @@ describe("each model page", () => {
     const page = await html(`/models/${id}/`);
     const data = modelData(page);
     for (const role of ["lifestyle", "detail"]) {
-      const finish = FINISHES.find((f) => data.finishes[f].gallery.some((img) => img.role === role));
       const section = page.slice(page.indexOf(`editorial-${role}`));
-      expect(section).toContain(`Shown in ${data.finishes[finish].name}`);
+      const finish = section.match(new RegExp(`/media/${id}/${role}-([a-z-]+)-\\d+\\.`))[1];
+      expect(FINISHES).toContain(finish);
+      expect(section.slice(0, section.indexOf("</figure>"))).toContain(`Shown in ${data.finishes[finish].name}`);
     }
   });
 });
@@ -94,12 +95,17 @@ describe("photos and the public manifest", () => {
     }
   });
 
-  it("each model has one lifestyle and one close-up, listed only under their real finish", async () => {
+  it("each model has a lifestyle and a close-up photo, each listed only under its real finish", async () => {
     const m = await manifest();
     for (const [id, model] of Object.entries(m.models)) {
       for (const role of ["lifestyle", "detail"]) {
         const holders = FINISHES.filter((f) => model.finishes[f].gallery.some((img) => img.role === role));
-        expect(holders, `${id} ${role}`).toHaveLength(1);
+        expect(holders.length, `${id} ${role}`).toBeGreaterThanOrEqual(1);
+        for (const f of holders) {
+          const imgs = model.finishes[f].gallery.filter((img) => img.role === role);
+          expect(imgs, `${id} ${role} ${f}`).toHaveLength(1);
+          expect(imgs[0].src).toContain(`/${role}-${f}-`);
+        }
       }
     }
   });

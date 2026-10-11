@@ -44,7 +44,9 @@ const largest = (list) => list[list.length - 1].file;
 // ---------- The public image manifest ----------
 
 function imageRecord(model, entry) {
-  const key = entry.role === "studio" ? `studio-${entry.finish}` : entry.role;
+  // Alt text keys in data/models.json: studio-<finish>; lifestyle / detail for the main
+  // room and close-up photos; lifestyle-<finish> / detail-<finish> for extra finishes.
+  const key = entry.role === "studio" ? `studio-${entry.finish}` : entry.finish === model[entry.role].finish ? entry.role : `${entry.role}-${entry.finish}`;
   const alt = model.images[key];
   if (!alt) throw new Error(`No alt text for ${model.id}/${key} in data/models.json`);
   return {
@@ -75,7 +77,8 @@ function buildModels() {
         .sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role));
       finishes[f.id] = { name: f.name, gallery };
     }
-    const byRole = (role) => records.find((r) => r.role === role);
+    // The editorial room and close-up sections use the main photo for each.
+    const byRole = (role) => records.find((r) => r.role === role && r.finish === m[role].finish);
     const studio = (fid) => finishes[fid].gallery.find((r) => r.role === "studio");
     return { ...m, index, url: `/models/${m.id}/`, finishes, lifestyleImg: byRole("lifestyle"), detailImg: byRole("detail"), studio };
   });

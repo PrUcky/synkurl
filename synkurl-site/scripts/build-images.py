@@ -2,7 +2,9 @@
 """Makes the web images for the six concept designs.
 
 Reads the original PNGs from design-masters/models/<model>/ (kept out of git:
-copy them there from the design pack ZIPs) and writes smaller copies to
+copy them there from the design pack ZIPs): studio-<finish>.png, lifestyle.png,
+detail.png, and optionally lifestyle-<finish>.png / detail-<finish>.png for room
+and close-up photos in more finishes. It writes smaller copies to
 public/media/<model>/:
 
   <role>-<finish>-<width>.avif   smallest, used by most current browsers
@@ -56,6 +58,12 @@ def main():
         planned = [("studio", f, f"studio-{f}.png") for f in finishes]
         planned.append(("lifestyle", model["lifestyle"]["finish"], "lifestyle.png"))
         planned.append(("detail", model["detail"]["finish"], "detail.png"))
+        # Extra room and close-up photos in other finishes, when supplied:
+        # lifestyle-<finish>.png and detail-<finish>.png (each needs alt text in data/models.json).
+        for role in ("lifestyle", "detail"):
+            for f in finishes:
+                if f != model[role]["finish"] and os.path.exists(os.path.join(src_dir, f"{role}-{f}.png")):
+                    planned.append((role, f, f"{role}-{f}.png"))
 
         entries = []
         for role, finish, filename in planned:
