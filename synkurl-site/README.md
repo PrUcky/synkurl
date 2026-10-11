@@ -220,15 +220,21 @@ The six designs (Arch, Dome, Spine, Stack, Box, Box Plus) are **concept designs*
 **Where things live**
 - The original PNGs from the design pack are kept **out of git**, in `design-masters/models/<model>/` (git ignores that folder). Keep the design-pack ZIPs somewhere safe; they are the masters.
 - `data/models.json` holds the wording, the four finishes, which finish each room and close-up photo really shows, and a description (alt text) for every photo.
-- `public/media/` holds the small web copies. `public/models/manifest.json` lists every photo by model, then finish, then gallery.
+- `public/media/` holds the web copies: small AVIF and WebP sizes for the pages, and one `-full.webp` per photo with every pixel of the original (lossless) for zooming. `public/models/manifest.json` lists every photo by model, then finish, then gallery.
+- The originals stay out of git on purpose: they are larger (about 71 MB for 35 PNGs), and each one carries hidden data from the image generator (its content credentials, with dates). The `-full.webp` copies have exactly the same pixels and none of that data.
 
 **To add or replace photos** (for example the missing ones listed below):
-1. Put the PNG in `design-masters/models/<model>/` with the same name pattern (`studio-rose-gold.png`, `lifestyle.png`, `detail.png`).
+1. Put the PNG in `design-masters/models/<model>/` with the same name pattern (`studio-rose-gold.png`, `lifestyle.png`, `detail.png`). Room and close-up photos in more finishes are named by finish: `lifestyle-rose-gold.png`, `detail-rose-gold.png`, each with a description keyed `lifestyle-rose-gold` / `detail-rose-gold` in `data/models.json`.
 2. Add or update its description in `data/models.json`.
 3. Run `npm run build:images` (needs Python 3 with Pillow 11 or newer), then `npm run build:pages`.
 4. Run `npm run check:site` and `npm test`, look at the pages, and commit.
 
 **To change wording on the model pages or the homepage:** edit `data/models.json` (or `scripts/build-pages.mjs` for the page layout), run `npm run build:pages`, then commit. Don't edit `public/index.html` or `public/models/` by hand: the builder overwrites them, and `npm run check:site` (also run on every pull request) fails if they're out of date. The builder also copies the shared header and footer into every other page.
+
+**Zoom, and why photo size matters**
+- The full-size viewer shows a photo as large as the screen allows, but never larger than its real pixels. Customers can zoom (pinch, double-tap, click, the Zoom button, or + and −) only as far as the photo stays sharp: at least one photo pixel per screen point, two on sharp phone and laptop screens. While zoomed, the viewer shows the lossless copy.
+- Today's originals are 1536 × 1024 pixels. That's enough for a sharp full-screen view everywhere and about 2× zoom on phones, but not more. A photo can't show detail it doesn't have: zooming further would blur any photo, even the original.
+- To allow deeper zoom, supply bigger originals (for example 3072 × 2048) and rebuild. No code change is needed: the sizes and the zoom limit grow with the photos.
 
 **Rules the photos follow**
 - A finish's gallery only ever shows photos of that finish. A photo is never recoloured, relabelled or reused as a different finish.
