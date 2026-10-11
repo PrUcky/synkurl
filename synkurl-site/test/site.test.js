@@ -4,9 +4,7 @@ import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import { CONSENT_VERSION } from "../src/waitlist.js";
 
-const INDEXED = ["/", "/for-families", "/faq", "/join", "/investors", "/privacy"];
-const UTILITY = ["/check-email", "/confirm", "/remove", "/confirmed", "/removed", "/link-expired"];
-export const PAGES = [...INDEXED, ...UTILITY, "/404"];
+import { INDEXED, PAGES, UTILITY, visibleText } from "./pages.js";
 
 async function html(path) {
   const res = await exports.default.fetch(`https://synkurl.com${path}`);
@@ -40,7 +38,7 @@ describe("every page", () => {
       const page = await html(path);
       titles.add(page.match(/<title>(.*?)<\/title>/)[1]);
       descriptions.add(page.match(/<meta name="description" content="(.*?)">/)[1]);
-      expect(page, path).toContain('property="og:image" content="https://synkurl.com/og-image.png"');
+      expect(page, path).toMatch(/property="og:image" content="https:\/\/synkurl\.com\/[^"]+\.(png|jpg)"/);
       expect(page, path).toContain('name="twitter:card"');
     }
     expect(titles.size).toBe(PAGES.length);
@@ -80,7 +78,8 @@ describe("the waitlist page", () => {
 
 describe("the investors page", () => {
   it("is a contact page, not an offer", async () => {
-    const page = (await html("/investors")).toLowerCase();
+    // Only the words a visitor reads, not the page's code (an SVG may say stroke-linecap="round").
+    const page = visibleText(await html("/investors")).toLowerCase();
     expect(page).toContain("get in touch");
     expect(page).toContain("we'd love to talk");
     for (const word of ["share", "round", "valuation", "returns", "invest now", "opportunit"]) {

@@ -1,0 +1,87 @@
+<section class="section wrap lazy-section" id="app" aria-labelledby="app-title">
+  <div class="section-head">
+    <h2 id="app-title">A first look at the app</h2>
+    <p class="muted">Four screens from the app we are designing.</p>
+  </div>
+  <svg class="sprites" aria-hidden="true" focusable="false">
+    <symbol id="pic-cake" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2a3a75"/><rect x="10" y="22" width="20" height="10" rx="2" fill="#f6c6d6"/><rect x="10" y="20" width="20" height="4" rx="2" fill="#fff3f7"/><path d="M15 20v-5M20 20v-5M25 20v-5" stroke="#eef1ff" stroke-width="1.5"/><circle cx="15" cy="13" r="1.6" fill="#ffb648"/><circle cx="20" cy="13" r="1.6" fill="#ffb648"/><circle cx="25" cy="13" r="1.6" fill="#ffb648"/><path d="M6 32h28" stroke="#a9b3d9" stroke-width="1.2"/></symbol>
+    <symbol id="pic-beach" viewBox="0 0 40 40"><rect width="40" height="40" fill="#5ab3d6"/><circle cx="29" cy="11" r="5" fill="#ffe08a"/><rect y="22" width="40" height="6" fill="#2f7fb0"/><rect y="28" width="40" height="12" fill="#f2d79c"/><path d="M9 28c0-7 2-12 6-15M15 13c-4 0-7 2-8 4M15 13c3-1 6 0 8 2" stroke="#2e5e3a" stroke-width="1.6" fill="none"/></symbol>
+    <symbol id="pic-diya" viewBox="0 0 40 40"><rect width="40" height="40" fill="#1b2350"/><circle cx="20" cy="20" r="12" fill="#ffb648" opacity="0.18"/><path d="M10 26q10 9 20 0z" fill="#e0782c"/><path d="M20 24c-4-4-3-9 0-13 3 4 4 9 0 13z" fill="#ffd896"/></symbol>
+    <symbol id="pic-road" viewBox="0 0 40 40"><rect width="40" height="40" fill="#9cc7e8"/><path d="M0 24l10-10 8 7 8-11 14 14v16H0z" fill="#5b7b9b"/><path d="M0 30l14-8 12 6 14-6v18H0z" fill="#4f8a5b"/><path d="M18 40c2-6 8-10 16-12" stroke="#d9d3c3" stroke-width="3" fill="none"/></symbol>
+    <symbol id="pic-kite" viewBox="0 0 40 40"><rect width="40" height="40" fill="#8fd0ef"/><path d="M20 6l9 11-9 11-9-11z" fill="#f05a5a"/><path d="M20 6v22M11 17h18" stroke="#fff" stroke-width="1"/><path d="M20 28c-3 4 2 6-1 10" stroke="#fff" stroke-width="1" fill="none"/></symbol>
+    <symbol id="pic-rangoli" viewBox="0 0 40 40"><rect width="40" height="40" fill="#3a2a5a"/><circle cx="20" cy="20" r="11" fill="#e4486b"/><circle cx="20" cy="20" r="7.5" fill="#ffb648"/><circle cx="20" cy="20" r="4" fill="#3fb6a8"/><circle cx="20" cy="20" r="1.6" fill="#fff"/></symbol>
+    <symbol id="pic-chai" viewBox="0 0 40 40"><rect width="40" height="40" fill="#c98b56"/><path d="M13 14h14l-2 16H15z" fill="#f4efe6" opacity="0.85"/><path d="M14 18h12l-1.6 12h-8.8z" fill="#b5652a"/><path d="M17 11c0-2 2-2 2-4M22 11c0-2 2-2 2-4" stroke="#fff" stroke-width="1" fill="none" opacity="0.7"/></symbol>
+    <symbol id="pic-sunset" viewBox="0 0 40 40"><rect width="40" height="40" fill="#f08a5d"/><rect y="20" width="40" height="20" fill="#6b4a8a"/><circle cx="20" cy="21" r="7" fill="#ffd896"/><rect y="24" width="40" height="16" fill="#3f3a7a"/></symbol>
+    <symbol id="pic-flowers" viewBox="0 0 40 40"><rect width="40" height="40" fill="#2f5a3c"/><circle cx="12" cy="16" r="5" fill="#ffb648"/><circle cx="26" cy="13" r="5" fill="#f28fb0"/><circle cx="21" cy="26" r="5" fill="#ffd896"/><circle cx="12" cy="16" r="1.6" fill="#7a4a10"/><circle cx="26" cy="13" r="1.6" fill="#7a2a4a"/><circle cx="21" cy="26" r="1.6" fill="#7a4a10"/></symbol>
+  </svg>
+  <div class="app-demo" data-demo>
+    <div class="demo-screens" id="demo-screens">
+      <figure class="phone-mock" id="screen-backed-up" aria-label="Screen 1 of 4: Backed up">
+        <div class="phone-screen">
+          <p class="app-bar">Synkurl</p>
+          <svg class="app-status" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="27" fill="rgba(255,182,72,0.14)"/><path d="M19 46V28a11 11 0 0 1 22 0v18z" fill="#ffb648"/><path d="M25 35l4 4 7-8" stroke="#1b1405" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p class="app-big">All backed up</p>
+          <p class="app-small">12,480 photos and videos are safe at home.</p>
+          <div class="app-strip">
+            <svg viewBox="0 0 40 40"><use href="#pic-cake"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-diya"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-beach"/></svg>
+          </div>
+          <p class="app-small">Newest: birthday cake, just now</p>
+        </div>
+        <figcaption>Backed up</figcaption>
+      </figure>
+
+      <figure class="phone-mock" id="screen-albums" aria-label="Screen 2 of 4: Albums">
+        <div class="phone-screen">
+          <p class="app-bar">Albums</p>
+          <p class="app-label">Diwali 2025 · 214</p>
+          <div class="app-grid">
+            <svg viewBox="0 0 40 40"><use href="#pic-diya"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-rangoli"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-flowers"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-chai"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-cake"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-diya"/></svg>
+          </div>
+          <p class="app-label">Holiday · 386</p>
+          <div class="app-grid">
+            <svg viewBox="0 0 40 40"><use href="#pic-beach"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-road"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-sunset"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-kite"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-road"/></svg>
+            <svg viewBox="0 0 40 40"><use href="#pic-beach"/></svg>
+          </div>
+        </div>
+        <figcaption>Albums</figcaption>
+      </figure>
+
+      <figure class="phone-mock" id="screen-away" aria-label="Screen 3 of 4: Away from home">
+        <div class="phone-screen">
+          <p class="app-pill">Away from home</p>
+          <p class="app-big">Your albums are here.</p>
+          <ul class="app-list">
+            <li><svg viewBox="0 0 40 40"><use href="#pic-diya"/></svg><span>Diwali 2025<small>214</small></span></li>
+            <li><svg viewBox="0 0 40 40"><use href="#pic-road"/></svg><span>Holiday<small>386</small></span></li>
+            <li><svg viewBox="0 0 40 40"><use href="#pic-cake"/></svg><span>Birthdays<small>97</small></span></li>
+            <li><svg viewBox="0 0 40 40"><use href="#pic-kite"/></svg><span>Makar Sankranti<small>45</small></span></li>
+          </ul>
+        </div>
+        <figcaption>Away from home</figcaption>
+      </figure>
+
+      <figure class="phone-mock" id="screen-restore" aria-label="Screen 4 of 4: Restore to this phone">
+        <div class="phone-screen">
+          <p class="app-bar">New phone?</p>
+          <svg class="app-status" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="27" fill="rgba(255,182,72,0.14)"/><path d="M19 46V28a11 11 0 0 1 22 0v18z" fill="#ffb648"/></svg>
+          <p class="app-big">Your photos are waiting at home.</p>
+          <p class="app-small">Bring every photo and video back to this phone.</p>
+          <p class="app-button">Restore to this phone</p>
+        </div>
+        <figcaption>Restore to this phone</figcaption>
+      </figure>
+    </div>
+  </div>
+  <p class="label-note">Early design. The real app may look different.</p>
+</section>

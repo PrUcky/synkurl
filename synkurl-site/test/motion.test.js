@@ -4,7 +4,7 @@
 // it applies, and the base styles show each picture's still, finished state.
 import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
-import { PAGES } from "./site.test.js";
+import { PAGES } from "./pages.js";
 
 const get = async (path) => (await exports.default.fetch(`https://synkurl.com${path}`)).text();
 
