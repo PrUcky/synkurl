@@ -13,7 +13,7 @@
     },
     {
       "id": "dusk-violet",
-      "name": "Dusk Violet",
+      "name": "Dusk Violet / Purple",
       "swatch": "#765987"
     },
     {
@@ -63,7 +63,7 @@
           ]
         },
         "dusk-violet": {
-          "name": "Dusk Violet",
+          "name": "Dusk Violet / Purple",
           "gallery": [
             {
               "id": "arch-studio-dusk-violet",
@@ -83,7 +83,7 @@
               "finish": "dusk-violet",
               "width": 1672,
               "height": 941,
-              "alt": "The Arch concept in Dusk Violet on a round dark-wood side table beside a beige fabric armchair, next to an open magazine. Its vent slots, outlined Synkurl mark and three status lights are visible; a wooden floor, rug and sunlit window sit behind.",
+              "alt": "The Arch concept in Dusk Violet on a round dark-wood side table beside a beige fabric armchair, next to a closed magazine lying flat. Its vent slots, outlined Synkurl mark and three status lights are visible; a wooden floor, rug and sunlit window sit behind.",
               "src": "/media/arch/lifestyle-dusk-violet-960.jpg",
               "full": "/media/arch/lifestyle-dusk-violet-1672.webp",
               "avif": "/media/arch/lifestyle-dusk-violet-320.avif 320w, /media/arch/lifestyle-dusk-violet-640.avif 640w, /media/arch/lifestyle-dusk-violet-960.avif 960w, /media/arch/lifestyle-dusk-violet-1280.avif 1280w, /media/arch/lifestyle-dusk-violet-1672.avif 1672w",
@@ -162,7 +162,7 @@
           ]
         },
         "dusk-violet": {
-          "name": "Dusk Violet",
+          "name": "Dusk Violet / Purple",
           "gallery": [
             {
               "id": "dome-studio-dusk-violet",
@@ -273,7 +273,7 @@
           ]
         },
         "dusk-violet": {
-          "name": "Dusk Violet",
+          "name": "Dusk Violet / Purple",
           "gallery": [
             {
               "id": "spine-studio-dusk-violet",
@@ -372,7 +372,7 @@
           ]
         },
         "dusk-violet": {
-          "name": "Dusk Violet",
+          "name": "Dusk Violet / Purple",
           "gallery": [
             {
               "id": "stack-studio-dusk-violet",
@@ -471,7 +471,7 @@
           ]
         },
         "dusk-violet": {
-          "name": "Dusk Violet",
+          "name": "Dusk Violet / Purple",
           "gallery": [
             {
               "id": "box-studio-dusk-violet",
@@ -546,7 +546,7 @@
           ]
         },
         "dusk-violet": {
-          "name": "Dusk Violet",
+          "name": "Dusk Violet / Purple",
           "gallery": [
             {
               "id": "box-plus-studio-dusk-violet",

@@ -312,6 +312,7 @@ p { margin: 0; }
 /* ---------- Finish swatches (model pages and the homepage) ---------- */
 
 .swatches { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; }
+.swatches[hidden] { display: none; }
 .swatch {
   display: inline-flex;
   align-items: center;
@@ -607,12 +608,16 @@ p { margin: 0; }
 }
 .finish-grid a { display: grid; gap: 0.6rem; text-decoration: none; }
 .finish-plate {
+  position: relative;
   display: block;
   aspect-ratio: 3 / 2;
   overflow: hidden;
   border-radius: var(--radius);
   background: var(--plate);
 }
+/* finishes.js loads the next finish's photo on top, invisibly, then fades it in. */
+.finish-plate .plate-layer { position: absolute; inset: 0; display: block; }
+.finish-plate .plate-layer.is-incoming { opacity: 0; }
 .finish-cell-name { font-family: var(--display); font-size: 1rem; letter-spacing: -0.02em; }
 .finish-cell-note { color: var(--fg-2); font-size: 0.84rem; }
 .finish-cell-note:empty { display: none; }
@@ -627,6 +632,7 @@ p { margin: 0; }
   align-items: start;
 }
 .life, .detail { margin: 0; display: grid; gap: 0.85rem; }
+.lifestyle { overflow-x: clip; } /* photos sliding in never widen the page */
 .life-frame, .detail-frame {
   display: block;
   overflow: hidden;
@@ -709,7 +715,7 @@ p { margin: 0; }
   background: var(--plate);
   touch-action: pan-y;
 }
-.stage-link { position: absolute; inset: 0; display: block; cursor: zoom-in; }
+.stage-link { position: absolute; inset: 0; display: block; border-radius: inherit; cursor: zoom-in; }
 .stage-layer { position: absolute; inset: 0; display: block; }
 .stage-layer .stage-img,
 .stage-img {
@@ -719,6 +725,25 @@ p { margin: 0; }
   object-fit: contain;   /* never crop the device; portrait photos letterbox */
 }
 .stage-layer.is-incoming { opacity: 0; }
+/* The frame is a link to the full-size photo: draw its focus ring inside the
+   frame, on top of the photo (an outline would be clipped or hidden under it). */
+.stage-link:focus-visible { outline: none; }
+.stage-link:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px var(--fg), inset 0 0 0 6px rgba(242, 238, 232, 0.9);
+  pointer-events: none;
+}
+/* A shared link asked for another finish (colour-first.js): the photo built into the
+   page is the wrong colour, so it, the finish name and the thumbnails stay hidden
+   until gallery.js shows the right ones together. */
+html[data-colour-pending] .stage-layer[data-built],
+html[data-colour-pending] [data-finish-name],
+html[data-colour-pending] [data-view-label],
+html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .stage-step {
   position: absolute;
   top: 50%;
@@ -784,7 +809,7 @@ p { margin: 0; }
 
 .layout-full-bleed { max-width: none; padding-inline: 0; }
 .layout-full-bleed .editorial-figure { grid-column: 1 / -1; }
-.layout-full-bleed .editorial-frame { border-radius: 0; aspect-ratio: 16 / 9; max-height: 82vh; }
+.layout-full-bleed .editorial-frame { border-radius: 0; width: 100%; height: min(56.25vw, 82vh); }
 .layout-full-bleed .finish-caption { padding-inline: var(--gutter); }
 .layout-full-bleed .editorial-text { grid-column: 7 / -1; padding-inline: var(--gutter) var(--gutter); max-width: calc(var(--max) / 2); }
 
@@ -863,6 +888,7 @@ p { margin: 0; }
 .lightbox-caption { font-size: 0.92rem; color: #cfc8bf; padding-right: 6rem; min-height: 1.5em; }
 .lightbox-stage { position: relative; min-height: 0; touch-action: pan-y; }
 .lightbox-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.lightbox-stage img.is-incoming { opacity: 0; }
 .lightbox-btn,
 .lightbox-close {
   position: absolute;
@@ -1136,6 +1162,7 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 }
 
 @media (max-width: 640px) {
+  html { scroll-padding-top: 7.5rem; } /* the header wraps onto two rows here */
   .site-head-inner { row-gap: 0; }
   .site-nav { order: 3; width: 100%; margin-left: 0; gap: 1.25rem; font-size: 0.9rem; }
   .brand { margin-right: auto; }
@@ -1182,8 +1209,7 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 
   /* Finish changes: the new photo fades in over the old one once it's ready. */
   .stage-layer { transition: opacity 0.22s ease; }
-  .finish-plate .plate-img { transition: opacity 0.22s ease; }
-  .finish-plate .plate-img.is-swapping { opacity: 0; }
+  .finish-plate .plate-layer { transition: opacity 0.22s ease; }
 
   /* Cards respond to hover and keyboard focus. */
   .form-plate .plate-img,
@@ -1208,7 +1234,6 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .lightbox[open] { animation: fade-in 0.22s ease both; }
   .lightbox[open] .lightbox-stage { animation: settle-in 0.32s var(--ease) both; }
   .lightbox-stage img { transition: opacity 0.2s ease; }
-  .lightbox-stage img.is-incoming { opacity: 0; }
 
   /* Page transitions: a soft cross-fade between pages, in browsers that support it.
      Other browsers simply load the next page as normal. */

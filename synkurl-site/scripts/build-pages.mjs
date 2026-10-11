@@ -30,6 +30,8 @@ const APP_DEMO = read("scripts/partials/app-demo.html");
 
 const FINISHES = DATA.finishes;
 const FINISH = Object.fromEntries(FINISHES.map((f) => [f.id, f]));
+// "Blush Pink, Matte Black, Dusk Violet / Purple and Rose Gold"
+const FINISH_LIST = `${FINISHES.slice(0, -1).map((f) => f.name).join(", ")} and ${FINISHES[FINISHES.length - 1].name}`;
 const ROLE_NAME = { studio: "Studio view", lifestyle: "In a home", detail: "Close-up" };
 const CONCEPT_NOTE = "Concept design. These images are design concepts, not photographs of a finished product. The final Synkurl device will look different.";
 
@@ -161,7 +163,7 @@ export const FOOTER = `  <footer class="site-foot">
     </div>
   </footer>`;
 
-function head({ path: pagePath, title, description, image, preload = "", scripts = [], jsonLd }) {
+function head({ path: pagePath, title, description, image, preload = "", scripts = [], jsonLd, defaultFinish }) {
   const url = SITE + pagePath;
   const og = image || { url: `${SITE}/og-image.png`, width: 1200, height: 630, alt: "Synkurl: your family's photos, kept at home." };
   const lines = [
@@ -185,6 +187,10 @@ function head({ path: pagePath, title, description, image, preload = "", scripts
   ];
   if (jsonLd) lines.push(`<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`);
   const scriptTags = [...scripts, "/motion.js"].map((s) => `\n  <script type="module" src="${s}"></script>`).join("");
+  // Model pages: a tiny script that runs before the first paint (see colour-first.js).
+  const early = defaultFinish
+    ? `\n  <script src="/colour-first.js" data-default="${defaultFinish}" data-finishes="${FINISHES.map((f) => f.id).join(" ")}"></script>`
+    : "";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -196,12 +202,12 @@ function head({ path: pagePath, title, description, image, preload = "", scripts
   ${lines.join("\n  ")}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/unbounded-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>${preload}
-  <link rel="stylesheet" href="/styles.css">${scriptTags}
+  <link rel="stylesheet" href="/styles.css">${early}${scriptTags}
 </head>`;
 }
 
-function page({ path: pagePath, title, description, image, preload, scripts, jsonLd, mainClass = "", body }) {
-  return `${head({ path: pagePath, title, description, image, preload, scripts, jsonLd })}
+function page({ path: pagePath, title, description, image, preload, scripts, jsonLd, defaultFinish, mainClass = "", body }) {
+  return `${head({ path: pagePath, title, description, image, preload, scripts, jsonLd, defaultFinish })}
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 ${header(pagePath)}
@@ -283,7 +289,7 @@ function editorial(m, kind) {
     <p class="eyebrow">${kind === "lifestyle" ? m.setting : "Detail"}</p>
     <h2 id="${kind}-title">${esc(copy.title)}</h2>
     <p>${esc(copy.text)}</p>
-    <p><a class="text-link" href="?colour=${img.finish}" data-pick-finish="${img.finish}">See ${m.name} in ${finishName}</a></p>
+    <p><a class="text-link" href="#finish-${img.finish}" data-pick-finish="${img.finish}">See ${m.name} in ${finishName}</a></p>
   </div>
 </section>`;
 }
@@ -294,7 +300,7 @@ function allFinishes(m) {
     const img = g.find((x) => x.role === "studio") || g[0];
     const note = g.find((x) => x.role === "studio") ? "" : `<span class="cell-note">Studio view not available yet. Shown: ${ROLE_NAME[img.role].toLowerCase()}.</span>`;
     return `<li id="finish-${f.id}" class="finish-cell">
-  <a href="?colour=${f.id}" data-pick-finish="${f.id}">
+  <a href="${img.full}" data-pick-finish="${f.id}">
     <span class="finish-plate">${picture(img, { sizes: "(min-width: 900px) 22vw, 45vw", imgCls: "plate-img" })}</span>
     <span class="finish-name"><span class="swatch-dot" style="--swatch: ${f.swatch}"></span>${f.name}</span>${note}
   </a>
@@ -349,7 +355,7 @@ function modelPage(m) {
       <div class="viewer" data-viewer data-model="${m.id}">
         <div class="viewer-stage" data-stage data-hero-in>
           <a class="stage-link" href="${hero.full}" data-open-full aria-label="View ${esc(m.name)} full size">
-            <span class="stage-layer is-current">${picture(hero, { sizes, priority: true, imgCls: "stage-img" })}</span>
+            <span class="stage-layer is-current" data-built>${picture(hero, { sizes, priority: true, imgCls: "stage-img" })}</span>
           </a>
           <button class="stage-step stage-prev" type="button" data-step="-1" aria-label="Previous view" hidden>‹</button>
           <button class="stage-step stage-next" type="button" data-step="1" aria-label="Next view" hidden>›</button>
@@ -403,10 +409,11 @@ ${indent(otherModels(m), 4)}
   return page({
     path: m.url,
     title: `${m.name} · Synkurl concept design`,
-    description: `${m.tagline} ${m.intro} Shown in Blush Pink, Matte Black, Dusk Violet and Rose Gold.`,
+    description: `${m.tagline} ${m.intro} Shown in ${FINISH_LIST}.`,
     image: ogFor(hero, `The ${m.name} concept in ${FINISH[m.default].name}`),
     preload: preloadHero(hero, sizes),
     scripts: ["/gallery.js"],
+    defaultFinish: m.default,
     mainClass: `model-page model-${m.id}`,
     body,
   });
@@ -439,15 +446,15 @@ function modelsIndex() {
     body: `    <section class="page-intro wrap" data-hero-in>
       <p class="eyebrow">Concept designs</p>
       <h1>Six forms for six corners of the home.</h1>
-      <p class="lede">One quiet job, six shapes. Every design is shown in Blush Pink, Matte Black, Dusk Violet and Rose Gold.</p>
+      <p class="lede">One quiet job, six shapes. Every design is shown in ${FINISH_LIST}.</p>
       <p class="concept-note">${CONCEPT_NOTE}</p>
     </section>
     <ol class="index-list wrap">
 ${indent(rows, 6)}
     </ol>
     <section class="section wrap closing-quiet">
-      <h2>Tell us which one you'd keep at home.</h2>
-      <p class="muted">Join the waitlist and hear about early access first.</p>
+      <h2>Hear first when early access opens.</h2>
+      <p class="muted">Join the waitlist. We'll email you when it opens, and nothing else.</p>
       <p><a class="btn" href="/join">Join the waitlist</a></p>
     </section>`,
   });
@@ -526,7 +533,7 @@ function homepage() {
       </div>
       <figure class="home-hero-figure hero-in" style="--i: 1">
         <a class="hero-plate" href="${arch.url}?colour=dusk-violet">${picture(heroImg, { sizes: heroSizes, priority: true, imgCls: "plate-img" })}</a>
-        <figcaption class="concept-note">The Arch concept in Dusk Violet. Concept design: the final Synkurl device will look different.</figcaption>
+        <figcaption class="concept-note">The Arch concept in ${FINISH[heroImg.finish].name}. Concept design: the final Synkurl device will look different.</figcaption>
       </figure>
     </section>
 
@@ -587,11 +594,11 @@ ${indent(chapterCards, 12)}
     <section class="section wrap finishes" id="finishes" aria-labelledby="finishes-title" data-finishes>
       <div class="section-head">
         <p class="eyebrow">Four finishes</p>
-        <h2 id="finishes-title">Blush Pink, Matte Black, Dusk Violet and Rose Gold.</h2>
+        <h2 id="finishes-title">${FINISH_LIST}.</h2>
         <p class="muted">Every design is shown in all four. Choose a finish to see the whole family in it.</p>
       </div>
       <div class="finish-picker">
-        <div class="swatches" data-finish-swatches aria-label="Choose a finish">
+        <div class="swatches" data-finish-swatches aria-label="Choose a finish" hidden>
 ${indent(finishButtons, 10)}
         </div>
         <p class="finish-label"><span class="finish-label-key">Showing</span> <strong data-finish-current>${FINISH[startFinish].name}</strong></p>
@@ -605,9 +612,9 @@ ${indent(finishCells, 8)}
     <section class="section lifestyle tone-dark" aria-labelledby="rooms-title">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">In real rooms</p>
+          <p class="eyebrow">At home</p>
           <h2 id="rooms-title">Made to live where your family does.</h2>
-          <p class="muted">Below the TV, among the books, beside your favourite chair. Each design is pictured where a family might keep it, in the finish it was photographed in.</p>
+          <p class="muted">Below the TV, among the books, beside your favourite chair. Each design is pictured where a family might keep it, in the finish shown in that picture.</p>
         </div>
       </div>
       <div class="life-grid wrap">

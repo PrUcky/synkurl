@@ -13,7 +13,7 @@
     },
     {
       "id": "dusk-violet",
-      "name": "Dusk Violet",
+      "name": "Dusk Violet / Purple",
       "swatch": "#765987"
     },
     {
@@ -51,7 +51,7 @@
         "studio-matte-black": "The Arch concept in Matte Black: a low-sheen black, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a thin champagne outline of the Synkurl mark in a circle, three small status lights and a slatted base.",
         "studio-dusk-violet": "The Arch concept in Dusk Violet: a muted violet, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a thin champagne outline of the Synkurl mark in a circle, three small status lights and a dark slatted base.",
         "studio-rose-gold": "The Arch concept in Rose Gold: a warm, softly reflective rose gold, arch-shaped device on a pale grey backdrop, with vent slots across its curved top, a seam sweeping around its sides, a subtle tone-on-tone Synkurl mark in a circle, three status lights and a dark slatted base.",
-        "lifestyle": "The Arch concept in Dusk Violet on a round dark-wood side table beside a beige fabric armchair, next to an open magazine. Its vent slots, outlined Synkurl mark and three status lights are visible; a wooden floor, rug and sunlit window sit behind.",
+        "lifestyle": "The Arch concept in Dusk Violet on a round dark-wood side table beside a beige fabric armchair, next to a closed magazine lying flat. Its vent slots, outlined Synkurl mark and three status lights are visible; a wooden floor, rug and sunlit window sit behind.",
         "detail": "Close-up of the Arch concept in Dusk Violet, showing the rounded top with a row of vent slots, the fine textured surface, a seam curving across the side, and part of the thin champagne outline of the Synkurl mark in a circle."
       }
     },
@@ -123,7 +123,7 @@
       "name": "Stack",
       "default": "matte-black",
       "tagline": "Three quiet tiers for the work corner.",
-      "intro": "Three stepped tiers in one piece, with dark lines of vents between them. Made to sit on a shelf near the Wi-Fi router.",
+      "intro": "Three stepped tiers with dark lines of vents between them. Made to sit on a shelf near the Wi-Fi router.",
       "setting": "Shelf near the Wi-Fi router",
       "lifestyle": {
         "finish": "matte-black",
@@ -132,8 +132,8 @@
       },
       "detail": {
         "finish": "matte-black",
-        "title": "Stepped, not stacked.",
-        "text": "The offset edges of the three tiers and the dark vent lines between them. One piece, shaped in steps."
+        "title": "Three tiers, fine vents.",
+        "text": "The rounded edges of the three tiers and the fine vent bands between them."
       },
       "layout": {
         "lifestyle": "offset-right",
@@ -186,8 +186,8 @@
       "id": "box-plus",
       "name": "Box Plus",
       "default": "dusk-violet",
-      "tagline": "A fuller box for an open shelf.",
-      "intro": "A taller rounded square with a soft curved side and a recessed base. A different shape, not a bigger or faster version of Box.",
+      "tagline": "A rounded box for an open shelf.",
+      "intro": "A rounded square with a softly curved side, a domed lid and a recessed base. A different shape from Box, nothing more.",
       "setting": "Open kitchen shelf",
       "lifestyle": {
         "finish": "dusk-violet",

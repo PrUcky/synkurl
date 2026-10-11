@@ -5,7 +5,7 @@ import { colourFromSearch, indexAfterSwitch, stepIndex } from "../public/gallery
 import { MODEL_IDS, visibleText } from "./pages.js";
 
 const FINISHES = ["blush-pink", "matte-black", "dusk-violet", "rose-gold"];
-const FINISH_NAMES = ["Blush Pink", "Matte Black", "Dusk Violet", "Rose Gold"];
+const FINISH_NAMES = ["Blush Pink", "Matte Black", "Dusk Violet / Purple", "Rose Gold"];
 
 const get = (path) => exports.default.fetch(`https://synkurl.com${path}`, { redirect: "manual" });
 const html = async (path) => (await get(path)).text();

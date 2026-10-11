@@ -4,7 +4,7 @@ import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import { CONSENT_VERSION } from "../src/waitlist.js";
 
-import { INDEXED, PAGES, UTILITY, visibleText } from "./pages.js";
+import { INDEXED, PAGES, UTILITY } from "./pages.js";
 
 async function html(path) {
   const res = await exports.default.fetch(`https://synkurl.com${path}`);
@@ -74,12 +74,19 @@ describe("the waitlist page", () => {
     expect(page).toContain("<noscript>");
     expect(page).toContain('name="lang" value="en"');
   });
+
+  it("keeps every question the privacy notice lists, with the answers the waitlist accepts", async () => {
+    const page = await html("/join");
+    for (const name of ["email", "phone_type", "city", "family_size", "device_pick"]) expect(page, name).toContain(`name="${name}"`);
+    for (const pick of ["arch", "album", "pebble", "not-sure"]) expect(page).toContain(`name="device_pick" value="${pick}"`);
+  });
 });
 
 describe("the investors page", () => {
   it("is a contact page, not an offer", async () => {
-    // Only the words a visitor reads, not the page's code (an SVG may say stroke-linecap="round").
-    const page = visibleText(await html("/investors")).toLowerCase();
+    // The whole page, meta descriptions and alt text included. Only the drawings are
+    // left out: their SVG code says stroke-linecap="round".
+    const page = (await html("/investors")).replace(/<svg[\s\S]*?<\/svg>/g, " ").toLowerCase();
     expect(page).toContain("get in touch");
     expect(page).toContain("we'd love to talk");
     for (const word of ["share", "round", "valuation", "returns", "invest now", "opportunit"]) {

@@ -1,16 +1,19 @@
 // The photo viewer on each model page.
 //
-// - Four finishes. Choosing one updates the main photo, the thumbnails, the
-//   full-size viewer, the finish name, the selected swatch and the address
-//   (/models/arch/?colour=rose-gold) together. Reload and Back/Forward restore it.
+// - Four finishes. Choosing one marks the swatch and updates the address
+//   (/models/arch/?colour=rose-gold) at once. The main photo, finish name,
+//   thumbnails and full-size viewer change together, once the new photo is ready,
+//   so a name never sits over a photo of another finish. Reload and Back/Forward
+//   restore the finish.
 // - A finish only ever shows photos that really show that finish.
 // - The next photo is loaded and decoded before it fades in, and a newer choice
 //   always wins over an older one that is still loading.
 // - Swipe, previous/next, thumbnails, arrow keys, and a full-size viewer that
 //   closes with Escape and gives focus back.
 //
-// Without this script the page still works: swatches link to each finish's
-// photo further down, and thumbnails open the full-size image.
+// Without this script the page still works: swatches and "See Arch in …" links
+// jump to each finish further down, whose photos open full size, and thumbnails
+// open the full-size image.
 
 import { colourFromSearch, indexAfterSwitch, stepIndex } from "/gallery-state.js";
 
@@ -33,7 +36,8 @@ function setUpGallery(data, viewer) {
   const lightbox = document.querySelector("[data-lightbox]");
 
   const FINISH_IDS = Object.keys(data.finishes);
-  const state = { finish: data.default, index: 0 };
+  const state = { finish: data.default, index: 0 }; // what was asked for
+  let shownFinish = data.default; // what the photo, name and thumbnails show now
   let request = 0; // increases with every change; only the newest may finish
 
   const stageSizes = stage.querySelector("source")?.sizes || "100vw";
@@ -125,16 +129,14 @@ function setUpGallery(data, viewer) {
       url.searchParams.set("colour", finish);
       history.pushState({ colour: finish }, "", url);
     }
-    updateControls();
-    renderThumbs();
+    markSwatches();
     swapStage(announce);
   }
 
   function show(index) {
     const g = gallery();
     state.index = stepIndex(index, 0, g.length);
-    markThumbs();
-    updateControls();
+    if (shownFinish === state.finish) markThumbs();
     swapStage(true);
   }
 
@@ -142,14 +144,24 @@ function setUpGallery(data, viewer) {
     if (gallery().length > 1) show(state.index + dir);
   }
 
-  function updateControls() {
-    const g = gallery();
-    const img = g[state.index];
+  function markSwatches() {
     swatches.forEach((sw) => {
       const on = sw.dataset.finish === state.finish;
       sw.setAttribute("aria-checked", String(on));
       sw.tabIndex = on ? 0 : -1;
     });
+  }
+
+  // Name, view, thumbnails and links: changed together with the photo.
+  function updateControls() {
+    const g = gallery();
+    const img = g[state.index];
+    if (shownFinish !== state.finish) {
+      shownFinish = state.finish;
+      renderThumbs();
+    } else {
+      markThumbs();
+    }
     finishName.textContent = data.finishes[state.finish].name;
     viewLabel.textContent = `· ${data.roles[img.role]}`;
     stepButtons.forEach((b) => (b.hidden = g.length < 2));
@@ -167,7 +179,8 @@ function setUpGallery(data, viewer) {
     const img = gallery()[state.index];
     // The new photo goes into the frame invisibly, so the browser picks the right
     // size and format. It only appears once it has loaded and decoded.
-    stageLink.querySelectorAll(".stage-layer.is-incoming").forEach((stale) => stale.remove());
+    // Drop photos that were still loading for an older choice (never ones already shown).
+    stageLink.querySelectorAll(".stage-layer.is-incoming:not(.is-current)").forEach((stale) => stale.remove());
     const layer = document.createElement("span");
     layer.className = "stage-layer is-incoming";
     layer.append(pictureEl(img, stageSizes, "stage-img", true));
@@ -177,7 +190,7 @@ function setUpGallery(data, viewer) {
       layer.remove(); // a newer choice arrived while this one loaded
       return;
     }
-    const old = [...stageLink.querySelectorAll(".stage-layer:not(.is-incoming)")];
+    const old = [...stageLink.querySelectorAll(".stage-layer")].filter((el) => el !== layer);
     const finish = () => old.forEach((el) => el.remove());
     if (reduce.matches) {
       layer.classList.remove("is-incoming");
@@ -189,6 +202,8 @@ function setUpGallery(data, viewer) {
       });
     }
     layer.classList.add("is-current");
+    updateControls();
+    document.documentElement.removeAttribute("data-colour-pending");
     if (announce) live.textContent = `${data.finishes[state.finish].name}, ${data.roles[img.role].toLowerCase()}`;
     if (lightbox.open) renderLightbox();
   }
@@ -208,6 +223,8 @@ function setUpGallery(data, viewer) {
     if (event.target === lightbox) lightbox.close(); // click on the dark backdrop
   });
   lightbox.addEventListener("close", () => {
+    lightboxRequest++; // ignore photos still loading
+    lbStage.textContent = ""; // next time it opens with the current photo only
     document.documentElement.style.overflow = "";
     if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
   });
@@ -221,17 +238,23 @@ function setUpGallery(data, viewer) {
     lightbox.querySelector("[data-lightbox-close]").focus();
   }
 
+  // The caption changes with the photo, so it always describes what is on screen.
   function renderLightbox() {
     const g = gallery();
     const img = g[state.index];
-    lbCaption.textContent = `${data.name} · ${data.finishes[state.finish].name} · ${data.roles[img.role]} · ${state.index + 1} of ${g.length}`;
+    const caption = `${data.name} · ${data.finishes[state.finish].name} · ${data.roles[img.role]} · ${state.index + 1} of ${g.length}`;
     lbSteps.forEach((b) => (b.hidden = g.length < 2));
     const ticket = ++lightboxRequest;
+    lbStage.querySelectorAll("picture.is-loading").forEach((stale) => stale.remove());
     const pic = pictureEl(img, "100vw", "is-incoming", true);
+    pic.className = "is-loading";
     const el = pic.querySelector("img");
     lbStage.append(pic);
+    if (lbStage.children.length === 1) lbCaption.textContent = caption; // nothing else on screen yet
     loadImage(el).then(() => {
       if (ticket !== lightboxRequest) return pic.remove();
+      pic.className = "";
+      lbCaption.textContent = caption;
       [...lbStage.children].forEach((child) => child !== pic && child.remove());
       requestAnimationFrame(() => el.classList.remove("is-incoming"));
     });
@@ -284,13 +307,19 @@ function setUpGallery(data, viewer) {
     url.searchParams.delete("colour");
     history.replaceState(null, "", url);
   }
-  updateControls();
+  markSwatches();
   renderThumbs();
+  updateControls();
   stage.tabIndex = 0;
   stage.setAttribute("aria-label", `${data.name} photos. Use the left and right arrow keys to change view.`);
   if (initial && initial !== data.default) {
-    state.finish = data.default;
+    // The photo built into the page is the default finish. colour-first.js has
+    // hidden it; take it out and load the requested finish instead.
+    document.documentElement.setAttribute("data-colour-pending", "gallery");
+    stageLink.querySelector(".stage-layer[data-built]")?.remove();
     choose(initial, { push: false, announce: false });
+  } else {
+    document.documentElement.removeAttribute("data-colour-pending");
   }
   viewer.classList.add("is-ready");
 }
