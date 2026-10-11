@@ -852,7 +852,7 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .layout-full .editorial-frame { aspect-ratio: 16 / 9; }  /* both close-ups used here stay whole at 16:9 */
 .layout-full .editorial-text { grid-column: 1 / 7; }
 
-.all-finishes .finish-plate { touch-action: pan-x pan-y; }
+.all-finishes .finish-cell a { touch-action: pan-x pan-y; } /* a pinch opens the viewer instead */
 .all-finishes .finish-row {
   list-style: none;
   margin: 0;
@@ -899,6 +899,9 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
   background: #121110;
   color: #f2eee8;
 }
+/* Opened while the page itself was pinch-zoomed: let the customer pinch back out. */
+.lightbox.page-zoomed,
+.lightbox.page-zoomed .lightbox-stage { touch-action: pan-x pan-y pinch-zoom; }
 .lightbox::backdrop { background: rgba(18, 17, 16, 0.9); }
 .lightbox-inner {
   position: relative;
@@ -942,7 +945,7 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .lightbox-next { right: clamp(0.5rem, 2vw, 1.5rem); }
 .lightbox-btn[hidden] { display: none; }
 .lightbox-tool { position: static; min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font: inherit; font-size: 0.9rem; white-space: nowrap; }
-.lightbox-tool[data-lightbox-zoom] { min-width: 7.5rem; } /* the label changes; the bar doesn't move */
+.lightbox-tool[data-lightbox-zoom] { min-width: 10rem; text-align: center; } /* fits "Loading detail…": the label changes, the bar doesn't move */
 .lightbox-tool[hidden] { display: none; }
 .lightbox :focus-visible { outline-color: #f2eee8; }
 

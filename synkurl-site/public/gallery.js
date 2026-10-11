@@ -57,6 +57,7 @@ function setUpGallery(data, viewer) {
     });
   });
   swatchBox.addEventListener("keydown", (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return; // Back/Forward and browser shortcuts
     const moves = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
     if (!(event.key in moves)) return;
     event.preventDefault();
@@ -132,6 +133,7 @@ function setUpGallery(data, viewer) {
     }
     markSwatches();
     swapStage(announce);
+    if (lightbox.open) renderLightbox(); // the viewer doesn't wait for the page photo
   }
 
   function show(index) {
@@ -139,6 +141,7 @@ function setUpGallery(data, viewer) {
     state.index = stepIndex(index, 0, g.length);
     if (shownFinish === state.finish) markThumbs();
     swapStage(true);
+    if (lightbox.open) renderLightbox(); // the viewer doesn't wait for the page photo
   }
 
   function step(dir) {
@@ -227,7 +230,13 @@ function setUpGallery(data, viewer) {
   const lbClose = lightbox.querySelector("[data-lightbox-close]");
   const blank = () => ({ img: null, el: null, ticket: 0, fit: { w: 1, h: 1 }, scale: 1, x: 0, y: 0, max: 1, fullMax: 1, full: false, pending: null, wanted: null });
   let lb = blank();
+  let loadingImg = null; // the photo the viewer is fetching to show next
+  let closeTimer = 0;
+  let downTarget = null;
+  let lastToggle = 0; // when a click or double-tap last zoomed in or out
   const dpr = () => window.devicePixelRatio || 1;
+  const vv = window.visualViewport;
+  const pageZoomed = () => Boolean(vv && vv.scale > 1.01);
 
   // When to fetch the lossless copy before any zoom: right away on a fast link,
   // after a short look where the browser can't tell, and only on zoom on slow
@@ -241,9 +250,12 @@ function setUpGallery(data, viewer) {
   lbClose.addEventListener("click", () => closeLightbox());
   lbSteps.forEach((b) => b.addEventListener("click", () => step(Number(b.dataset.lightboxStep))));
   lbZoom.addEventListener("click", () => (lb.scale > 1.001 || lb.wanted ? zoomTo(1) : zoomTo(lb.fullMax)));
+  // If the customer had already pinch-zoomed the page itself, let them pinch it back
+  // out inside the viewer (otherwise the viewer would stay magnified).
+  vv?.addEventListener("resize", () => lightbox.classList.toggle("page-zoomed", pageZoomed()));
   lightbox.addEventListener("keydown", (event) => {
     if (event.ctrlKey || event.metaKey || event.altKey) return; // browser zoom, Back/Forward
-    const pan = (dx, dy) => { event.preventDefault(); setZoom(lb.scale, { x: lb.x + dx, y: lb.y + dy }); };
+    const pan = (dx, dy) => { event.preventDefault(); setZoom(lb.scale, { x: lb.x + dx, y: lb.y + dy }, { pan: true }); };
     const zoomed = lb.scale > 1.001;
     if (event.key === "ArrowRight") zoomed ? pan(-80, 0) : (event.preventDefault(), step(1));
     else if (event.key === "ArrowLeft") zoomed ? pan(80, 0) : (event.preventDefault(), step(-1));
@@ -252,9 +264,12 @@ function setUpGallery(data, viewer) {
     else if (event.key === "+" || event.key === "=") { event.preventDefault(); zoomTo(lb.fullMax); }
     else if (event.key === "-" || event.key === "0") { event.preventDefault(); zoomTo(1); }
   });
-  // A click on the dark space around the photo closes the viewer.
+  // A click on the dark space around the photo closes the viewer, only when the
+  // press started there too (sliding off a button must not close it).
+  const bare = (t) => t === lightbox || t === lbInner;
+  lightbox.addEventListener("pointerdown", (event) => (downTarget = event.target), true);
   lightbox.addEventListener("click", (event) => {
-    if (event.target === lightbox || event.target === lbInner) closeLightbox();
+    if (bare(event.target) && bare(downTarget)) closeLightbox();
   });
   // A trackpad pinch (a wheel event with ctrlKey) zooms the photo, within the same
   // sharp limit, instead of zooming the whole page into blur. Plain scrolling is
@@ -265,16 +280,21 @@ function setUpGallery(data, viewer) {
     if (!lb.el || !canZoom()) return;
     const r = lbStage.getBoundingClientRect();
     const point = { x: event.clientX - r.left - r.width / 2, y: event.clientY - r.top - r.height / 2 };
-    const scale = Math.min(Math.max(lb.scale * Math.exp(-event.deltaY * 0.01), 1), lb.fullMax);
+    // Build on the zoom already asked for, even if it is still waiting for detail.
+    const base = lb.wanted ? lb.wanted.scale : lb.scale;
+    const baseOffset = lb.wanted ? lb.wanted.offset : { x: lb.x, y: lb.y };
+    const scale = Math.min(Math.max(base * Math.exp(-event.deltaY * 0.01), 1), lb.fullMax);
     lb.el.classList.remove("is-animating");
-    setZoom(scale, zoomAround(point, { x: lb.x, y: lb.y }, lb.scale, scale));
+    setZoom(scale, zoomAround(point, baseOffset, base, scale), { point });
   }, { passive: false });
   lightbox.addEventListener("cancel", (event) => {
     event.preventDefault(); // Escape: close with the same short fade
     closeLightbox();
   });
   lightbox.addEventListener("close", () => {
-    lightbox.classList.remove("is-closing");
+    clearTimeout(closeTimer);
+    loadingImg = null;
+    lightbox.classList.remove("is-closing", "page-zoomed");
     lightboxRequest++; // ignore photos still loading
     cancel(lb.pending);
     lbStage.querySelectorAll("img").forEach(cancel); // only ones still loading
@@ -292,7 +312,9 @@ function setUpGallery(data, viewer) {
   })();
 
   function openLightbox(from) {
+    clearTimeout(closeTimer);
     returnFocus = from;
+    lightbox.classList.toggle("page-zoomed", pageZoomed());
     document.documentElement.style.overflow = "hidden";
     lightbox.showModal();
     renderLightbox(); // after showModal, so the space for the photo can be measured
@@ -303,7 +325,7 @@ function setUpGallery(data, viewer) {
     if (!lightbox.open || lightbox.classList.contains("is-closing")) return;
     if (reduce.matches) return lightbox.close();
     lightbox.classList.add("is-closing"); // fades out (styles.css), then closes
-    setTimeout(() => lightbox.close(), 200);
+    closeTimer = setTimeout(() => lightbox.close(), 200);
   }
 
   // Stop downloading a photo nobody will see (a <picture> also loads from its sources).
@@ -320,6 +342,13 @@ function setUpGallery(data, viewer) {
   function renderLightbox() {
     const g = gallery();
     const img = g[state.index];
+    // Already showing or fetching this photo (the page's own photo can finish later
+    // and ask again): keep what's on screen, zoom included.
+    if (img === loadingImg || (img === lb.img && !loadingImg)) return;
+    loadingImg = img;
+    cancel(lb.pending); // stepping away: stop fetching detail for the photo being left
+    lb.pending = null;
+    lb.wanted = null;
     const caption = `${data.name} · ${data.finishes[state.finish].name} · ${data.roles[img.role]} · ${state.index + 1} of ${g.length}`;
     lbSteps.forEach((b) => (b.hidden = g.length < 2));
     const ticket = ++lightboxRequest;
@@ -332,8 +361,16 @@ function setUpGallery(data, viewer) {
     sizeTo(el, fit);
     lbStage.append(pic);
     if (!lb.el) lbCaption.textContent = caption; // nothing else on screen yet
+    // If the frame grows later, the browser may pick a bigger copy: re-read the limit.
+    el.addEventListener("load", () => {
+      if (lb.el === el) {
+        limits();
+        zoomControls();
+      }
+    });
     loadImage(el).then(() => {
       if (ticket !== lightboxRequest) return pic.remove();
+      loadingImg = null;
       // The space may have changed while it loaded.
       const now = fitSize({ w: img.width, h: img.height }, space());
       sizeTo(el, now);
@@ -390,24 +427,22 @@ function setUpGallery(data, viewer) {
         return;
       }
       const old = lb.el.closest("picture") || lb.el;
+      const animating = lb.el.classList.contains("is-animating");
       sizeTo(el, lb.fit);
-      if (lb.el.classList.contains("is-animating")) el.classList.add("is-animating");
-      el.style.transform = lb.el.style.transform;
+      // Start exactly where the copy on screen is now, even mid-animation.
+      el.style.transform = animating ? getComputedStyle(lb.el).transform : lb.el.style.transform;
       old.before(el); // underneath the old copy, already decoded
       lb.el = el;
       lb.pending = null;
       lb.full = true;
       limits();
       requestAnimationFrame(() => old.remove());
+      void el.offsetWidth; // so any animation below starts from that point
       // Carry on to the zoom the customer asked for while it loaded.
       const wanted = lb.wanted;
       lb.wanted = null;
-      if (wanted) {
-        void el.offsetWidth; // start the animation from where the photo is now
-        setZoom(wanted.scale, wanted.offset, !reduce.matches);
-      } else {
-        zoomControls();
-      }
+      if (wanted) setZoom(wanted.scale, wanted.offset, { animate: !reduce.matches, point: wanted.point });
+      else applyZoom(animating);
     });
   }
 
@@ -416,25 +451,37 @@ function setUpGallery(data, viewer) {
     const fit = fitSize({ w: lb.img.width, h: lb.img.height }, space());
     const k = fit.w / lb.fit.w;
     lb.fit = fit;
-    limits();
     sizeTo(lb.el, fit);
     if (lb.pending) sizeTo(lb.pending, fit);
-    setZoom(Math.min(lb.scale, lb.fullMax), { x: lb.x * k, y: lb.y * k });
+    if (!lb.full) lb.el.closest("picture")?.querySelectorAll("source").forEach((source) => (source.sizes = `${Math.ceil(fit.w)}px`));
+    limits();
+    const wanted = lb.wanted;
+    if (wanted) setZoom(wanted.scale, { x: wanted.offset.x * k, y: wanted.offset.y * k }, { point: wanted.point });
+    else setZoom(lb.scale, { x: lb.x * k, y: lb.y * k }, { pan: true });
   }
 
   // Applies a zoom, never past the sharp limit of the photo on screen. Asking for
-  // more than that fetches the lossless copy and remembers the request.
-  function setZoom(scale, offset, animate = false) {
+  // more than that fetches the lossless copy and remembers the request (with the
+  // point it was centred on), which carries on once the copy arrives.
+  function setZoom(scale, offset, { animate = false, point = { x: 0, y: 0 }, pan = false } = {}) {
     if (!lb.el) return;
-    const asked = Math.min(Math.max(scale, 1), Math.max(lb.fullMax, 1));
+    const top = canZoom() ? Math.max(lb.fullMax, 1) : 1; // "no zoom" means no zoom, for every input
+    const asked = Math.min(Math.max(scale, 1), top);
+    // A newer photo is on its way: don't start zooming into the one being left.
+    if (loadingImg && asked > lb.scale + 0.001) return;
     if (asked > lb.max + 0.001 && !lb.full) {
-      lb.wanted = { scale: asked, offset };
+      lb.wanted = { scale: asked, offset, point };
       loadFull();
-    } else {
+    } else if (!pan) {
       lb.wanted = null;
+    } else if (lb.wanted) {
+      // Looking around while the detail loads: the waiting view moves along too.
+      const k = lb.wanted.scale / Math.max(lb.scale, 1);
+      lb.wanted = { ...lb.wanted, offset: { x: offset.x * k, y: offset.y * k } };
     }
-    lb.scale = Math.min(asked, Math.max(lb.max, 1));
-    const o = clampOffset(asked === lb.scale ? offset : zoomAround({ x: 0, y: 0 }, offset, asked, lb.scale), lb.scale, lb.fit, space());
+    const shown = Math.min(asked, Math.max(lb.max, 1));
+    const o = clampOffset(shown === asked ? offset : zoomAround(point, offset, asked, shown), shown, lb.fit, space());
+    lb.scale = shown;
     lb.x = o.x;
     lb.y = o.y;
     applyZoom(animate);
@@ -444,7 +491,7 @@ function setUpGallery(data, viewer) {
   function zoomTo(scale, point = { x: 0, y: 0 }) {
     if (!canZoom() && scale > 1) return;
     const target = scale > 1 ? zoomAround(point, { x: lb.x, y: lb.y }, lb.scale, scale) : { x: 0, y: 0 };
-    setZoom(scale, target, !reduce.matches);
+    setZoom(scale, target, { animate: !reduce.matches, point });
   }
 
   function applyZoom(animate = false) {
@@ -476,15 +523,17 @@ function setUpGallery(data, viewer) {
     let gesture = null;
     let multi = false; // this touch sequence had two fingers: it is not a tap or a swipe
     let lastTap = { t: 0, x: 0, y: 0 };
-    let lastMouseToggle = 0;
     const centre = (e) => {
       const r = lbStage.getBoundingClientRect();
       return { x: e.clientX - r.left - r.width / 2, y: e.clientY - r.top - r.height / 2 };
     };
     const startGesture = (onPhoto) => {
       const [a, b] = [...points.values()];
+      // A new pinch builds on the zoom already asked for, even if it is still waiting for detail.
+      const scale = lb.wanted ? lb.wanted.scale : lb.scale;
+      const offset = lb.wanted ? lb.wanted.offset : { x: lb.x, y: lb.y };
       gesture = b
-        ? { kind: "pinch", d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, scale: lb.scale, offset: { x: lb.x, y: lb.y } }
+        ? { kind: "pinch", d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, scale, offset }
         : { kind: "drag", start: { ...a }, offset: { x: lb.x, y: lb.y }, moved: 0, onPhoto };
     };
     lbStage.addEventListener("pointerdown", (e) => {
@@ -501,17 +550,17 @@ function setUpGallery(data, viewer) {
       points.set(e.pointerId, centre(e));
       const [a, b] = [...points.values()];
       if (gesture.kind === "pinch" && b) {
-        const scale = Math.min(Math.max(gesture.scale * (Math.hypot(a.x - b.x, a.y - b.y) / gesture.d), 1), Math.max(lb.fullMax, 1));
+        const scale = Math.max(gesture.scale * (Math.hypot(a.x - b.x, a.y - b.y) / gesture.d), 1);
         const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
         const o = zoomAround(gesture.mid, gesture.offset, gesture.scale, scale);
-        setZoom(scale, { x: o.x + mid.x - gesture.mid.x, y: o.y + mid.y - gesture.mid.y });
+        setZoom(scale, { x: o.x + mid.x - gesture.mid.x, y: o.y + mid.y - gesture.mid.y }, { point: mid });
       } else if (gesture.kind === "drag") {
         const dx = a.x - gesture.start.x;
         const dy = a.y - gesture.start.y;
         gesture.moved = Math.max(gesture.moved, Math.hypot(dx, dy));
         if (lb.scale > 1.001) {
           lbStage.classList.add("is-dragging");
-          setZoom(lb.scale, { x: gesture.offset.x + dx, y: gesture.offset.y + dy });
+          setZoom(lb.scale, { x: gesture.offset.x + dx, y: gesture.offset.y + dy }, { pan: true });
         }
       }
     });
@@ -526,26 +575,27 @@ function setUpGallery(data, viewer) {
         const zoomed = lb.scale > 1.001;
         if (!zoomed && e.pointerType !== "mouse" && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) {
           step(dx < 0 ? 1 : -1); // swipe to the next photo (only when not zoomed)
-        } else if (gesture.moved < 8 && !gesture.onPhoto && !zoomed) {
-          closeLightbox(); // a tap or click beside the photo
+        } else if (gesture.moved < 8 && !gesture.onPhoto && !zoomed && performance.now() - lastToggle > 500) {
+          closeLightbox(); // a tap or click beside the photo (not the second half of a double-click)
         } else if (gesture.moved < 8 && gesture.onPhoto) {
           const now = performance.now();
           if (e.pointerType === "mouse") {
             // One click zooms in or out; the second click of a double-click is ignored.
-            if (now - lastMouseToggle > 350) {
+            if (now - lastToggle > 350) {
               zoomed || lb.wanted ? zoomTo(1) : zoomTo(lb.fullMax, p);
-              lastMouseToggle = now;
+              lastToggle = now;
             }
           } else if (now - lastTap.t < 320 && Math.hypot(p.x - lastTap.x, p.y - lastTap.y) < 30) {
             zoomed || lb.wanted ? zoomTo(1) : zoomTo(lb.fullMax, p); // double-tap
             lastTap = { t: 0, x: 0, y: 0 };
+            lastToggle = now;
           } else {
             lastTap = { t: now, x: p.x, y: p.y };
           }
         }
       }
       if (points.size === 0) {
-        if (lb.scale < 1.03 && lb.scale !== 1 && !lb.wanted) setZoom(1, { x: 0, y: 0 }, !reduce.matches);
+        if (lb.scale < 1.03 && lb.scale !== 1 && !lb.wanted) setZoom(1, { x: 0, y: 0 }, { animate: !reduce.matches });
         multi = false;
       }
       gesture = null;
