@@ -1,7 +1,7 @@
 // The six concept-design pages, their photos and the gallery's rules.
 import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
-import { colourFromSearch, indexAfterSwitch, stepIndex } from "../public/gallery-state.js";
+import { clampOffset, colourFromSearch, fitSize, indexAfterSwitch, stepIndex, zoomAround, zoomLimit } from "../public/gallery-state.js";
 import { MODEL_IDS, visibleText } from "./pages.js";
 
 const FINISHES = ["blush-pink", "matte-black", "dusk-violet", "rose-gold"];
@@ -65,7 +65,18 @@ describe("each model page", () => {
   it.each(MODEL_IDS)("%s: a link to another finish hides the built-in photo before the first paint", async (id) => {
     const page = await html(`/models/${id}/`);
     const head = page.slice(0, page.indexOf("</head>"));
-    expect(head).toContain(`<script src="/colour-first.js" data-default="${modelData(page).default}" data-finishes="${FINISHES.join(" ")}"></script>`);
+    const tag = head.match(/<script src="\/colour-first\.js"([^>]*)><\/script>/);
+    expect(tag, "colour-first.js in <head>").not.toBeNull();
+    const attr = (name) => tag[1].match(new RegExp(`data-${name}="([^"]*)"`))?.[1];
+    expect(attr("default")).toBe(modelData(page).default);
+    expect(attr("finishes")).toBe(FINISHES.join(" "));
+    expect(attr("sizes")).toBeTruthy();
+    for (const f of FINISHES) {
+      // Each finish's first photo, to start loading early: only files of that finish.
+      const set = attr(`hero-${f}`);
+      expect(set, f).toBeTruthy();
+      expect(set.split(", ").every((entry) => entry.includes(`-${f}-`) && entry.endsWith("w")), f).toBe(true);
+    }
     expect(page).toContain('<span class="stage-layer is-current" data-built>');
   });
 
@@ -144,12 +155,37 @@ describe("photos and the public manifest", () => {
     }
     expect(files.size).toBeGreaterThan(300);
     const list = [...files];
+    const hidden = ["c2pa", "jumb", "Exif", "<x:xmpmeta", "OpenAI"];
     for (let i = 0; i < list.length; i += 25) {
       await Promise.all(list.slice(i, i + 25).map(async (file) => {
         const res = await get(file);
         expect(res.status, file).toBe(200);
-        await res.arrayBuffer();
+        // No hidden data inside the photos (the originals carry the image
+        // generator's content credentials; the web copies must not).
+        const text = new TextDecoder("latin1").decode(await res.arrayBuffer());
+        for (const word of hidden) expect(text.includes(word), `${file} contains ${word}`).toBe(false);
       }));
+    }
+  }, 90000);
+
+  it("every photo has a lossless full-size copy at its real size, for zooming", async () => {
+    const m = await manifest();
+    for (const model of Object.values(m.models)) {
+      for (const [fid, f] of Object.entries(model.finishes)) {
+        for (const img of f.gallery) {
+          expect(img.full).toMatch(new RegExp(`^/media/[a-z-]+/(studio|lifestyle|detail)-${fid}-full\\.webp$`));
+          const bytes = new Uint8Array(await (await get(img.full)).arrayBuffer());
+          const ascii = (from, to) => String.fromCharCode(...bytes.slice(from, to));
+          expect(ascii(0, 4) + ascii(8, 12), img.full).toBe("RIFFWEBP");
+          // Lossless WebP ("VP8L") with nothing else in it, and the photo's real pixel size.
+          expect(ascii(12, 16), img.full).toBe("VP8L");
+          const bits = bytes[21] | (bytes[22] << 8) | (bytes[23] << 16) | (bytes[24] << 24);
+          expect((bits & 0x3fff) + 1, img.full).toBe(img.width);
+          expect(((bits >> 14) & 0x3fff) + 1, img.full).toBe(img.height);
+          const chunkEnd = 20 + (bytes[16] | (bytes[17] << 8) | (bytes[18] << 16) | (bytes[19] << 24));
+          expect(chunkEnd + (chunkEnd % 2), img.full).toBe(bytes.length);
+        }
+      }
     }
   }, 60000);
 
@@ -190,6 +226,39 @@ describe("the homepage", () => {
     const page = await html("/");
     expect(page.match(/fetchpriority="high"/g)).toHaveLength(2); // the preload and the hero <img>
     expect((page.match(/loading="lazy"/g) || []).length).toBeGreaterThan(15);
+  });
+});
+
+describe("zoom rules (gallery-state.js)", () => {
+  it("shows the photo as large as the space allows, never larger than its real pixels", () => {
+    expect(fitSize({ w: 1536, h: 1024 }, { w: 390, h: 700 })).toEqual({ w: 390, h: 260 });
+    expect(fitSize({ w: 1536, h: 1024 }, { w: 1400, h: 600 })).toEqual({ w: 900, h: 600 });
+    expect(fitSize({ w: 1536, h: 1024 }, { w: 2400, h: 1300 })).toEqual({ w: 1536, h: 1024 });
+  });
+
+  it("zooms only while the photo stays sharp: 1 photo pixel per point, 2 on dense screens", () => {
+    expect(zoomLimit(1536, 390, 3)).toBeCloseTo(1536 / 780); // phone: about 2x
+    expect(zoomLimit(1536, 768, 1)).toBe(2); // standard screen
+    expect(zoomLimit(1536, 1229, 1)).toBeCloseTo(1.25);
+    expect(zoomLimit(1536, 1229, 2)).toBe(1); // a dense laptop screen already shows every pixel
+    expect(zoomLimit(1536, 1536, 1)).toBe(1);
+    expect(zoomLimit(3072, 390, 3)).toBeCloseTo(3.94); // bigger originals zoom further
+  });
+
+  it("never lets the zoomed photo be dragged off screen", () => {
+    const size = { w: 400, h: 300 };
+    const space = { w: 400, h: 500 };
+    expect(clampOffset({ x: 999, y: 999 }, 2, size, space)).toEqual({ x: 200, y: 50 });
+    expect(clampOffset({ x: -999, y: -999 }, 2, size, space)).toEqual({ x: -200, y: -50 });
+    expect(clampOffset({ x: 30, y: 30 }, 1, size, space)).toEqual({ x: 0, y: 0 });
+  });
+
+  it("keeps the point under the fingers in place while zooming", () => {
+    const point = { x: 100, y: -40 };
+    const offset = zoomAround(point, { x: 0, y: 0 }, 1, 2);
+    // The photo point that was under `point` at scale 1 is still there at scale 2.
+    expect({ x: offset.x + 2 * point.x, y: offset.y + 2 * point.y }).toEqual(point);
+    expect(zoomAround({ x: 0, y: 0 }, { x: 0, y: 0 }, 1, 3)).toEqual({ x: 0, y: 0 });
   });
 });
 

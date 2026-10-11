@@ -51,7 +51,8 @@
             "file": "/media/arch/studio-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/arch/studio-blush-pink-960.jpg"
+        "fallback": "/media/arch/studio-blush-pink-960.jpg",
+        "full": "/media/arch/studio-blush-pink-full.webp"
       },
       {
         "role": "studio",
@@ -102,7 +103,8 @@
             "file": "/media/arch/studio-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/arch/studio-matte-black-960.jpg"
+        "fallback": "/media/arch/studio-matte-black-960.jpg",
+        "full": "/media/arch/studio-matte-black-full.webp"
       },
       {
         "role": "studio",
@@ -153,7 +155,8 @@
             "file": "/media/arch/studio-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/arch/studio-dusk-violet-960.jpg"
+        "fallback": "/media/arch/studio-dusk-violet-960.jpg",
+        "full": "/media/arch/studio-dusk-violet-full.webp"
       },
       {
         "role": "studio",
@@ -204,7 +207,8 @@
             "file": "/media/arch/studio-rose-gold-1536.webp"
           }
         ],
-        "fallback": "/media/arch/studio-rose-gold-960.jpg"
+        "fallback": "/media/arch/studio-rose-gold-960.jpg",
+        "full": "/media/arch/studio-rose-gold-full.webp"
       },
       {
         "role": "lifestyle",
@@ -255,7 +259,8 @@
             "file": "/media/arch/lifestyle-dusk-violet-1672.webp"
           }
         ],
-        "fallback": "/media/arch/lifestyle-dusk-violet-960.jpg"
+        "fallback": "/media/arch/lifestyle-dusk-violet-960.jpg",
+        "full": "/media/arch/lifestyle-dusk-violet-full.webp"
       },
       {
         "role": "detail",
@@ -306,7 +311,8 @@
             "file": "/media/arch/detail-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/arch/detail-dusk-violet-960.jpg"
+        "fallback": "/media/arch/detail-dusk-violet-960.jpg",
+        "full": "/media/arch/detail-dusk-violet-full.webp"
       }
     ],
     "dome": [
@@ -359,7 +365,8 @@
             "file": "/media/dome/studio-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/dome/studio-blush-pink-960.jpg"
+        "fallback": "/media/dome/studio-blush-pink-960.jpg",
+        "full": "/media/dome/studio-blush-pink-full.webp"
       },
       {
         "role": "studio",
@@ -410,7 +417,8 @@
             "file": "/media/dome/studio-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/dome/studio-matte-black-960.jpg"
+        "fallback": "/media/dome/studio-matte-black-960.jpg",
+        "full": "/media/dome/studio-matte-black-full.webp"
       },
       {
         "role": "studio",
@@ -461,7 +469,8 @@
             "file": "/media/dome/studio-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/dome/studio-dusk-violet-960.jpg"
+        "fallback": "/media/dome/studio-dusk-violet-960.jpg",
+        "full": "/media/dome/studio-dusk-violet-full.webp"
       },
       {
         "role": "lifestyle",
@@ -512,7 +521,8 @@
             "file": "/media/dome/lifestyle-rose-gold-1672.webp"
           }
         ],
-        "fallback": "/media/dome/lifestyle-rose-gold-960.jpg"
+        "fallback": "/media/dome/lifestyle-rose-gold-960.jpg",
+        "full": "/media/dome/lifestyle-rose-gold-full.webp"
       },
       {
         "role": "detail",
@@ -563,7 +573,8 @@
             "file": "/media/dome/detail-rose-gold-1536.webp"
           }
         ],
-        "fallback": "/media/dome/detail-rose-gold-960.jpg"
+        "fallback": "/media/dome/detail-rose-gold-960.jpg",
+        "full": "/media/dome/detail-rose-gold-full.webp"
       }
     ],
     "spine": [
@@ -616,7 +627,8 @@
             "file": "/media/spine/studio-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/spine/studio-blush-pink-960.jpg"
+        "fallback": "/media/spine/studio-blush-pink-960.jpg",
+        "full": "/media/spine/studio-blush-pink-full.webp"
       },
       {
         "role": "studio",
@@ -667,7 +679,8 @@
             "file": "/media/spine/studio-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/spine/studio-matte-black-960.jpg"
+        "fallback": "/media/spine/studio-matte-black-960.jpg",
+        "full": "/media/spine/studio-matte-black-full.webp"
       },
       {
         "role": "studio",
@@ -718,7 +731,8 @@
             "file": "/media/spine/studio-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/spine/studio-dusk-violet-960.jpg"
+        "fallback": "/media/spine/studio-dusk-violet-960.jpg",
+        "full": "/media/spine/studio-dusk-violet-full.webp"
       },
       {
         "role": "studio",
@@ -769,7 +783,8 @@
             "file": "/media/spine/studio-rose-gold-1536.webp"
           }
         ],
-        "fallback": "/media/spine/studio-rose-gold-960.jpg"
+        "fallback": "/media/spine/studio-rose-gold-960.jpg",
+        "full": "/media/spine/studio-rose-gold-full.webp"
       },
       {
         "role": "lifestyle",
@@ -812,7 +827,8 @@
             "file": "/media/spine/lifestyle-blush-pink-1024.webp"
           }
         ],
-        "fallback": "/media/spine/lifestyle-blush-pink-768.jpg"
+        "fallback": "/media/spine/lifestyle-blush-pink-768.jpg",
+        "full": "/media/spine/lifestyle-blush-pink-full.webp"
       },
       {
         "role": "detail",
@@ -863,7 +879,8 @@
             "file": "/media/spine/detail-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/spine/detail-blush-pink-960.jpg"
+        "fallback": "/media/spine/detail-blush-pink-960.jpg",
+        "full": "/media/spine/detail-blush-pink-full.webp"
       }
     ],
     "stack": [
@@ -916,7 +933,8 @@
             "file": "/media/stack/studio-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/stack/studio-blush-pink-960.jpg"
+        "fallback": "/media/stack/studio-blush-pink-960.jpg",
+        "full": "/media/stack/studio-blush-pink-full.webp"
       },
       {
         "role": "studio",
@@ -967,7 +985,8 @@
             "file": "/media/stack/studio-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/stack/studio-matte-black-960.jpg"
+        "fallback": "/media/stack/studio-matte-black-960.jpg",
+        "full": "/media/stack/studio-matte-black-full.webp"
       },
       {
         "role": "studio",
@@ -1018,7 +1037,8 @@
             "file": "/media/stack/studio-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/stack/studio-dusk-violet-960.jpg"
+        "fallback": "/media/stack/studio-dusk-violet-960.jpg",
+        "full": "/media/stack/studio-dusk-violet-full.webp"
       },
       {
         "role": "studio",
@@ -1069,7 +1089,8 @@
             "file": "/media/stack/studio-rose-gold-1536.webp"
           }
         ],
-        "fallback": "/media/stack/studio-rose-gold-960.jpg"
+        "fallback": "/media/stack/studio-rose-gold-960.jpg",
+        "full": "/media/stack/studio-rose-gold-full.webp"
       },
       {
         "role": "lifestyle",
@@ -1120,7 +1141,8 @@
             "file": "/media/stack/lifestyle-matte-black-1672.webp"
           }
         ],
-        "fallback": "/media/stack/lifestyle-matte-black-960.jpg"
+        "fallback": "/media/stack/lifestyle-matte-black-960.jpg",
+        "full": "/media/stack/lifestyle-matte-black-full.webp"
       },
       {
         "role": "detail",
@@ -1171,7 +1193,8 @@
             "file": "/media/stack/detail-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/stack/detail-matte-black-960.jpg"
+        "fallback": "/media/stack/detail-matte-black-960.jpg",
+        "full": "/media/stack/detail-matte-black-full.webp"
       }
     ],
     "box": [
@@ -1224,7 +1247,8 @@
             "file": "/media/box/studio-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/box/studio-blush-pink-960.jpg"
+        "fallback": "/media/box/studio-blush-pink-960.jpg",
+        "full": "/media/box/studio-blush-pink-full.webp"
       },
       {
         "role": "studio",
@@ -1275,7 +1299,8 @@
             "file": "/media/box/studio-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/box/studio-matte-black-960.jpg"
+        "fallback": "/media/box/studio-matte-black-960.jpg",
+        "full": "/media/box/studio-matte-black-full.webp"
       },
       {
         "role": "studio",
@@ -1326,7 +1351,8 @@
             "file": "/media/box/studio-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/box/studio-dusk-violet-960.jpg"
+        "fallback": "/media/box/studio-dusk-violet-960.jpg",
+        "full": "/media/box/studio-dusk-violet-full.webp"
       },
       {
         "role": "studio",
@@ -1377,7 +1403,8 @@
             "file": "/media/box/studio-rose-gold-1536.webp"
           }
         ],
-        "fallback": "/media/box/studio-rose-gold-960.jpg"
+        "fallback": "/media/box/studio-rose-gold-960.jpg",
+        "full": "/media/box/studio-rose-gold-full.webp"
       },
       {
         "role": "lifestyle",
@@ -1428,7 +1455,8 @@
             "file": "/media/box/lifestyle-matte-black-1672.webp"
           }
         ],
-        "fallback": "/media/box/lifestyle-matte-black-960.jpg"
+        "fallback": "/media/box/lifestyle-matte-black-960.jpg",
+        "full": "/media/box/lifestyle-matte-black-full.webp"
       },
       {
         "role": "detail",
@@ -1479,7 +1507,8 @@
             "file": "/media/box/detail-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/box/detail-matte-black-960.jpg"
+        "fallback": "/media/box/detail-matte-black-960.jpg",
+        "full": "/media/box/detail-matte-black-full.webp"
       }
     ],
     "box-plus": [
@@ -1532,7 +1561,8 @@
             "file": "/media/box-plus/studio-blush-pink-1536.webp"
           }
         ],
-        "fallback": "/media/box-plus/studio-blush-pink-960.jpg"
+        "fallback": "/media/box-plus/studio-blush-pink-960.jpg",
+        "full": "/media/box-plus/studio-blush-pink-full.webp"
       },
       {
         "role": "studio",
@@ -1583,7 +1613,8 @@
             "file": "/media/box-plus/studio-matte-black-1536.webp"
           }
         ],
-        "fallback": "/media/box-plus/studio-matte-black-960.jpg"
+        "fallback": "/media/box-plus/studio-matte-black-960.jpg",
+        "full": "/media/box-plus/studio-matte-black-full.webp"
       },
       {
         "role": "studio",
@@ -1634,7 +1665,8 @@
             "file": "/media/box-plus/studio-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/box-plus/studio-dusk-violet-960.jpg"
+        "fallback": "/media/box-plus/studio-dusk-violet-960.jpg",
+        "full": "/media/box-plus/studio-dusk-violet-full.webp"
       },
       {
         "role": "studio",
@@ -1685,7 +1717,8 @@
             "file": "/media/box-plus/studio-rose-gold-1536.webp"
           }
         ],
-        "fallback": "/media/box-plus/studio-rose-gold-960.jpg"
+        "fallback": "/media/box-plus/studio-rose-gold-960.jpg",
+        "full": "/media/box-plus/studio-rose-gold-full.webp"
       },
       {
         "role": "lifestyle",
@@ -1736,7 +1769,8 @@
             "file": "/media/box-plus/lifestyle-dusk-violet-1672.webp"
           }
         ],
-        "fallback": "/media/box-plus/lifestyle-dusk-violet-960.jpg"
+        "fallback": "/media/box-plus/lifestyle-dusk-violet-960.jpg",
+        "full": "/media/box-plus/lifestyle-dusk-violet-full.webp"
       },
       {
         "role": "detail",
@@ -1787,7 +1821,8 @@
             "file": "/media/box-plus/detail-dusk-violet-1536.webp"
           }
         ],
-        "fallback": "/media/box-plus/detail-dusk-violet-960.jpg"
+        "fallback": "/media/box-plus/detail-dusk-violet-960.jpg",
+        "full": "/media/box-plus/detail-dusk-violet-full.webp"
       }
     ]
   },

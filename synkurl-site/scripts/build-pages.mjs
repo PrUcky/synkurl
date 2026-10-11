@@ -41,7 +41,6 @@ export const esc = (s) =>
   String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 const indent = (text, n) => text.split("\n").map((l) => (l ? " ".repeat(n) + l : l)).join("\n");
 const srcset = (list) => list.map((x) => `${x.file} ${x.w}w`).join(", ");
-const largest = (list) => list[list.length - 1].file;
 
 // ---------- The public image manifest ----------
 
@@ -60,7 +59,7 @@ function imageRecord(model, entry) {
     height: entry.height,
     alt,
     src: entry.fallback,
-    full: largest(entry.webp),
+    full: entry.full, // lossless: every pixel of the original
     avif: srcset(entry.avif),
     webp: srcset(entry.webp),
   };
@@ -163,7 +162,7 @@ export const FOOTER = `  <footer class="site-foot">
     </div>
   </footer>`;
 
-function head({ path: pagePath, title, description, image, preload = "", scripts = [], jsonLd, defaultFinish }) {
+function head({ path: pagePath, title, description, image, preload = "", scripts = [], jsonLd, early: earlyAttrs }) {
   const url = SITE + pagePath;
   const og = image || { url: `${SITE}/og-image.png`, width: 1200, height: 630, alt: "Synkurl: your family's photos, kept at home." };
   const lines = [
@@ -188,8 +187,8 @@ function head({ path: pagePath, title, description, image, preload = "", scripts
   if (jsonLd) lines.push(`<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`);
   const scriptTags = [...scripts, "/motion.js"].map((s) => `\n  <script type="module" src="${s}"></script>`).join("");
   // Model pages: a tiny script that runs before the first paint (see colour-first.js).
-  const early = defaultFinish
-    ? `\n  <script src="/colour-first.js" data-default="${defaultFinish}" data-finishes="${FINISHES.map((f) => f.id).join(" ")}"></script>`
+  const early = earlyAttrs
+    ? `\n  <script src="/colour-first.js" ${Object.entries(earlyAttrs).map(([k, v]) => `data-${k}="${esc(v)}"`).join(" ")}></script>`
     : "";
   return `<!doctype html>
 <html lang="en">
@@ -206,8 +205,8 @@ function head({ path: pagePath, title, description, image, preload = "", scripts
 </head>`;
 }
 
-function page({ path: pagePath, title, description, image, preload, scripts, jsonLd, defaultFinish, mainClass = "", body }) {
-  return `${head({ path: pagePath, title, description, image, preload, scripts, jsonLd, defaultFinish })}
+function page({ path: pagePath, title, description, image, preload, scripts, jsonLd, early, mainClass = "", body }) {
+  return `${head({ path: pagePath, title, description, image, preload, scripts, jsonLd, early })}
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 ${header(pagePath)}
@@ -280,9 +279,9 @@ function editorial(m, kind) {
   const sizes = wide ? "100vw" : layout === "portrait-split" ? "(min-width: 900px) 40vw, 100vw" : "(min-width: 900px) 62vw, 100vw";
   return `<section class="editorial editorial-${kind} layout-${layout}" aria-labelledby="${kind}-title">
   <figure class="editorial-figure" data-reveal="${kind === "lifestyle" ? "rise" : "scale"}">
-    <div class="editorial-frame"${kind === "lifestyle" ? " data-parallax" : ""}>
+    <a class="editorial-frame" href="${img.full}" data-open-photo="${img.finish}:${img.role}" aria-label="View full size: ${esc(m.name)} in ${finishName}, ${ROLE_NAME[img.role].toLowerCase()}"${kind === "lifestyle" ? " data-parallax" : ""}>
       ${picture(img, { sizes, position, imgCls: "editorial-img" })}
-    </div>
+    </a>
     <figcaption class="finish-caption"><span class="swatch-dot" style="--swatch: ${FINISH[img.finish].swatch}"></span>Shown in ${finishName}</figcaption>
   </figure>
   <div class="editorial-text">
@@ -401,7 +400,10 @@ ${indent(otherModels(m), 4)}
         <div class="lightbox-stage" data-lightbox-stage></div>
         <button class="lightbox-btn lightbox-prev" type="button" data-lightbox-step="-1" aria-label="Previous view">‹</button>
         <button class="lightbox-btn lightbox-next" type="button" data-lightbox-step="1" aria-label="Next view">›</button>
-        <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close full size view">Close</button>
+        <div class="lightbox-tools">
+          <button class="lightbox-tool" type="button" data-lightbox-zoom aria-pressed="false" hidden>Zoom in</button>
+          <button class="lightbox-tool" type="button" data-lightbox-close aria-label="Close full size view">Close</button>
+        </div>
       </div>
     </dialog>
 
@@ -413,7 +415,18 @@ ${indent(otherModels(m), 4)}
     image: ogFor(hero, `The ${m.name} concept in ${FINISH[m.default].name}`),
     preload: preloadHero(hero, sizes),
     scripts: ["/gallery.js"],
-    defaultFinish: m.default,
+    // colour-first.js: the default finish, and each finish's first photo so a
+    // shared ?colour= link can start loading the right one straight away.
+    early: {
+      default: m.default,
+      finishes: FINISHES.map((f) => f.id).join(" "),
+      sizes,
+      ...Object.fromEntries(FINISHES.map((f) => {
+        const fg = m.finishes[f.id].gallery;
+        // The photo gallery.js opens a finish on: its studio view, or its first photo.
+        return [`hero-${f.id}`, (fg.find((img) => img.role === "studio") || fg[0]).avif];
+      })),
+    },
     mainClass: `model-page model-${m.id}`,
     body,
   });

@@ -19,3 +19,36 @@ export function indexAfterSwitch(nextGallery, currentRole) {
 export function stepIndex(index, dir, length) {
   return length ? (index + dir + length) % length : 0;
 }
+
+// ---------- Zoom in the full-size viewer ----------
+
+// The size the photo is shown at before zooming: as large as the space allows,
+// but never larger than its real pixels (one photo pixel per screen point).
+export function fitSize(natural, space) {
+  const scale = Math.min(space.w / natural.w, space.h / natural.h, 1);
+  return { w: Math.max(1, natural.w * scale), h: Math.max(1, natural.h * scale) };
+}
+
+// How far the viewer may zoom before the photo would start to blur. A sharp photo
+// needs one photo pixel per screen point on standard screens, and two on
+// high-density screens (the same detail phones and laptops use for "@2x" pictures).
+// 1 means no zoom at all.
+export function zoomLimit(naturalWidth, shownWidth, dpr) {
+  const need = Math.min(Math.max(dpr || 1, 1), 2);
+  return Math.max(1, naturalWidth / (shownWidth * need));
+}
+
+// Keep the zoomed photo covering the space: it can't be dragged off screen.
+// offset is measured from the centre; size is the photo's size before zooming.
+export function clampOffset(offset, scale, size, space) {
+  const maxX = Math.max(0, (size.w * scale - space.w) / 2);
+  const maxY = Math.max(0, (size.h * scale - space.h) / 2);
+  return { x: Math.min(maxX, Math.max(-maxX, offset.x)), y: Math.min(maxY, Math.max(-maxY, offset.y)) };
+}
+
+// Zoom from one scale to another while the photo point under `point` stays put
+// (point and offsets are measured from the centre of the space).
+export function zoomAround(point, offset, fromScale, toScale) {
+  const k = toScale / fromScale;
+  return { x: point.x - (point.x - offset.x) * k, y: point.y - (point.y - offset.y) * k };
+}

@@ -18,7 +18,7 @@ function setUpChapter(chapter) {
   const bar = chapter.querySelector("[data-chapter-bar]");
   const [prevBtn, nextBtn] = chapter.querySelectorAll("[data-chapter-step]");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const large = window.matchMedia("(min-width: 1000px) and (min-height: 620px)");
+  const large = window.matchMedia("(min-width: 1000px) and (min-height: 660px)");
 
   let pinned = false;
   let travel = 0; // how far the row moves sideways, in px
@@ -80,6 +80,7 @@ function setUpChapter(chapter) {
   let listening = false;
   const near = new IntersectionObserver((entries) => {
     const visible = entries.some((e) => e.isIntersecting);
+    if (visible) track.querySelectorAll('img[loading="lazy"]').forEach((img) => (img.loading = "eager"));
     if (visible && !listening) window.addEventListener("scroll", onScroll, { passive: true });
     if (!visible && listening) window.removeEventListener("scroll", onScroll);
     listening = visible;

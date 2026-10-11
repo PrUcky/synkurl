@@ -11,6 +11,18 @@
   font-weight: 200 900;
   font-display: swap;
 }
+/* Shown for the moment before Unbounded arrives: a common bold face, scaled to
+   Unbounded's width and height so headings don't reflow when it swaps in.
+   Measured: Unbounded 500–560 is about 1.28× the width of Arial Bold. */
+@font-face {
+  font-family: "Unbounded Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 200 900;
+  size-adjust: 128%;
+  ascent-override: 78%;
+  descent-override: 19.5%;
+  line-gap-override: 0%;
+}
 
 :root {
   /* Paper (light) tone */
@@ -26,7 +38,7 @@
   --error: #a3261c;
   --accent: #8a5d4c;      /* a restrained warm metal, used sparingly */
 
-  --display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --display: "Unbounded", "Unbounded Fallback", ui-sans-serif, system-ui, sans-serif;
   --body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
 
   --max: 78rem;
@@ -619,8 +631,7 @@ p { margin: 0; }
 .finish-plate .plate-layer { position: absolute; inset: 0; display: block; }
 .finish-plate .plate-layer.is-incoming { opacity: 0; }
 .finish-cell-name { font-family: var(--display); font-size: 1rem; letter-spacing: -0.02em; }
-.finish-cell-note { color: var(--fg-2); font-size: 0.84rem; }
-.finish-cell-note:empty { display: none; }
+.finish-cell-note { color: var(--fg-2); font-size: 0.84rem; min-height: 1.45em; } /* reserved, so a note never moves the grid */
 .finish-grid a:hover .finish-cell-name { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
 
 /* ---------- Home: rooms and details ---------- */
@@ -795,7 +806,16 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
   align-items: center;
 }
 .editorial-figure { margin: 0; display: grid; gap: 0.75rem; }
-.editorial-frame { overflow: hidden; border-radius: var(--radius); background: var(--plate); }
+.editorial-frame { position: relative; display: block; overflow: hidden; border-radius: var(--radius); background: var(--plate); cursor: zoom-in; touch-action: pan-x pan-y; }
+.editorial-frame:focus-visible { outline: none; }
+.editorial-frame:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px var(--fg), inset 0 0 0 6px rgba(242, 238, 232, 0.9);
+  pointer-events: none;
+}
 .editorial-text { display: grid; gap: 0.9rem; align-content: start; }
 .editorial-text > p:not(.eyebrow) { color: var(--fg-2); max-width: 30em; }
 .finish-caption { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.86rem; color: var(--fg-2); }
@@ -880,17 +900,33 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .lightbox-inner {
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   grid-template-rows: auto minmax(0, 1fr);
   height: 100%;
-  padding: 1rem clamp(0.5rem, 3vw, 2rem) clamp(1rem, 3vw, 2rem);
-  gap: 0.75rem;
+  padding: 0.75rem clamp(0.5rem, 3vw, 2rem) clamp(1rem, 3vw, 2rem);
+  gap: 0.75rem 1rem;
 }
-.lightbox-caption { font-size: 0.92rem; color: #cfc8bf; padding-right: 6rem; min-height: 1.5em; }
-.lightbox-stage { position: relative; min-height: 0; touch-action: pan-y; }
-.lightbox-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.lightbox-caption { grid-column: 1; grid-row: 1; align-self: center; font-size: 0.92rem; color: #cfc8bf; min-height: 1.5em; }
+.lightbox-tools { grid-column: 2; grid-row: 1; display: flex; gap: 0.5rem; align-items: start; }
+/* The photo: gallery.js sets its size (never larger than its real pixels) and,
+   when zoomed, moves and scales it with a transform. */
+.lightbox-stage { grid-column: 1 / -1; grid-row: 2; position: relative; min-height: 0; overflow: hidden; touch-action: none; }
+.lightbox-stage img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  max-width: none;
+  transform-origin: 50% 50%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
 .lightbox-stage img.is-incoming { opacity: 0; }
+.lightbox-stage.can-zoom img { cursor: zoom-in; }
+.lightbox-stage.is-zoomed img { cursor: grab; }
+.lightbox-stage.is-dragging img { cursor: grabbing; }
 .lightbox-btn,
-.lightbox-close {
+.lightbox-tool {
   position: absolute;
   z-index: 2;
   border: 1px solid rgba(242, 238, 232, 0.35);
@@ -902,7 +938,8 @@ html[data-colour-pending] [data-thumbs] { visibility: hidden; }
 .lightbox-prev { left: clamp(0.5rem, 2vw, 1.5rem); }
 .lightbox-next { right: clamp(0.5rem, 2vw, 1.5rem); }
 .lightbox-btn[hidden] { display: none; }
-.lightbox-close { top: 0.75rem; right: clamp(0.5rem, 3vw, 2rem); min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font: inherit; font-size: 0.9rem; }
+.lightbox-tool { position: static; min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font: inherit; font-size: 0.9rem; }
+.lightbox-tool[hidden] { display: none; }
 .lightbox :focus-visible { outline-color: #f2eee8; }
 
 /* ---------- Models index ---------- */
@@ -1234,6 +1271,9 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .lightbox[open] { animation: fade-in 0.22s ease both; }
   .lightbox[open] .lightbox-stage { animation: settle-in 0.32s var(--ease) both; }
   .lightbox-stage img { transition: opacity 0.2s ease; }
+  .lightbox-stage img.is-animating { transition: opacity 0.2s ease, transform 0.28s var(--ease); }
+  .lightbox.is-closing { opacity: 0; transition: opacity 0.2s ease; }
+  .lightbox.is-closing::backdrop { opacity: 0; transition: opacity 0.2s ease; }
 
   /* Page transitions: a soft cross-fade between pages, in browsers that support it.
      Other browsers simply load the next page as normal. */

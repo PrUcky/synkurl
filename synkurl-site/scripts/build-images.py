@@ -10,6 +10,14 @@ public/media/<model>/:
   <role>-<finish>-<width>.avif   smallest, used by most current browsers
   <role>-<finish>-<width>.webp   used by browsers without AVIF
   <role>-<finish>-960.jpg        one fallback for very old browsers
+  <role>-<finish>-full.webp      every pixel of the original, unchanged (lossless):
+                                 used when someone zooms in, so zooming never
+                                 shows compression blur
+
+Only pixels are copied. Hidden data in the originals (such as the image
+generator's content credentials) is not, because no metadata is passed on.
+Bigger originals (for example 3072 x 2048) need no code change: the sizes
+below grow with them, and the zoom goes deeper.
 
 It also writes data/images.json with each image's real finish, role, pixel
 size and file names. scripts/build-pages.mjs reads that file.
@@ -39,9 +47,8 @@ FALLBACK_WIDTH = 960
 
 
 def widths_for(width, height):
-    if height > width:  # portrait (Spine's bookshelf photo)
-        return [320, 480, 768, width]
-    return [320, 640, 960, 1280, width]
+    steps = [320, 480, 768, 1024, 1536, 2048] if height > width else [320, 640, 960, 1280, 1920, 2560]
+    return [s for s in steps if s < width] + [width]
 
 
 def main():
@@ -86,6 +93,12 @@ def main():
                     name = f"{base}-{target}.{ext}"
                     small.save(os.path.join(out_dir, name), fmt, **opts)
                     files[ext].append({"w": target, "file": f"/media/{mid}/{name}"})
+            # Every pixel, unchanged, for zooming in. Checked after saving.
+            full_name = f"{base}-full.webp"
+            full_path = os.path.join(out_dir, full_name)
+            im.save(full_path, "WEBP", lossless=True, quality=100, method=4)
+            if Image.open(full_path).convert("RGB").tobytes() != im.tobytes():
+                sys.exit(f"{full_name} is not identical to {mid}/{filename}")
             fb_w = min(FALLBACK_WIDTH, w) if w >= h else min(768, w)
             fb = im.resize((fb_w, round(h * fb_w / w)), Image.LANCZOS)
             fb_name = f"{base}-{fb_w}.jpg"
@@ -98,6 +111,7 @@ def main():
                 "avif": files["avif"],
                 "webp": files["webp"],
                 "fallback": f"/media/{mid}/{fb_name}",
+                "full": f"/media/{mid}/{full_name}",
             })
             print(f"{mid}/{filename} -> {base} ({w}x{h})")
         images[mid] = entries
