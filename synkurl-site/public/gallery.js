@@ -12,6 +12,8 @@
 // Without this script the page still works: swatches link to each finish's
 // photo further down, and thumbnails open the full-size image.
 
+import { colourFromSearch, indexAfterSwitch, stepIndex } from "/gallery-state.js";
+
 const dataEl = document.getElementById("model-data");
 const viewer = document.querySelector("[data-viewer]");
 if (dataEl && viewer) setUpGallery(JSON.parse(dataEl.textContent), viewer);
@@ -94,7 +96,7 @@ function setUpGallery(data, viewer) {
       a.setAttribute("role", "button");
       a.setAttribute("aria-pressed", String(i === state.index));
       a.setAttribute("aria-label", `${data.roles[img.role]}, ${data.finishes[img.finish].name}`);
-      a.append(pictureEl(img, "120px", "", true));
+      a.append(pictureEl(img, "88px", "", true));
       a.addEventListener("click", (event) => {
         event.preventDefault();
         show(i);
@@ -116,12 +118,8 @@ function setUpGallery(data, viewer) {
     finish = validFinish(finish) || data.default;
     if (finish === state.finish && push) return;
     const role = gallery()[state.index]?.role;
-    const next = gallery(finish);
-    // Keep the same kind of view (studio, in a home, close-up) when this finish has it.
-    let index = next.findIndex((img) => img.role === role);
-    if (index < 0) index = Math.max(0, next.findIndex((img) => img.role === "studio"));
+    state.index = indexAfterSwitch(gallery(finish), role);
     state.finish = finish;
-    state.index = index;
     if (push) {
       const url = new URL(location.href);
       url.searchParams.set("colour", finish);
@@ -134,7 +132,7 @@ function setUpGallery(data, viewer) {
 
   function show(index) {
     const g = gallery();
-    state.index = (index + g.length) % g.length;
+    state.index = stepIndex(index, 0, g.length);
     markThumbs();
     updateControls();
     swapStage(true);
@@ -273,13 +271,13 @@ function setUpGallery(data, viewer) {
 
   // ---------- Address bar: ?colour= ----------
   window.addEventListener("popstate", () => {
-    const fromUrl = validFinish(new URL(location.href).searchParams.get("colour")) || data.default;
+    const fromUrl = colourFromSearch(location.search, FINISH_IDS) || data.default;
     if (fromUrl !== state.finish) choose(fromUrl, { push: false });
   });
 
   // ---------- Start ----------
-  const requested = new URL(location.href).searchParams.get("colour");
-  const initial = validFinish(requested);
+  const requested = new URLSearchParams(location.search).get("colour");
+  const initial = colourFromSearch(location.search, FINISH_IDS);
   if (requested && !initial) {
     // Unknown colour in the address: fall back to the default, and tidy the address.
     const url = new URL(location.href);

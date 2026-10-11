@@ -693,7 +693,7 @@ p { margin: 0; }
 .model-box .model-hero-text .eyebrow { grid-column: 1 / -1; }
 .model-box .model-hero-text .lede { padding-bottom: 0.6rem; }
 .model-box .model-intro { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; align-items: end; gap: 1rem 2.5rem; }
-.model-spine .viewer-stage { aspect-ratio: 4 / 3; }
+.model-box .viewer { width: min(100%, 56rem); justify-self: center; }
 
 /* The main photo: a fixed frame, so switching photos never moves the page. */
 .viewer-stage {

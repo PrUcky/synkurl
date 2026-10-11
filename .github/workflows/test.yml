@@ -24,4 +24,5 @@ jobs:
           cache: npm
           cache-dependency-path: synkurl-site/package-lock.json
       - run: npm ci
+      - run: npm run check:site
       - run: npm test

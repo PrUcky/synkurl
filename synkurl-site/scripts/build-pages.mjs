@@ -237,7 +237,7 @@ function thumbs(gallery, current) {
   return gallery
     .map(
       (img, i) =>
-        `<a class="thumb" href="${img.full}" data-index="${i}"${i === current ? ' aria-current="true"' : ""}>${picture(img, { sizes: "120px", eager: true }).replace(
+        `<a class="thumb" href="${img.full}" data-index="${i}"${i === current ? ' aria-current="true"' : ""}>${picture(img, { sizes: "88px", eager: true }).replace(
           `alt="${esc(img.alt)}"`,
           `alt="${ROLE_NAME[img.role]}, ${FINISH[img.finish].name}"`
         )}</a>`
@@ -314,7 +314,7 @@ function otherModels(m) {
     .map((o) => {
       const img = o.studio(o.default);
       return `<li><a class="model-link" href="${o.url}">
-  <span class="model-link-plate">${picture(img, { sizes: "(min-width: 900px) 18vw, 60vw", imgCls: "plate-img" })}</span>
+  <span class="model-link-plate">${picture(img, { sizes: "(min-width: 900px) 18vw, 200px", imgCls: "plate-img" })}</span>
   <span class="model-link-name">${o.name}</span>
   <span class="model-link-tag">${esc(o.tagline)}</span>
 </a></li>`;
