@@ -21,6 +21,7 @@ The GitHub repository is called `synkurl`. The site lives in its `synkurl-site/`
 | `public/models/` | The six concept-design pages (`/models/arch/` …), the Models page and `manifest.json` (the public list of product photos). Built by `scripts/build-pages.mjs` |
 | `public/media/` | Web-sized product photos (AVIF, WebP, one JPEG). Built by `scripts/build-images.py` |
 | `public/gallery.js`, `gallery-state.js` | The photo viewer on model pages: finishes, thumbnails, full-size view |
+| `public/colour-first.js` | Model pages: when a link asks for another finish (`?colour=`), hides the built-in photo until the right one is ready |
 | `public/chapter.js`, `finishes.js`, `home.js` | Homepage: the six-form chapter, the finish explorer, the app demo |
 | `public/motion.js` | Gentle motion shared by all pages (switches off with "reduce motion") |
 | `public/art/` | Illustrations for the family stories |

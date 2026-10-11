@@ -62,6 +62,13 @@ describe("each model page", () => {
     expect(page).toMatch(/<a class="stage-link" href="\/media\/[^"]+\.webp"/);
   });
 
+  it.each(MODEL_IDS)("%s: a link to another finish hides the built-in photo before the first paint", async (id) => {
+    const page = await html(`/models/${id}/`);
+    const head = page.slice(0, page.indexOf("</head>"));
+    expect(head).toContain(`<script src="/colour-first.js" data-default="${modelData(page).default}" data-finishes="${FINISHES.join(" ")}"></script>`);
+    expect(page).toContain('<span class="stage-layer is-current" data-built>');
+  });
+
   it.each(MODEL_IDS)("%s: lifestyle and close-up captions name the finish the photo really shows", async (id) => {
     const page = await html(`/models/${id}/`);
     const data = modelData(page);
