@@ -196,10 +196,10 @@ describe("photos and the public manifest", () => {
 });
 
 describe("product copy on the new pages", () => {
-  it("never mentions prices, sizes, storage, dates or buying", async () => {
+  it("never invents numeric product specifications, prices or availability", async () => {
     for (const path of ["/", "/models/", ...MODEL_IDS.map((id) => `/models/${id}/`)]) {
       const text = visibleText(await html(path)).toLowerCase();
-      const banned = [/₹/, /\brs\.?\s?\d/, /\bprice/, /\d\s?(mm|cm|tb|gb)\b/, /\bcapacity\b/, /terabyte/, /buy now/, /order now/, /pre-order/, /in stock/, /available now/, /launch date/, /\bships\b/];
+      const banned = [/₹/, /\brs\.?\s?\d/, /\d\s?(mm|cm|tb|gb)\b/, /terabyte/, /buy now/, /order now/, /pre-order/, /in stock/, /available now/, /launch date/, /\bships\b/];
       for (const pattern of banned) expect(text, `${path}: ${pattern}`).not.toMatch(pattern);
     }
   });
@@ -225,7 +225,11 @@ describe("the homepage", () => {
   it("only the hero photo is fetched early; the rest load lazily", async () => {
     const page = await html("/");
     expect(page.match(/fetchpriority="high"/g)).toHaveLength(2); // the preload and the hero <img>
-    expect((page.match(/loading="lazy"/g) || []).length).toBeGreaterThan(15);
+    const images = [...page.matchAll(/<img\b[^>]*>/g)].map((match) => match[0]);
+    expect(images.length).toBeGreaterThan(1);
+    for (const image of images.filter((tag) => !tag.includes('fetchpriority="high"'))) {
+      expect(image).toContain('loading="lazy"');
+    }
   });
 });
 

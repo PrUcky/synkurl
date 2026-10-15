@@ -1225,6 +1225,25 @@ fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
 }
 
 
+/* Product overview: readable without scripts, including on a narrow phone. */
+.product-overview { scroll-margin-top: 7rem; }
+.product-overview > p, .home-answers > p { max-width: 68ch; }
+.overview-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; table-layout: fixed; }
+.overview-table caption { text-align: left; font-weight: 600; padding-bottom: 0.8rem; }
+.overview-table th, .overview-table td { padding: 1rem 0.75rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line, #d6d0c8); overflow-wrap: anywhere; }
+.overview-table th { width: 34%; font-weight: 600; padding-left: 0; }
+.home-answers h3 { margin-top: 1.6rem; }
+/* Breathing room under the headings (paragraphs and headings have no margin by default). */
+.product-overview > h2 { margin-bottom: 0.9rem; }
+.product-overview > .lede { margin-bottom: 0.75rem; }
+.home-answers > h2 { margin-bottom: 0.4rem; }
+.home-answers h3 + p { margin-top: 0.35rem; }
+.home-answers > p:last-child { margin-top: 1.4rem; }
+@media (max-width: 480px) {
+  .overview-table th { width: 38%; }
+  .overview-table th, .overview-table td { padding-right: 0.4rem; font-size: 0.95rem; }
+}
+
 /* ========== Motion ==========
    Everything that moves is inside this one block. When "reduce motion" is on,
    none of it applies, and every page shows its still, finished state.

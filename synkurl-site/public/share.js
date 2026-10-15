@@ -4,7 +4,7 @@
 
 const LINK = "https://synkurl.com";
 const TEXT =
-  "I've joined the waitlist for Synkurl. It backs up the family's photos to a small device at home, and you can open them from anywhere.";
+  "I've joined the waitlist for Synkurl. They're building a small home device and phone app to save an extra copy of family photos and videos.";
 
 for (const button of document.querySelectorAll("[data-share]")) {
   const status = button.closest(".share")?.querySelector(".share-status");

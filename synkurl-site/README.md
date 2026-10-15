@@ -26,6 +26,7 @@ The GitHub repository is called `synkurl`. The site lives in its `synkurl-site/`
 | `public/motion.js` | Gentle motion shared by all pages (switches off with "reduce motion") |
 | `public/art/` | Illustrations for the family stories |
 | `data/models.json` | The six designs: names, wording, finishes, photo descriptions. **Edit this, then rebuild** |
+| `data/product-overview.json` | Short public summary: purpose, phone support, concept designs and early-access status |
 | `scripts/` | Builders for the photos and pages (see "Product photos and model pages") |
 | `src/index.js` | The backend (Worker): sends each request to the right code |
 | `src/waitlist.js` | Joining, confirming, removing, daily clean-up |
@@ -295,3 +296,11 @@ Tests run inside Cloudflare's real Workers runtime, with a throwaway local datab
 | `test/headers.test.js` | Every page and every Worker answer has the security headers. HSTS only on synkurl.com. |
 | `test/site.test.js` | Every page has the same header and footer (Investors only in the footer), its own title and description, preview tags; the sitemap and canonical links are right; the privacy page shows the current `CONSENT_VERSION`. |
 | `test/email-hint.test.js` | The "Did you mean gmail.com?" hint catches common typos and stays quiet for real addresses. |
+
+## Plain-language and disclosure review (14 October 2026)
+
+The homepage explains an extra copy, identifies the product as in development, and keeps three room examples. The FAQ states practical limits. Each design page and the models index use a short At a glance section from `data/product-overview.json`. Changing the model wording or public summary requires `npm run build:pages`, then `npm run check:site`.
+
+The six forms are appearance concepts. Product hardware, internal software, architecture and private plans are confidential. Do not add a technical fold-out, hidden data, source comments or repository notes containing them. Publish detailed specifications only after founder approval of the exact fields and values. Keep private handoff documents outside this public repository.
+
+Open follow-ups: the waitlist still stores the historical Arch/Album/Pebble choices; model and colour in the incoming link are display-only. Updating that collection needs a coordinated form, validation, database and privacy review. Production Turnstile configuration also needs checking; the HTML currently contains a public test sitekey. A copy edit does not verify D1 writes or email delivery.
