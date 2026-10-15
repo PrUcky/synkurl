@@ -36,6 +36,7 @@ function setUpDemo(demo) {
 
   // Arrow keys move between tabs (the usual pattern for tabs).
   tablist.addEventListener("keydown", (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return; // Back/Forward and browser shortcuts
     const moves = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
     let next = null;
     if (event.key in moves) next = (current + moves[event.key] + panels.length) % panels.length;

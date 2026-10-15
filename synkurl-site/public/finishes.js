@@ -31,6 +31,7 @@ function setUpFinishes(section, data) {
     return btn;
   });
   box.addEventListener("keydown", (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return; // Back/Forward and browser shortcuts
     const moves = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
     if (!(event.key in moves)) return;
     event.preventDefault();
