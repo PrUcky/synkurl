@@ -1,5 +1,5 @@
 {
-  "_about": "Source data for the six concept designs. scripts/build-images.py makes the web images from design-masters/; scripts/build-pages.mjs builds the model pages, the homepage chapters and public/models/manifest.json from this file. Public copy only: no dimensions, specs, prices or dates.",
+  "_about": "Source data for the six concept designs. scripts/build-images.py makes the web images from design-masters/; scripts/build-pages.mjs builds the model pages, the homepage chapters and public/models/manifest.json from this file. Public copy only: no internal hardware, software or implementation details. The shared product summary is in product-overview.json.",
   "finishes": [
     {
       "id": "blush-pink",
@@ -27,8 +27,8 @@
       "id": "arch",
       "name": "Arch",
       "default": "dusk-violet",
-      "tagline": "An arch for the side table.",
-      "intro": "A small upright arch with a softly curved crown. It sits on the side table, right where the family already gathers.",
+      "tagline": "An arch for a side table.",
+      "intro": "An upright design with a curved top, shown beside a sofa or chair.",
       "setting": "Side table in the living room",
       "lifestyle": {
         "finish": "dusk-violet",
@@ -59,8 +59,8 @@
       "id": "dome",
       "name": "Dome",
       "default": "blush-pink",
-      "tagline": "A low dome for the living room.",
-      "intro": "A broad, low dome that rests on the coffee table like a smooth stone. Calm from every side of the room.",
+      "tagline": "A low dome for a coffee table.",
+      "intro": "A low, rounded design, shown on a living-room table.",
       "setting": "Limestone table in a living room",
       "lifestyle": {
         "finish": "rose-gold",
@@ -90,8 +90,8 @@
       "id": "spine",
       "name": "Spine",
       "default": "blush-pink",
-      "tagline": "A slim spine for the bookshelf.",
-      "intro": "Tall and narrow, like one more book on the shelf. It stands upright and takes very little room.",
+      "tagline": "A slim design for a bookshelf.",
+      "intro": "A tall, narrow design, shown standing beside books.",
       "setting": "Bookshelf",
       "lifestyle": {
         "finish": "blush-pink",
@@ -122,8 +122,8 @@
       "id": "stack",
       "name": "Stack",
       "default": "matte-black",
-      "tagline": "Three quiet tiers for the work corner.",
-      "intro": "Three stepped tiers with dark lines of vents between them. Made to sit on a shelf near the Wi-Fi router.",
+      "tagline": "A layered design for a shelf.",
+      "intro": "A design with three visible layers, shown on a shelf near a router.",
       "setting": "Shelf near the Wi-Fi router",
       "lifestyle": {
         "finish": "matte-black",
@@ -154,8 +154,8 @@
       "id": "box",
       "name": "Box",
       "default": "matte-black",
-      "tagline": "A low box for the TV console.",
-      "intro": "Compact and low, with soft rounded corners. It slips onto the TV console and stays out of the picture.",
+      "tagline": "A low box for the TV table.",
+      "intro": "A low, square design with rounded corners, shown below a TV.",
       "setting": "TV console beneath a television",
       "lifestyle": {
         "finish": "matte-black",
@@ -186,8 +186,8 @@
       "id": "box-plus",
       "name": "Box Plus",
       "default": "dusk-violet",
-      "tagline": "A rounded box for an open shelf.",
-      "intro": "A rounded square with a softly curved side, a domed lid and a recessed base. A different shape from Box, nothing more.",
+      "tagline": "A rounded box for a shelf.",
+      "intro": "A rounded design with a curved lid. Plus is its design name.",
       "setting": "Open kitchen shelf",
       "lifestyle": {
         "finish": "dusk-violet",

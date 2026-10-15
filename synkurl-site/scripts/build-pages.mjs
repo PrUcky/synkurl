@@ -27,6 +27,7 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 const DATA = JSON.parse(read("data/models.json"));
 const IMAGES = JSON.parse(read("data/images.json")).images;
 const APP_DEMO = read("scripts/partials/app-demo.html");
+const OVERVIEW = JSON.parse(read("data/product-overview.json"));
 
 const FINISHES = DATA.finishes;
 const FINISH = Object.fromEntries(FINISHES.map((f) => [f.id, f]));
@@ -339,6 +340,20 @@ ${indent(items, 4)}
 </section>`;
 }
 
+// One source for the customer-facing information shared by all six concepts.
+function productOverview(modelName) {
+  const table = (rows, caption) => `<table class="overview-table">
+  <caption>${esc(caption)}</caption>
+  <tbody>${rows.map(([label, value]) => `<tr><th scope="row">${esc(label)}</th><td>${esc(value)}</td></tr>`).join("\n")}</tbody>
+</table>`;
+  return `<section class="section wrap product-overview" id="overview" aria-labelledby="overview-title">
+  <h2 id="overview-title">${modelName ? `${esc(modelName)} at a glance` : "At a glance"}</h2>
+  <p class="lede">${esc(OVERVIEW.status)}</p>
+  <p>Choose the look you prefer. These names describe appearance, not different feature levels.</p>
+  ${table(OVERVIEW.items, modelName ? `${modelName} concept — product overview` : "Product overview — all six designs")}
+</section>`;
+}
+
 function modelPage(m) {
   const g = m.finishes[m.default].gallery;
   const hero = g[0];
@@ -349,6 +364,7 @@ function modelPage(m) {
         <p class="eyebrow">Concept design ${m.index + 1} of ${MODELS.length}</p>
         <h1 id="model-title">${m.name}</h1>
         <p class="lede">${esc(m.tagline)}</p>
+        <p><a class="text-link" href="#overview">At a glance</a></p>
       </div>
 
       <div class="viewer" data-viewer data-model="${m.id}">
@@ -379,6 +395,8 @@ ${indent(thumbs(g, 0), 10)}
         <p><a class="btn" href="/join?model=${m.id}&amp;colour=${m.default}" data-join-link>Join the waitlist</a></p>
       </div>
     </section>
+
+${indent(productOverview(m.name), 4)}
 
 ${indent(editorial(m, "lifestyle"), 4)}
 
@@ -458,13 +476,16 @@ function modelsIndex() {
     mainClass: "models-index",
     body: `    <section class="page-intro wrap" data-hero-in>
       <p class="eyebrow">Concept designs</p>
-      <h1>Six forms for six corners of the home.</h1>
-      <p class="lede">One quiet job, six shapes. Every design is shown in ${FINISH_LIST}.</p>
+      <h1>Which design would fit your home?</h1>
+      <p class="lede">Six design ideas for the same purpose: keeping a copy of your family's photos at home. Choose a shape to see its colours and pictures.</p>
+      <p>These pictures explore how the device could look. The final product may change.</p>
+      <p><a class="text-link" href="#overview">At a glance</a></p>
       <p class="concept-note">${CONCEPT_NOTE}</p>
     </section>
     <ol class="index-list wrap">
 ${indent(rows, 6)}
     </ol>
+${indent(productOverview(), 4)}
     <section class="section wrap closing-quiet">
       <h2>Hear first when early access opens.</h2>
       <p class="muted">Join the waitlist. We'll email you when it opens, and nothing else.</p>
@@ -525,23 +546,14 @@ function homepage() {
   <figcaption><span class="life-name">${m.name}</span> · ${esc(m.setting)} · <span class="finish-inline"><span class="swatch-dot" style="--swatch: ${FINISH[img.finish].swatch}"></span>${FINISH[img.finish].name}</span></figcaption>
 </figure>`;
   };
-  const detail = (id, cls, sizes, reveal) => {
-    const m = MODELS.find((x) => x.id === id);
-    const img = m.detailImg;
-    return `<figure class="detail ${cls}" data-reveal="${reveal}">
-  <a href="${m.url}?colour=${img.finish}" class="detail-frame">${picture(img, { sizes, imgCls: "editorial-img", position: m.layout.detailPosition })}</a>
-  <figcaption><span class="life-name">${m.name}</span> · ${esc(m.detail.title.replace(/\.$/, ""))} · ${FINISH[img.finish].name}</figcaption>
-</figure>`;
-  };
-
   const body = `    <section class="home-hero wrap" aria-labelledby="hero-title">
       <div class="home-hero-text">
-        <p class="eyebrow hero-in" style="--i: 0">Six concept designs · Starting with Android</p>
+        <p class="eyebrow hero-in" style="--i: 0">In development · Android first</p>
         <h1 id="hero-title" class="hero-in" style="--i: 1">Your family's photos, kept at home.</h1>
-        <p class="lede hero-in" style="--i: 2">Synkurl backs up every photo and video your family takes to a small device in your home. Then it puts them on your phone, wherever you are.</p>
+        <p class="lede hero-in" style="--i: 2">Synkurl is building a small home device and a phone app. The aim is simple: automatically save a copy of your photos and videos at home, and let you view them on your phone when you're away.</p>
         <div class="actions hero-in" style="--i: 3">
           <a class="btn" href="/join">Join the waitlist</a>
-          <a class="text-link" href="#forms">Explore the six designs</a>
+          <a class="text-link" href="#what-title">See how it will work</a>
         </div>
       </div>
       <figure class="home-hero-figure hero-in" style="--i: 1">
@@ -553,26 +565,26 @@ function homepage() {
     <section class="section wrap what" aria-labelledby="what-title">
       <div class="what-grid">
         <div class="what-text">
-          <p class="eyebrow">What it does</p>
-          <h2 id="what-title">One small device. Every family photo, safe at home.</h2>
+          <p class="eyebrow">What we are building</p>
+          <h2 id="what-title">A copy at home. Easy to find on your phone.</h2>
           <ul class="promise-list">
             <li data-reveal="fade">
-              <h3>Backs up by itself</h3>
-              <p>New photos and videos leave your phone for home without anyone having to remember.</p>
+              <h3>Save a copy automatically</h3>
+              <p>We are working on copying new photos and videos to your home device. A backup means an extra copy, not moving the only copy off your phone.</p>
             </li>
             <li data-reveal="fade">
-              <h3>Lives in your home</h3>
-              <p>Your memories sit on a small device in your own home, not in a stranger's data centre.</p>
+              <h3>Keep that copy at home</h3>
+              <p>The device is designed to store your photos and videos in your home.</p>
             </li>
             <li data-reveal="fade">
-              <h3>Opens from anywhere</h3>
-              <p>On Wi-Fi or mobile data, at home or travelling, the whole family album is a tap away.</p>
+              <h3>View photos when you are away</h3>
+              <p>We are building access through the phone app. Your home device and phone will need an internet connection for this.</p>
             </li>
           </ul>
           <ol class="steps" aria-label="How it will work">
-            <li><h3>Plug it in at home</h3><p>Connect the Synkurl device to power and your home internet.</p></li>
-            <li><h3>Pair your family's phones</h3><p>Install the app and pair each phone with the device once.</p></li>
-            <li><h3>Let it run</h3><p>New photos go home on their own. Get a new phone, and everything comes back to it.</p></li>
+            <li><h3>Connect the device</h3><p>Give it power and a connection to your home internet.</p></li>
+            <li><h3>Connect your phone</h3><p>Install the app and follow the setup steps. We are starting with Android.</p></li>
+            <li><h3>Check your saved copies</h3><p>See which photos have finished copying. Getting saved photos back onto a new phone is also part of the plan.</p></li>
           </ol>
         </div>
 ${indent(APP_DEMO.trim().replace('<section class="section wrap lazy-section" id="app"', '<section class="app-panel" id="app"'), 8)}
@@ -583,11 +595,11 @@ ${indent(APP_DEMO.trim().replace('<section class="section wrap lazy-section" id=
       <div class="chapter-pin" data-chapter-pin>
         <div class="chapter-head wrap">
           <div>
-            <p class="eyebrow">Six forms</p>
-            <h2 id="forms-title">One quiet job. Six ways to fit your home.</h2>
+            <p class="eyebrow">Six design ideas</p>
+            <h2 id="forms-title">Choose a shape you like.</h2>
           </div>
           <div class="chapter-side">
-            <p class="muted">Each design is a concept for a different corner of the house. Open one to see it in every finish.</p>
+            <p class="muted">Explore different shapes and colours for your home. Open a design to see more pictures.</p>
             <div class="chapter-controls" hidden>
               <button class="round-btn" type="button" data-chapter-step="-1" aria-label="Previous design">‹</button>
               <span class="chapter-progress" aria-hidden="true"><span data-chapter-bar></span></span>
@@ -607,8 +619,8 @@ ${indent(chapterCards, 12)}
     <section class="section wrap finishes" id="finishes" aria-labelledby="finishes-title" data-finishes>
       <div class="section-head">
         <p class="eyebrow">Four finishes</p>
-        <h2 id="finishes-title">${FINISH_LIST}.</h2>
-        <p class="muted">Every design is shown in all four. Choose a finish to see the whole family in it.</p>
+        <h2 id="finishes-title">Four colours to explore.</h2>
+        <p class="muted">Choose a colour to see all six designs in it. Colours shown: ${FINISH_LIST}.</p>
       </div>
       <div class="finish-picker">
         <div class="swatches" data-finish-swatches aria-label="Choose a finish" hidden>
@@ -626,35 +638,31 @@ ${indent(finishCells, 8)}
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">At home</p>
-          <h2 id="rooms-title">Made to live where your family does.</h2>
-          <p class="muted">Below the TV, among the books, beside your favourite chair. Each design is pictured where a family might keep it, in the finish shown in that picture.</p>
+          <h2 id="rooms-title">Picture it in your home.</h2>
+          <p class="muted">By the TV, on a bookshelf or beside the sofa. These images explore how the designs could look in a room.</p>
         </div>
       </div>
       <div class="life-grid wrap">
 ${indent(life("box", "life-wide", "(min-width: 1100px) 1100px, 100vw", "rise"), 8)}
 ${indent(life("spine", "life-portrait", "(min-width: 900px) 34vw, 100vw", "rise"), 8)}
 ${indent(life("arch", "life-side", "(min-width: 900px) 58vw, 100vw", "slide"), 8)}
-${indent(life("box-plus", "life-band", "(min-width: 900px) 70vw, 100vw", "rise"), 8)}
-${indent(life("dome", "life-half", "(min-width: 900px) 48vw, 100vw", "rise"), 8)}
-${indent(life("stack", "life-half life-offset", "(min-width: 900px) 48vw, 100vw", "slide"), 8)}
       </div>
     </section>
 
-    <section class="section wrap details" aria-labelledby="details-title">
-      <div class="section-head">
-        <p class="eyebrow">Up close</p>
-        <h2 id="details-title">Fine vents. Soft seams. A quiet mark.</h2>
-      </div>
-      <div class="detail-grid">
-${indent(detail("dome", "detail-large", "(min-width: 900px) 62vw, 100vw", "scale"), 8)}
-${indent(detail("stack", "detail-small", "(min-width: 900px) 34vw, 100vw", "rise"), 8)}
-${indent(detail("box-plus", "detail-small detail-low", "(min-width: 900px) 34vw, 100vw", "rise"), 8)}
-      </div>
+    <section class="section wrap home-answers" aria-labelledby="answers-title">
+      <h2 id="answers-title">A few things to know.</h2>
+      <h3>Can I get one now?</h3>
+      <p>We are building and testing the first version. You can join the waitlist to hear when early access opens.</p>
+      <h3>Does a backup free space on my phone?</h3>
+      <p>Making a copy does not free space by itself. We have not confirmed how removing photos from a phone will work.</p>
+      <h3>How much will it store or cost?</h3>
+      <p>Storage options and price have not been announced. We will share more before early access.</p>
+      <p><a class="text-link" href="/faq">Read all questions and answers</a></p>
     </section>
 
     <section class="section wrap closing-quiet home-closing">
-      <h2>Be one of the first families to try it.</h2>
-      <p class="muted">Join the waitlist and hear about early access before anyone else. No newsletters.</p>
+      <h2>Hear when it is ready to try.</h2>
+      <p class="muted">Join the waitlist for an email when early access opens. No newsletters.</p>
       <p><a class="btn" href="/join">Join the waitlist</a></p>
       <p class="concept-note">All six are concept designs. These images are design concepts, not photographs of finished products. The final Synkurl device will look different.</p>
     </section>`;
@@ -662,7 +670,7 @@ ${indent(detail("box-plus", "detail-small detail-low", "(min-width: 900px) 34vw,
   return page({
     path: "/",
     title: "Synkurl: your family's photos, kept at home",
-    description: "Synkurl backs up your family's photos and videos to a small device in your home, and puts them back on your phone wherever you are. Join the waitlist.",
+    description: "Synkurl is building a home device and app for family photo and video backup. Explore six concept designs and join the waitlist. Android first.",
     preload: preloadHero(heroImg, heroSizes),
     scripts: ["/home.js", "/chapter.js", "/finishes.js"],
     jsonLd: { "@context": "https://schema.org", "@type": "Organization", name: "Synkurl", url: `${SITE}/`, logo: `${SITE}/icon-512.png`, email: "synkurl@synkurl.com" },
